@@ -1,0 +1,142 @@
+<div class="container">
+    <h3 class="text-center">Installing</h3>
+    <p>
+        Some cool text about installing the <b>Free Video Player</b>. Will add more examples on how the player can be installed within a regular HTML page and stuff here.
+    </p>
+
+    <div class="well">
+        <h4 class="text-center"> Example of instantiating the Free Video Player</h4>
+        <code>
+            &lt;!-- some html.. --&gt;<br>
+            &lt;html&gt;<br>
+            &lt;head&gt;<br>
+            &lt;title&gt;Some title&lt;/title&gt;<br>
+            &lt;!-- Lets add the basic styling for the Free Video Player here, this can ofcourse be overwritten and changed based on your choice of styling --&gt;<br>
+            &lt;link rel=&quot;stylesheet&quot; href=&quot;/css/free.video.player.style.css&quot;&gt;<br>
+            &lt;!-- Lets add the source to the different free video player js files that are necessary for running the free video player --&gt;<br>
+            &lt;script src=&quot;/xml2.json.min.js&quot;&gt;&lt;/script&gt;<br>
+            &lt;script src=&quot;/free.video.player.full.js&quot;&gt;&lt;/script&gt;<br>
+            &lt;/head&gt;<br>
+            &lt;body&gt;<br>
+            <br>
+            &lt;!-- some html stuff here.. --&gt;<br>
+            &lt;div class=&quot;js-free-video-player-container optional-other-classes-used-for-styling&quot;&gt;<br>
+            &lt;!-- here the free video player will be instantiated --&gt;<br>
+            &lt;/div&gt;<br>
+            <br>
+            &lt;script&gt;<br>
+            <br>
+            //Ok so lets instantiate the free video player here..<br>
+            //First create an optional configuration object<br>
+            var optionalConfigurationObject = {<br>
+            //Add your own configurations here<br>
+            //See the section How to configure the Free Video Player, to see more of the possible configuration options<br>
+            }<br>
+            <br>
+            //Then instantiate the actual player object<br>
+            var player = freeVideoPlayer(optionalConfigurationObject);<br>
+            <br>
+            //Now we can use the player object with regular javascript or libraries such as for instance jQuery/Angular or the<br>
+            //developers choice<br>
+            //Like for instance if we have a button or element in the DOM that has an onclick event listener,<br>
+            //then we could use that to call a method like this..<br>
+            function someFunctionToPlay(){<br>
+            <br>
+            var videoUrl = document.getElementById('some-id-field-value-containing-the-video-url-value').value;<br>
+            <br>
+            //Loads the player<br>
+            player.load(videoUrl);<br>
+            <br>
+            //Starts the video..<br>
+            player.play();<br>
+            };<br>
+            <br>
+            <br>
+            &lt;/script&gt;<br>
+            &lt;/body&gt;<br>
+            &lt;/html&gt;<br>
+        </code>
+    </div>
+
+
+    <div class="well">
+        <h4 class="text-center"> Example of optional configuration object</h4>
+        <code>
+            &lt;script&gt;<br>
+            //Some examples of the optional configuration object<br>
+            //If no configuration object is added on instantiation, the default values will be used<br>
+                <br>
+                var freeVideoPlayerOptionalConfigurationObject = {<br>
+                //Add this parameter if you want to change the actual js class name that the Free Video Player uses<br>
+                //as a target to instantiate the player, the default value is js-free-video-player-container.<br>
+                videoWrapperClassName: 'js-free-video-player-container',<br>
+                //This is the default video splash image used on videos if no splash image is provided for the asset<br>
+                //when using the load method<br>
+                videoSplashImageUrl:'../images/free-video-player-logo.png',<br>
+                //This is the url used to fetch the iso-639-1 languages and labels used when the subtitles<br>
+                //in streams are added to the DOM and the control structure<br>
+                iso6391Url:'/js/freevideoplayer/subtitles/iso-639-1.json',<br>
+                <br>
+                //This shows the default inner html for the different Video Controls discussed earlier<br>
+                //When one of the values are overwritten all is overwritten, so if you want to<br>
+                //overwrite the current setup make sure you fill in all values here below to your liking<br>
+                videoControlsInnerHtml : {<br>
+                playIconInnerHtml:'&lt;i class=&quot;fa fa-play&quot;&gt;&lt;/i&gt;',<br>
+                pauseIconInnerHtml:'&lt;i class=&quot;fa fa-pause&quot;&gt;&lt;/i&gt;',<br>
+                stopIconInnerHtml:'&lt;i class=&quot;fa fa-stop&quot;&gt;&lt;/i&gt;',<br>
+                volumeHighIconInnerHtml:'&lt;i class=&quot;fa fa-volume-up&quot;&gt;&lt;/i&gt;',<br>
+                volumeLowIconInnerHtml:'&lt;i class=&quot;fa fa-volume-down&quot;&gt;&lt;/i&gt;',<br>
+                novolumeIconInnerHtml:'&lt;i class=&quot;fa fa-volume-off&quot;&gt;&lt;/i&gt;',<br>
+                fullscreenExpandIconInnerHtml:'&lt;i class=&quot;fa fa-expand&quot;&gt;&lt;/i&gt;',<br>
+                fullscreenCompressIconInnerHtml:'&lt;i class=&quot;fa fa-compress&quot;&gt;&lt;/i&gt;',<br>
+                subtitlesMenuInnerHtml:'CC',<br>
+                subtitlesMenuOffButtonInnerHtml:'Off'<br>
+            },<br>
+
+            //This object shows the different css classes that are being applied to the different video control<br>
+            //elements, and as described above if you want to customize one property all need to be changed or modified<br>
+            //since all will be overwritten once one of these sub-properties. The default value for the variable videoPlayerNameCss is free-video-player,<br>
+            //so for instance the videoControlsClass would generate the css class: free-video-player-controls<br>
+            videoControlsCssClasses: {<br>
+            videoControlsClass: 'free-video-player-controls',<br>
+            videoFullScreenClass: 'free-video-player-controls-fullscreen',<br>
+            playpauseContainerClass: 'free-video-player-controls-playpause',<br>
+            subtitlesContainerClass: 'free-video-player-controls-subtitles',<br>
+            progressbarContainerClass: 'free-video-player-controls-progress',<br>
+            volumeContainerClass: 'free-video-player-controls-volume',<br>
+            fullscreenContainerClass: 'free-video-player-controls-fullscreen',<br>
+            subtitlesMenuClass: 'free-video-player-controls-subtitles-menu',<br>
+            subtitleButtonClass: 'free-video-player-controls-subtitles-button'<br>
+            },<br>
+            //These sub properties decides which of the video controls that should be generated to the DOM,<br>
+            //same procedure as the above properties, if one is changed all need to be added to not make them &quot;undefined&quot;<br>
+            //which in turn results in a falsy value and not displaying the rest of the controls that have not been defined.<br>
+            videoControlsDisplay: {<br>
+            showPlayPauseButton: true,<br>
+            showProgressSlider: true,<br>
+            showVolumeIcon:true,<br>
+            showVolumeSlider: true,<br>
+            showSubtitlesMenu: true,<br>
+            showFullScreenButton: true<br>
+            },<br>
+            //Optional values to add percentage values from when the volume icon button should display<br>
+            //the icon for full volume, middle volume and no volume.<br>
+            videoControlsVolumeTresholdValues: {<br>
+            volumeHighStart:40,<br>
+            volumeLowEnd:10<br>
+            },<br>
+                <br>
+            //Add this to generate debug messages to the console<br>
+            debugMode:true,<br>
+            //This parameter decides if the Video Controls should be generated to the DOM<br>
+            //if not there is a public API that the Free Video Player also has which can be used<br>
+            //with direct interaction with the instantiated Free Video Player, see the API section<br>
+            //for more information.<br>
+            createControls:true<br>
+            };<br>
+            };<br>
+            &lt;/script&gt;
+        </code>
+    </div>
+</div>
+

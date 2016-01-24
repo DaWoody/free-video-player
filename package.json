@@ -1,0 +1,31 @@
+{
+  "name": "free_video_player",
+  "version": "0.9.0",
+  "description": "This is an open source video player project, aimed to be able to play adaptive bitrate streams and regular streams through HTML5 technology, see more @ http://www.freevideoplayer.org",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines":{
+    "node":"5.2.0"
+  },
+  "keywords": [
+    "html5",
+    "video",
+    "adaptive",
+    "library"
+  ],
+  "author": "Johan Wedfelt",
+  "license": "GPLv3",
+  "dependencies": {
+    "express": "^4.13.3"
+  },
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-jsdoc": "^0.1.5",
+    "gulp-mocha": "^2.2.0",
+    "require-dir": "^0.3.0"
+  }
+}

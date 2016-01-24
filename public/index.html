@@ -1,0 +1,76 @@
+<!--
+   @title FREE VIDEO PLAYER - LANDING PAGE
+ * @authors Johan Wedfelt
+ * @contributors
+ * @license GPLv3, see http://www.gnu.org/licenses/gpl-3.0.en.html
+ * @dependencies Requires the xml2json library to work
+ * @description A cool FREE VIDEO PLAYER library to use when want to play DASHed content. This sample page is showing
+ * an example of how the freeVideoPlayer can be instantiated.
+ * @web http://freevideoplayer.org
+-->
+<!DOCTYPE html>
+<html lang="en" ng-app="freeVideoPlayerApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    <title>Free Video Player - The Free HTML5 Open Source Video Player</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/free.video.player.style.css">
+</head>
+
+<body>
+<div class="video-page-wrapper">
+    <div class="header-wrapper">
+        <h2 class="float-left free-video-player-logo"><a href="#/home">Free Video Player</a></h2>
+    </div>
+
+    <div class="menu">
+        <ul class="nav nav-tabs">
+            <li>
+                <a href="#/home">Home</a>
+            </li>
+            <li>
+                <a href="#/about">About</a>
+            </li>
+            <li>
+                <a href="#/contribute">Contribute</a>
+            </li>
+            <li>
+                <a href="#/installing">Installing</a>
+            </li>
+            <li>
+                <a href="#/download">Download</a>
+            </li>
+            <li>
+                <a href="#/contact">Contact</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="icons">
+        <a target="_free-video-player-link" href="https://github.com/DaWoody/free-video-player"><i class="fa fa-github"></i></a>
+        <a target="_free-video-player-link" href="http://www.w3schools.com/html/html5_video.asp"><i class="fa fa-html5"></i></a>
+        <a target="_free-video-player-link" href="https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP"><i class="fa fa-dashcube"></i></a>
+    </div>
+
+    <div class="row" ng-view>
+        <!-- Add stuff programmatically here -->
+    </div>
+</div>
+
+<!-- Some angular scripts to provide support for this application -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-resource.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-route.min.js"></script>
+<!-- Some Angular scripts for generating this angular application -->
+<script src="js/angularApp/app.js"></script>
+<script src="js/angularApp/controllers/home.controller.js"></script>
+<script src="js/angularApp/controllers/about.controller.js"></script>
+<script src="js/angularApp/controllers/download.controller.js"></script>
+<script src="js/angularApp/controllers/contact.controller.js"></script>
+<!-- The following scripts are used with Free Video Player -->
+<script src="js/freevideoplayer/xml2.json.min.js"></script>
+<script src="js/freevideoplayer/free.video.player.full.js"></script>
+</body>
+</html>
