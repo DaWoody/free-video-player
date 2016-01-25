@@ -9,4 +9,6 @@
 //Add the video controls to the namespace
 freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(){
     //Add stuff here and refactor so we gather adaptive streaming stuff in one module
+
+    'use strict';
 };
