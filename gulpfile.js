@@ -1,7 +1,6 @@
 /**
  * Main Gulp file
  */
-
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     mocha = require('gulp-mocha'),
@@ -20,7 +19,11 @@ gulp.task('build', [
     'build_free_video_player_xml2json',
     'build_free_video_player_readme',
     'build_free_video_player_license',
+    'build_free_video_player_stylesheet',
     'run_jsdoc_free_video_player_production',
     'run_jsdoc_free_video_player_sample_page'
 ]);
 
+gulp.task('build_free_video_player_stylesheet', [
+    'sass'
+]);
