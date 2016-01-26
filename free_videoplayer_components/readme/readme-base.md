@@ -52,7 +52,7 @@ This is done by calling the method ```freeVideoPlayer(optionalConfigurationObjec
 ##How to configure the Free Video Player
 ***
 When the Free Video Player is instantiated, it is done so with an optional configuration object. This object in turn contains a set of different 
-types of settings that can be used to make the player behave in certain ways. One part of the configuration parameters includes settings for the *Video Controls*.
+types of settings that can be used to make the player behave in certain ways. One part of the configuration parametgers includes settings for the *Video Controls*.
 These *Video Controls* parameters, makes it possible to configure which controls should be displayed, overwrite the inner html of the controls if the default is not
 wanted, and also overwrite the classes added to the different controls, both the main control container aswell as the specific controls.
 Basically what happens when the default *Video Controls* are added to the player is that a ```div``` element is added as the main container for the *Video Controls*,
