@@ -28,6 +28,8 @@ var freeVideoPlayerModulesNamespace = {};
 //Add the messages module to the namespace
 freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObject, moduleVersion){
 
+    'use strict';
+
     var that = {
         module:true
     };

@@ -371,8 +371,7 @@ h1, h2, h3, h4, h5 {
         background: #367ebd; }
 
 .free-video-player-controls-hide {
-  display: none !important;
-  background: red; }
+  display: none !important; }
 
 .free-video-player-controls-display {
   display: block; }
@@ -380,3 +379,89 @@ h1, h2, h3, h4, h5 {
 .free-video-player-controls-fullscreen video {
   width: 100%;
   height: 100%; }
+
+@media all and (max-width: 700px) {
+  .free-video-player-container-style {
+    width: 450px;
+    height: 252px; }
+  .free-video-player-controls {
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    display: inline-block;
+    opacity: 0;
+    left: 0;
+    bottom: 0;
+    color: rgba(75, 96, 108, 0.7);
+    background: rgba(176, 228, 255, 0.8);
+    margin: 0;
+    -webkit-transition: opacity 0.5s;
+    -moz-transition: opacity 0.5s;
+    -ms-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+    transition: opacity 0.5s; }
+    .free-video-player-controls input {
+      background-color: transparent;
+      display: inline;
+      margin: 0 0 0 8px; }
+    .free-video-player-controls div {
+      display: inline;
+      width: 6%;
+      min-width: 18px;
+      margin: 3px 0 0 10px;
+      padding: 3px 2px;
+      font-size: 22px; }
+      .free-video-player-controls div:hover {
+        cursor: pointer;
+        color: rgba(12, 16, 18, 0.7); }
+      .free-video-player-controls div i {
+        width: 15px; }
+    .free-video-player-controls .free-video-player-controls-progress {
+      -webkit-appearance: none;
+      padding: 0;
+      width: 260px;
+      height: 10px; }
+    .free-video-player-controls .free-video-player-controls-progress-timer {
+      margin-top: -7px;
+      font-size: 0.7em; }
+    .free-video-player-controls .free-video-player-controls-volume {
+      visibility: hidden;
+      position: absolute;
+      height: 50px;
+      width: 110px;
+      bottom: 60px;
+      left: 315px; }
+  .free-video-player-controls-overlay-icon i {
+    font-size: 4em; } }
+
+@media all and (max-width: 450px) {
+  .free-video-player-container-style {
+    width: 320px;
+    height: 180px; }
+    .free-video-player-container-style div {
+      font-size: 18px; }
+  .free-video-player-controls {
+    height: 24px; }
+    .free-video-player-controls div {
+      min-width: 15px;
+      margin: 0 0 0 5px;
+      padding: 2px 2px; }
+    .free-video-player-controls input {
+      margin: 0 0 0 5px; }
+    .free-video-player-controls .free-video-player-controls-progress {
+      -webkit-appearance: none;
+      padding: 0;
+      width: 165px;
+      height: 10px; }
+    .free-video-player-controls .free-video-player-controls-progress-timer {
+      margin-top: -10px;
+      font-size: 0.5em; }
+    .free-video-player-controls .free-video-player-controls-volume {
+      visibility: hidden;
+      position: absolute;
+      height: 50px;
+      width: 110px;
+      bottom: 55px;
+      left: 200px; }
+  .free-video-player-controls-overlay-icon i {
+    font-size: 2.5em; } }

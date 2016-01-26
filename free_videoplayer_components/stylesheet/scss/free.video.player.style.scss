@@ -11,7 +11,9 @@ $player-controls-background-color: rgba(176, 228, 255, 0.8);
 $header-color: #f0ff9d;
 $bootstrap-blue-color: #337AB7;
 
-$player-controls-progress-slider-width: 400px;
+$player-controls-progress-slider-width-large: 400px;
+$player-controls-progress-slider-width-medium: 260px;
+$player-controls-progress-slider-width-small: 165px;
 $player-controls-button-width: 15px;
 
 @import url(https://fonts.googleapis.com/css?family=Permanent+Marker);
@@ -64,9 +66,8 @@ h1, h2, h3, h4, h5 {
 }
 
 
+//Menu Classes
 .header-wrapper{
-  //clear:both;
-  //background:$player-controls-background-color;
   min-height:50px;
 }
 
@@ -314,9 +315,6 @@ h1, h2, h3, h4, h5 {
     color: $player-controls-color;
   }
 
-
-
-
   //Player controls
   .video-player-play {
 
@@ -330,7 +328,7 @@ h1, h2, h3, h4, h5 {
   .free-video-player-controls-progress {
     -webkit-appearance: none;
     padding: 0 20px 0 0;
-    width: $player-controls-progress-slider-width;
+    width: $player-controls-progress-slider-width-large;
     height: 15px;
 
     &::-webkit-slider-runnable-track {
@@ -435,7 +433,7 @@ h1, h2, h3, h4, h5 {
   .free-video-player-controls-volume {
 
     padding: 0 0px 0 0;
-    width: $player-controls-progress-slider-width;
+    width: $player-controls-progress-slider-width-large;
     height: 50px;
     width: 110px;
     padding: 0 10px 0 0;
@@ -553,13 +551,11 @@ h1, h2, h3, h4, h5 {
 
 .free-video-player-controls-hide {
   display:none !important;
-  background:red;
 }
 
 .free-video-player-controls-display {
   display:block;
 }
-
 
 .free-video-player-controls-fullscreen {
   video {
@@ -568,3 +564,132 @@ h1, h2, h3, h4, h5 {
   }
 }
 
+//Lets make this mid-size
+@media all and (max-width: 700px) {
+  //Add css for the actual video control wrapper
+  .free-video-player-container-style{
+    width:450px;
+    height:252px;
+  }
+  //Add css for the controls here
+  .free-video-player-controls {
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    display: inline-block;
+    opacity: 0;
+    left: 0;
+    bottom: 0;
+    color: $player-controls-color;
+    background: $player-controls-background-color;
+    margin: 0;
+    -webkit-transition: opacity 0.5s;
+    -moz-transition: opacity 0.5s;
+    -ms-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+    transition: opacity 0.5s;
+
+    input {
+      background-color: transparent;
+      display: inline;
+      margin: 0 0 0 8px;
+    }
+
+    div {
+      display: inline;
+      width: 6%;
+      min-width: 18px;
+      margin: 3px 0 0 10px;
+      padding: 3px 2px;
+      font-size: 22px;
+      &:hover {
+        cursor: pointer;
+        color: $player-controls-shadow-color;
+      }
+      i {
+        width: $player-controls-button-width;
+      }
+    }
+
+    .free-video-player-controls-progress {
+      -webkit-appearance: none;
+      padding: 0;
+      width: $player-controls-progress-slider-width-medium;
+      height: 10px;
+    }
+
+    .free-video-player-controls-progress-timer {
+      margin-top:-7px;
+      font-size:0.7em;
+    }
+
+    //Styles for the volume slider
+    .free-video-player-controls-volume {
+      visibility: hidden;
+      position:absolute;
+      height: 50px;
+      width: 110px;
+      bottom:60px;
+      left:315px;
+    }
+  }
+
+  .free-video-player-controls-overlay-icon {
+    i {
+      font-size:4em;
+    }
+  }
+
+}
+
+//Lets change the video player here when its really small(mobile devices and such)
+@media all and (max-width: 450px){
+  .free-video-player-container-style{
+    width:320px;
+    height:180px;
+    div {
+      font-size:18px;
+    }
+  }
+
+  .free-video-player-controls {
+    height: 24px;
+    div {
+      min-width: 15px;
+      margin: 0 0 0 5px;
+      padding: 2px 2px;
+    }
+
+    input {
+      margin: 0 0 0 5px;
+    }
+
+    .free-video-player-controls-progress {
+      -webkit-appearance: none;
+      padding: 0;
+      width: $player-controls-progress-slider-width-small;
+      height: 10px;
+    }
+
+    .free-video-player-controls-progress-timer {
+      margin-top:-10px;
+      font-size:0.5em;
+    }
+
+    //Styles for the volume slider
+    .free-video-player-controls-volume {
+      visibility: hidden;
+      position:absolute;
+      height: 50px;
+      width: 110px;
+      bottom:55px;
+      left:200px;
+    }
+  }
+
+  .free-video-player-controls-overlay-icon {
+    i {
+      font-size:2.5em;
+    }
+  }
+}
