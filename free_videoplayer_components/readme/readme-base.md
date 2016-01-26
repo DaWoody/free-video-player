@@ -36,8 +36,13 @@ If you just want to build the stylesheet, work on the */free_video_player_compon
 
 ##Installation
 ***
-To use the Free Video Player, you need to include a reference to the source code provided, meaning the javascript files ```free.video.player.full.js``` and
-the dependency *xml2json* () which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0). This is usually done in the top or the bottom of your html page. An example of how this could be implemented and inserted within
+To use the Free Video Player, you need to include a reference to the source code provided, meaning the javascript files ```free.video.player.full.js```.
+Furthermore there are currently two dependencies:
+
+* One being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. 
+* The other being [Font Awesome](https://fortawesome.github.io/Font-Awesome/), which the player uses for current icon implementation within the video controls.
+
+This is usually done in the top or the bottom of your html page. An example of how this could be implemented and inserted within
 your html, check the *Example of implementation* section below.
 
 Then when the references to the files are there, either within your html within ```<script> ... </script>``` tags or through a
