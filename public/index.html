@@ -13,6 +13,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Free Video Player - The Free HTML5 Open Source Video Player</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -20,43 +21,36 @@
 </head>
 
 <body>
-<div class="video-page-wrapper">
+<div class="video-page-wrapper" ng-controller="mainController">
 
-    <div class="menu navbar navbar-default" role="navigation">
-        <div class="header-wrapper navbar-header">
-            <button type = "button" class = "navbar-toggle"
-                    data-toggle = "collapse" data-target = "#free-video-player-navbar-collapse">
-                <span class = "sr-only">Toggle navigation</span>
-                <span class = "icon-bar"></span>
-                <span class = "icon-bar"></span>
-                <span class = "icon-bar"></span>
+
+
+    <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+
+            <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand float-left free-video-player-logo" href="#/home">Free Video Player</a>
+            <a class="navbar-brand free-video-player-logo" href="#">Free Video Player</a>
         </div>
 
-        <div class = "collapse navbar-collapse" id = "free-video-player-navbar-collapse">
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="#/home">Home</a>
-                </li>
-                <li>
-                    <a href="#/about">About</a>
-                </li>
-                <li>
-                    <a href="#/contribute">Contribute</a>
-                </li>
-                <li>
-                    <a href="#/installing">Installing</a>
-                </li>
-                <li>
-                    <a href="#/download">Download</a>
-                </li>
-                <li>
-                    <a href="#/contact">Contact</a>
-                </li>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+            <ul class="nav navbar-nav">
+                <li><a href="#/home">Home</a></li>
+                <li><a href="#/about">About</a></li>
+                <li><a href="#/contribute">Contribute</a></li>
+                <li><a href="#/installing">Installing</a></li>
+                <li><a href="#/download">Download</a></li>
+                <li><a href="#/contact">Contact</a></li>
             </ul>
-        </div>
-    </div>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+
 
     <div class="icons">
         <a target="_free-video-player-link" href="https://github.com/DaWoody/free-video-player"><i class="fa fa-github"></i></a>
@@ -70,16 +64,19 @@
 </div>
 
 <!-- Some angular scripts to provide support for this application -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular-resource.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular-route.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular-animate.min.js"></script>
-<script src="js/angularApp/dependencies/ui-bootstrap-1.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-resource.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-route.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular-animate.min.js"></script>
+<script src="js/angularApp/dependencies/ui-bootstrap-tpls-0.14.3.min.js"></script>
 <!-- Load the application -->
 <script src="js/angularApp/app.js"></script>
 <!-- Some Angular scripts for generating this angular application -->
+<script src="js/angularApp/controllers/main.controller.js"></script>
 <script src="js/angularApp/controllers/home.controller.js"></script>
 <script src="js/angularApp/controllers/about.controller.js"></script>
+<script src="js/angularApp/controllers/installing.controller.js"></script>
+<script src="js/angularApp/controllers/contribute.controller.js"></script>
 <script src="js/angularApp/controllers/download.controller.js"></script>
 <script src="js/angularApp/controllers/contact.controller.js"></script>
 <!-- The following scripts are used with Free Video Player -->

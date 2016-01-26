@@ -138,7 +138,7 @@ var freeVideoPlayerOptionalConfigurationObject = {
 
 ## API
 ***
-There are a number of pulic methods available from the instantiated free video player, most are methods regarding loading media or player control interactions.
+There are a number of public methods available from the instantiated free video player, most are methods regarding loading media or player control interactions.
 Lets list an example of how it could look:
 
 ```javascript

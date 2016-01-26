@@ -39,5 +39,4 @@ angular.module('freeVideoPlayerApp')
 
         //Lets start the video player by loading an example of Big Buck Bunny when the page is loaded
         videoPlayer.load('/assets/localNonAdaptiveStreams/big_buck_bunny.mp4');
-
     }]);

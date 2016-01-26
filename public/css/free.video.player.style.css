@@ -35,16 +35,31 @@ body {
 h1, h2, h3, h4, h5 {
   font-family: 'Conv_SinkinSans-700Bold'; }
 
+h4 {
+  margin-top: 20px; }
+
 .icons {
-  font-size: 24px;
-  text-align: center;
-  width: 150px;
+  font-size: 22px;
+  text-align: left;
+  width: 70px;
   height: 40px;
-  margin-top: -40px;
-  float: right; }
+  margin: -10px 0 0 15px;
+  float: left; }
 
 .header-wrapper {
   min-height: 50px; }
+
+.navbar-default {
+  background-color: transparent;
+  border: 1px solid rgba(75, 96, 108, 0.7);
+  border-top: 0px solid rgba(75, 96, 108, 0.7); }
+
+.navbar-toggle {
+  background: transparent;
+  border-radius: 5px;
+  border: 1px solid rgba(75, 96, 108, 0.7) !important; }
+  .navbar-toggle span {
+    color: #337AB7 !important; }
 
 .menu {
   border-bottom: 1px solid #f0ff9d; }
@@ -64,17 +79,18 @@ h1, h2, h3, h4, h5 {
   text-align: right; }
 
 .free-video-player-logo {
-  color: #337AB7;
-  line-height: 0.5em;
-  margin: 10px 0 0 10px;
-  text-shadow: 1px 1px 3px rgba(12, 16, 18, 0.7); }
+  color: #337AB7 !important;
+  line-height: 0.2em;
+  font-size: 2.3em;
+  margin: 0px 0 0 0px; }
   .free-video-player-logo a:hover, .free-video-player-logo a:active, .free-video-player-logo a:visited, .free-video-player-logo a:focus {
     text-shadow: 2px 2px 10px #f0ff9d;
     text-decoration: none; }
 
 .free-video-player-header {
   text-shadow: 1px 1px 3px rgba(75, 96, 108, 0.7);
-  color: #f0ff9d; }
+  color: #f0ff9d;
+  padding-top: 20px; }
 
 .video-bullet-list {
   display: block;

@@ -55,14 +55,18 @@ h1, h2, h3, h4, h5 {
   font-family: 'Conv_SinkinSans-700Bold';
 }
 
+h4 {
+  margin-top:20px;
+}
+
 //Icons
 .icons{
-  font-size:24px;
-  text-align:center;
-  width:150px;
+  font-size:22px;
+  text-align:left;
+  width:70px;
   height:40px;
-  margin-top:-40px;
-  float:right;
+  margin:-10px 0 0 15px;
+  float:left;
 }
 
 
@@ -70,6 +74,20 @@ h1, h2, h3, h4, h5 {
 .header-wrapper{
   min-height:50px;
 }
+.navbar-default {
+  background-color:transparent;
+  border:1px solid $player-controls-color;
+  border-top:0px solid $player-controls-color;
+}
+.navbar-toggle {
+  background: transparent;
+  border-radius:5px;
+  border: 1px solid $player-controls-color !important;
+  span {
+    color:$bootstrap-blue-color !important;
+  }
+}
+
 
 .menu {
   border-bottom:1px solid $header-color;
@@ -99,10 +117,10 @@ h1, h2, h3, h4, h5 {
 }
 
 .free-video-player-logo {
-  color: $bootstrap-blue-color;
-  line-height: 0.5em;
-  margin:10px 0 0 10px;
-  text-shadow: 1px 1px 3px $player-controls-shadow-color;
+  color: $bootstrap-blue-color !important;
+  line-height: 0.2em;
+  font-size:2.3em;
+  margin:0px 0 0 0px;
   a {
     &:hover,
     &:active,
@@ -117,6 +135,7 @@ h1, h2, h3, h4, h5 {
 .free-video-player-header {
   text-shadow: 1px 1px 3px $player-controls-color;
   color: $header-color;
+  padding-top:20px;
 }
 
 .video-bullet-list{
