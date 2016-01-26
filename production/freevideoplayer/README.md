@@ -216,6 +216,8 @@ Like for instance
 <title>Some title</title>
 <!-- Lets add the basic styling for the Free Video Player here, this can ofcourse be overwritten and changed based on your choice of styling -->
 <link rel="stylesheet" href="/css/free.video.player.style.css">
+<!-- This is the default stylesheet used for the icons, Font-Awesome, this could of course be altered and changed depending on how you configure the Free Video Player -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <!-- Lets add the source to the different free video player js files that are necessary for running the free video player -->
 <script src="/xml2.json.min.js"></script>
 <script src="/free.video.player.full.js"></script>
