@@ -8,16 +8,14 @@ angular.module('freeVideoPlayerApp')
             mpdurl:''
         };
 
-
         var configObject = {
             //Tested to just display play/pause button
             //        videoControlsDisplay: {
             //            showPlayPauseButton: true
             //        }
-        }
+        };
 
         var videoPlayer = freeVideoPlayer(configObject);
-
         $scope.form.playerVersion = videoPlayer.getVersion();
 
         $scope.load = function(){
@@ -27,7 +25,6 @@ angular.module('freeVideoPlayerApp')
             } else {
                 console.log('Did not provide a valid input to load method');
             }
-
         };
 
         var ulList = document.getElementById('asset-list'),
@@ -44,6 +41,6 @@ angular.module('freeVideoPlayerApp')
         }
 
         //Lets start the video player by loading an example of Big Buck Bunny when the page is loaded
-        videoPlayer.load('/test/localNonAdaptiveStreams/big_buck_bunny.mp4');
+        videoPlayer.load('/assets/localNonAdaptiveStreams/big_buck_bunny.mp4');
 
     }]);
