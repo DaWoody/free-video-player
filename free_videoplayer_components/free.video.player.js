@@ -53,7 +53,8 @@ var freeVideoPlayer = function(initiationObject){
                 displayControlClass: videoPlayerNameCss + '-controls-display',
                 hideVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-hide',
                 showVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-show',
-                videoOverlayIconClass: videoPlayerNameCss + '-controls-overlay-icon'
+                videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
+                videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon'
             },
             videoControlsDisplay: {
                 showPlayPauseButton: true,

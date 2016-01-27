@@ -17,7 +17,7 @@
   .free-video-player-container-style:hover .free-video-player-controls {
     opacity: 1; }
 
-.free-video-player-controls-overlay-icon {
+.free-video-player-controls-overlay-spinner-icon {
   display: inline-block;
   position: absolute;
   left: 0;
@@ -31,14 +31,31 @@
   -ms-transition: opacity  0.3s;
   -o-transition: opacity  0.3s;
   transition: opacity  0.3s; }
-  .free-video-player-controls-overlay-icon i {
+  .free-video-player-controls-overlay-spinner-icon i {
     font-size: 6em;
     display: block;
     margin: 22% 0;
     text-align: center; }
 
-.free-video-player-controls-overlay-show {
-  background: blue; }
+.free-video-player-controls-overlay-play-pause-icon {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  color: rgba(75, 96, 108, 0.7);
+  opacity: 1;
+  -webkit-transition: opacity 0.3s;
+  -moz-transition: opacity  0.3s;
+  -ms-transition: opacity  0.3s;
+  -o-transition: opacity  0.3s;
+  transition: opacity  0.3s; }
+  .free-video-player-controls-overlay-play-pause-icon i {
+    font-size: 6em;
+    display: block;
+    margin: 22% 0;
+    text-align: center; }
 
 .free-video-player-controls-overlay-hide {
   opacity: 0; }
@@ -322,7 +339,9 @@
       width: 110px;
       bottom: 60px;
       left: 315px; }
-  .free-video-player-controls-overlay-icon i {
+  .free-video-player-controls-overlay-play-pause-icon i {
+    font-size: 4em; }
+  .free-video-player-controls-overlay-spinner-icon i {
     font-size: 4em; } }
 
 @media all and (max-width: 450px) {
@@ -354,5 +373,7 @@
       width: 110px;
       bottom: 55px;
       left: 200px; }
-  .free-video-player-controls-overlay-icon i {
+  .free-video-player-controls-overlay-play-pause-icon i {
+    font-size: 2.5em; }
+  .free-video-player-controls-overlay-spinner-icon i {
     font-size: 2.5em; } }

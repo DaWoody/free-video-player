@@ -11,4 +11,19 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(){
     //Add stuff here and refactor so we gather adaptive streaming stuff in one module
 
     'use strict';
+
+    var that = {};
+
+    //Indicate that the returned object is a module
+    that._isModule = true;
+
+
+    //Create methods here
+
+
+    //Lets make the methods we need public
+
+
+    //Lets return our object
+    return that;
 };

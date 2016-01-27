@@ -13,18 +13,27 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
 
     'use strict';
 
-    var that = {
-        module:true
-    };
-
-    var moduleName = 'Messages',
+    /**
+     * @description Instantiate the variables we need when setting up this messages module
+     * @type {{}}
+     */
+    var that = {},
+        moduleName = 'Messages',
         moduleVersion = moduleVersion,
         freeVideoPlayerWebUrl = 'http://freevideoplayer.org',
         version = '0.9.0';
 
+    //Indicate that the returned object is a module
+    that._isModule = true;
+
     //  #########################
     //  #### MESSAGE METHODS ####
     //  #########################
+    /**
+     * @description A method that generates an error message on the console
+     * @param messageObject
+     * @param error
+     */
     function printOutErrorMessageToConsole(messageObject, error){
 
         var consoleMessage = '',
@@ -47,6 +56,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
         }
     };
 
+    /**
+     * @description A method that generates a message on the console
+     * @param messageObject
+     */
     function printOutMessageToConsole(messageObject){
 
         var consoleMessage = '',

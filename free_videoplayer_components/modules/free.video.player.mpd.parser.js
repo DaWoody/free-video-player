@@ -16,6 +16,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     //  ################################
     //  #### VARIABLE INSTANTIATION ####
     //  ################################
+    /**
+     * @description Instantiate the variables we need when setting up this mpdParser module
+     * @type {{}}
+     */
     var currentVideoObject = {},
         that = {},
         mpdParserVersion = '0.9.0',
@@ -25,6 +29,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
         },
         settingsObject = Object.assign({}, defaultObject, initiationObject),
         messagesModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, mpdParserVersion);
+
+    //Indicate that the returned object is a module
+    that._isModule = true;
 
 
     //  ############################

@@ -57,18 +57,27 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
 
     'use strict';
 
-    var that = {
-        module:true
-    };
-
-    var moduleName = 'Messages',
+    /**
+     * @description Instantiate the variables we need when setting up this messages module
+     * @type {{}}
+     */
+    var that = {},
+        moduleName = 'Messages',
         moduleVersion = moduleVersion,
         freeVideoPlayerWebUrl = 'http://freevideoplayer.org',
         version = '0.9.0';
 
+    //Indicate that the returned object is a module
+    that._isModule = true;
+
     //  #########################
     //  #### MESSAGE METHODS ####
     //  #########################
+    /**
+     * @description A method that generates an error message on the console
+     * @param messageObject
+     * @param error
+     */
     function printOutErrorMessageToConsole(messageObject, error){
 
         var consoleMessage = '',
@@ -91,6 +100,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
         }
     };
 
+    /**
+     * @description A method that generates a message on the console
+     * @param messageObject
+     */
     function printOutMessageToConsole(messageObject){
 
         var consoleMessage = '',
@@ -135,9 +148,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
  */
 //Add the video controls to the namespace
 freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObject, videoPlayerNameCss){
-
     'use strict';
 
+    /**
+     * @description Lets instantiate the different variables we will be needing when we start up this controls module
+     * @type {{}}
+     */
     var that = {},
         settingsObject = settingsObject,
         version = '0.9.0',
@@ -148,13 +164,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         videoPlayerNameCss = videoPlayerNameCss,
         messagesModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, version);
 
+    //Indicate that the returned object is a module
+    that._isModule = true;
+
     /**
      * @description This methods manipulates the DOM and creates object like subtitle tracks within the DOM
      * aswell as the rest of the control structure, like play/pause button, progress-slider, mute button, volume slider,
      * subtitle selector with sub-menu and fullscreen button
+     * @param {element} videoWrapper - The DOM element for the videoWrapper
+     * @param {element} currentVideoObject - The DOM video element
      * @public
      */
-    function createVideoControls(videoWrapper, currentVideoObject){
+    function _createVideoControls(videoWrapper, currentVideoObject){
 
         var videoWrapper = videoWrapper,
             currentControls = videoWrapper.getElementsByTagName('div')[0] || null,
@@ -188,7 +209,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             progressTimerContainer = document.createElement('div'),
             progressTimerCurrentTime = document.createElement('span'),
             progressTimerTotalDuration = document.createElement('span'),
-            videoOverlayIcon = document.createElement('div');
+            videoOverlayPlayPauseIcon = document.createElement('div'),
+            videoOverlaySpinnerIcon = document.createElement('div');
 
 
         //Adding the data to class scoped variable
@@ -202,7 +224,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoControlsObject.progressTimerContainer = progressTimerContainer;
         that.currentVideoControlsObject.progressTimerCurrentTime = progressTimerCurrentTime;
         that.currentVideoControlsObject.progressTimerTotalDuration = progressTimerTotalDuration;
-        that.currentVideoControlsObject.videoOverlayIcon = videoOverlayIcon;
+        that.currentVideoControlsObject.videoOverlayPlayPauseIcon = videoOverlayPlayPauseIcon;
+        that.currentVideoControlsObject.videoOverlaySpinnerIcon = videoOverlaySpinnerIcon;
         that.currentVideoControlsObject.controlsWrapper = controlsWrapper;
 
         //DO MORE STUFF WITH PROGRESS TIMER ETC
@@ -221,15 +244,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         subtitlesButton.setAttribute('class', settingsObject.videoControlsCssClasses.subtitlesContainerClass);
         fullScreenButton.setAttribute('class', settingsObject.videoControlsCssClasses.fullscreenContainerClass);
         progressTimerContainer.setAttribute('class', settingsObject.videoControlsCssClasses.progressTimerContainerClass);
-        videoOverlayIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlayIconClass);
+        videoOverlayPlayPauseIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlayPlayPauseIconClass);
+        videoOverlaySpinnerIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlaySpinnerIconClass);
 
-        //volumeSliderContainer.setAttribute('style', 'display:none;');
+        //Add some attributes to our sliders
         volumeSlider.setAttribute('type','range');
         volumeSlider.setAttribute('value', 100);
         volumeSlider.setAttribute('orient', 'vertical');
         progressSlider.setAttribute('type','range');
         progressSlider.setAttribute('value', 0);
 
+        //Add the data attribute to the different elements, maybe we should use this for selection in the future
         playButton.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'playpause');
         volumeIcon.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'mute');
         subtitlesButton.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'subtitles');
@@ -237,7 +262,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         progressTimerContainer.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'progress-timer');
         progressSlider.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'progress');
         volumeSlider.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'volume');
+        videoOverlayPlayPauseIcon.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'video-overlay-play-pause');
+        videoOverlaySpinnerIcon.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'video-overlay-spinner');
 
+
+        //Paint our DOM with the correct HTML
         playButton.innerHTML = settingsObject.videoControlsInnerHtml.playIconInnerHtml;
         volumeIcon.innerHTML = settingsObject.videoControlsInnerHtml.volumeHighIconInnerHtml;
         fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
@@ -248,7 +277,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //  #### ADD EVENT LISTENERS ####
         //  #############################
 
-        videoOverlayIcon.addEventListener('click', _playPauseMethod);
+        videoOverlayPlayPauseIcon.addEventListener('click', _playPauseMethod);
 
         playButton.addEventListener('click', _playPauseMethod);
         fullScreenButton.addEventListener('click', _fullScreenMethod);
@@ -313,19 +342,24 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             controlsWrapper.appendChild(fullScreenButton);
         }
 
-        videoWrapper.appendChild(videoOverlayIcon);
-
+        videoWrapper.appendChild(videoOverlaySpinnerIcon);
+        videoWrapper.appendChild(videoOverlayPlayPauseIcon);
         videoWrapper.appendChild(controlsWrapper);
 
         //Lets now also add keyboard events to
+        //the different buttons we want our player to interact with from the keyboard.
         _createKeyboardListeners();
-
-
+        _addSpinnerIconToVideoOverlay();
     };
 
     //  ##########################
     //  #### CONTROL METHODS ####
     //  ##########################
+    /**
+     * @description This method makes the video play or pause depending on its current state,
+     * will also paint out different states in the DOM both for the controls and the videoOverlay
+     * @private
+     */
     function _playPauseMethod(){
         if(!that.currentVideoObject.playing){
             that.videoElement.play();
@@ -341,14 +375,43 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
+    /**
+     * @description Adds a play icon to the controls
+     * @private
+     */
     function _addPlayIconToControls(){
         that.currentVideoControlsObject.playButton.innerHTML = settingsObject.videoControlsInnerHtml.playIconInnerHtml;
     };
 
+    /**
+     * @description Adds a pause icon to the controls
+     * @private
+     */
     function _addPauseIconToControls(){
         that.currentVideoControlsObject.playButton.innerHTML = settingsObject.videoControlsInnerHtml.pauseIconInnerHtml;
     };
 
+    /**
+     * @description Adds a spinner icon to the video overlay
+     * @private
+     */
+    function _addSpinnerIconToVideoOverlay(){
+        that.currentVideoControlsObject.videoOverlaySpinnerIcon.innerHTML = settingsObject.videoControlsInnerHtml.spinnerIconInnerHtml;
+    };
+
+    /**
+     * @description Removes the spinner icon from the video overlay
+     * @private
+     */
+    function _removeSpinnerIconFromVideoOverlay(){
+        that.currentVideoControlsObject.videoOverlaySpinnerIcon.innerHTML = '';
+    };
+
+    /**
+     * @description A method called when the progress slider is moved, if the current state of the videoElement
+     * is playing then the video should continue playing, otherwise the state should be stopped/paused.
+     * @private
+     */
     function _playMethodFromSlider(){
         if(that.currentVideoObject.playing){
             that.videoElement.play();
@@ -360,11 +423,19 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
+    /**
+     * @description A method to pause the videoElement, utilized as a sub-method when the slider is moved
+     * @private
+     */
     function _pauseMethodFromSlider(){
         that.videoElement.pause();
         _addPlayIconToControls();
     };
 
+    /**
+     * @desciption A method to shift the volume up and down
+     * @private
+     */
     function _volumeShiftMethod(){
         var newVolumeValue = 0;
         if(that.currentVideoControlsObject.volumeSlider.value >= that.currentVideoControlsObject.volumeHighStart){
@@ -384,6 +455,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoObject.volumeSliderContainer.style.visibility = 'hidden';
     };
 
+    /**
+     * @description A method to mute and unmute the volume for the videoElement aswell as modifying the position of the
+     * volume slider. Also if the volume is muted the last known volume value will be saved so the volume slider will
+     * return to this value once unmuted.
+     * @private
+     */
     function _volumeMuteUnmuteMethod(){
         if(that.currentVideoObject.muted){
             that.videoElement.volume = that.currentVideoObject.volumeBeforeMute;
@@ -412,6 +489,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
+    /**
+     * @description A method to shift to a new position within the videoElement, basically seeking to a new position and
+     * also updating the controls as we do this
+     * @private
+     */
     function _progressShiftMethod(){
         //First get the total value of the asset.
         var videoDurationInSeconds = that.currentVideoObject.mediaDurationInSeconds,
@@ -426,6 +508,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
     };
 
+    /**
+     * @description A method that can be called continuasly to update the progress bar of the current video position.
+     * @private
+     */
     function _progressUpdateMethod(){
         var videoDurationInSeconds = that.currentVideoObject.mediaDurationInSeconds,
             currentPosition = that.videoElement.currentTime,
@@ -435,19 +521,35 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             that.currentVideoControlsObject.progressSlider.value = progressInPercentage;
     };
 
+    /**
+     * @description A method that can be called to print the total media duration of an asset
+     * @private
+     */
     function _printMediaTotalDuration(){
         //Lets update the media total duration span
         that.currentVideoControlsObject.progressTimerTotalDuration.innerHTML = '/' + _returnHoursMinutesSecondsFromSeconds(that.currentVideoObject.mediaDurationInSeconds);
     };
 
+    /**
+     * @description A method will make the volume slider visible
+     * @private
+     */
     function _showVolumeSlider(){
         that.currentVideoControlsObject.volumeSliderContainer.style.visibility="visible";
     };
 
+    /**
+     * @description A method that will make the volume slider not visible
+     * @private
+     */
     function _hideVolumeSlider(){
         that.currentVideoControlsObject.volumeSliderContainer.style.visibility="hidden";
     };
 
+    /**
+     * @description A method that will enable full screen mode on the Free Video Player
+     * @private
+     */
     function _fullScreenMethod(){
         if (that.videoElement.requestFullscreen) {
             that.videoElement.requestFullscreen();
@@ -467,32 +569,54 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  ###############################
     //  #### VIDEO OVERLAY METHODS ####
     //  ###############################
+    /**
+     * @description A method that adds a play icon to the video overlay
+     * @private
+     */
     function _addPlayIconToVideoOverlay(){
-        _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
-        that.currentVideoControlsObject.videoOverlayIcon.innerHTML = settingsObject.videoControlsInnerHtml.playIconInnerHtml;
-        _addCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
+        _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
+        that.currentVideoControlsObject.videoOverlayPlayPauseIcon.innerHTML = settingsObject.videoControlsInnerHtml.playIconInnerHtml;
+        _addCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
     };
 
+    /**
+     * @description A method that adds a pause icon to the video overlay
+     * @private
+     */
     function _addPauseIconToVideoOverlay(){
-        _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
-        that.currentVideoControlsObject.videoOverlayIcon.innerHTML = settingsObject.videoControlsInnerHtml.pauseIconInnerHtml;
-        _addCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
+        _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
+        that.currentVideoControlsObject.videoOverlayPlayPauseIcon.innerHTML = settingsObject.videoControlsInnerHtml.pauseIconInnerHtml;
+        _addCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
     };
 
-    function addSpinnerIconToVideoOverlay(){
-        _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
-        that.currentVideoControlsObject.videoOverlayIcon.innerHTML = settingsObject.videoControlsInnerHtml.spinnerIconInnerHtml;
+    /**
+     * @description A method that adds a spinner icon to the video overlay
+     * @private
+     */
+    function _addSpinnerIconToVideoOverlay(){
+        _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
+        that.currentVideoControlsObject.videoOverlayPlayPauseIcon.innerHTML = settingsObject.videoControlsInnerHtml.spinnerIconInnerHtml;
     };
 
-    function removeSpinnerIconToVideoOverlay(){
-        _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
-        that.currentVideoControlsObject.videoOverlayIcon.innerHTML = settingsObject.videoControlsInnerHtml.spinnerIconInnerHtml;
-        _addCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
+    /**
+     * @description A method that removes the spinner icon from the video overlay
+     * @private
+     */
+    function _removeSpinnerIconToVideoOverlay(){
+        _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
+        that.currentVideoControlsObject.videoOverlayPlayPauseIcon.innerHTML = settingsObject.videoControlsInnerHtml.spinnerIconInnerHtml;
+        _addCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
     };
 
     //  #####################
     //  #### CSS METHODS ####
     //  #####################
+    /**
+     * @description A method that adds a css class to an an element
+     * @param element
+     * @param className
+     * @private
+     */
     function _addCssClassToElementAndReturn(element, className){
         var classString = element.getAttribute('class');
         classString = classString + ' ' + className;
@@ -509,10 +633,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
+    /**
+     * @description A method that removes a css class from an an element
+     * @param element
+     * @param className
+     * @private
+     */
     function _removeCssClassToElementAndReturn(element, className){
         var classString = element.getAttribute('class');
-        console.log('The className looking for..');
-        console.log(className);
         classString = classString.split(className);
         if(classString.length > 0){
             // If we found an instance of the className and split
@@ -520,18 +648,29 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             // we should now fetch the first instance
             classString = classString[0].trim();
         } else {
-            console.log('className is not here..');
-            console.log(className);
+            //Do nothing here since the class name is not here
         }
-        console.log('The new classString is ' + classString);
         element.setAttribute('class', classString);
     };
 
     //  #########################
     //  #### KEYBOARD EVENTS ####
     //  #########################
+    /**
+     * @description A method that aggregates the methods that will add keyboard eventListeners to the Free Video Player
+     * @private
+     */
     function _createKeyboardListeners(){
         //Add event listener for space button - play/pause
+        _createPlayPauseSpaceBarListener();
+        //Lets add more listeners here
+    };
+
+    /**
+     * @description A method that enables to play/pause from the keyboard spacebar.
+     * @private
+     */
+    function _createPlayPauseSpaceBarListener(){
         document.addEventListener('keypress', function(event){
             var code;
             if (event.keyCode) {
@@ -549,6 +688,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  ################################
     //  #### CALCULATE TIME METHODS ####
     //  ################################
+    /**
+     * @description A method that calculates and returns a Hours Minutes and Seconds string from Seconds
+     * @param seconds
+     * @returns {string}
+     * @private
+     */
     function _returnHoursMinutesSecondsFromSeconds(seconds){
         var returnHourMinutesSeconds = '0:00';
             try {
@@ -709,9 +854,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     //Make methods public
-    that.createVideoControls = createVideoControls;
-    that.addSpinnerIconToVideoOverlay = addSpinnerIconToVideoOverlay;
-    that.removeSpinnerIconToVideoOverlay = removeSpinnerIconToVideoOverlay;
+    that.createVideoControls = _createVideoControls;
+    that.addSpinnerIconToVideoOverlay = _addSpinnerIconToVideoOverlay;
+    that.removeSpinnerIconToVideoOverlay = _removeSpinnerIconToVideoOverlay;
     return that;
 };
 /**
@@ -732,6 +877,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     //  ################################
     //  #### VARIABLE INSTANTIATION ####
     //  ################################
+    /**
+     * @description Instantiate the variables we need when setting up this mpdParser module
+     * @type {{}}
+     */
     var currentVideoObject = {},
         that = {},
         mpdParserVersion = '0.9.0',
@@ -741,6 +890,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
         },
         settingsObject = Object.assign({}, defaultObject, initiationObject),
         messagesModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, mpdParserVersion);
+
+    //Indicate that the returned object is a module
+    that._isModule = true;
 
 
     //  ############################
@@ -1327,7 +1479,8 @@ var freeVideoPlayer = function(initiationObject){
                 displayControlClass: videoPlayerNameCss + '-controls-display',
                 hideVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-hide',
                 showVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-show',
-                videoOverlayIconClass: videoPlayerNameCss + '-controls-overlay-icon'
+                videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
+                videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon'
             },
             videoControlsDisplay: {
                 showPlayPauseButton: true,
@@ -2527,7 +2680,7 @@ var freeVideoPlayer = function(initiationObject){
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Wed Jan 27 2016 13:52:59 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Wed Jan 27 2016 17:22:06 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
