@@ -4,8 +4,10 @@
 ##Version information
 ***
 
-- version 0.9.0 - The first ALPHA release of Free Video Player. This release includes things as:
-    - Ability to play adaptive bitrated DASHed content, muxxed (audio/video) and separated content (audio and video)
+- version 0.9.0 - The first ALPHA release of Free Video Player. This release (should ;)) include things as:
+    - Ability to play adaptive bitrated DASHed content, muxxed (audio/video) and separated content (audio and video). The two first versions of DASH structures aimed to work are:
+        - urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264
+        - Another.. profile here.. (can't find it currently ;)).
     - Ability to play MP4, webm (not tested yet).
     - Creating video player controls with play/pause, progress-slider, progress-timer, volume-slider, subtitle(captions) and fullscreen functionality.
     - Utilizing the Media Source Extension module to make playback available with the player.
