@@ -322,7 +322,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Lets now also add keyboard events to
         //the different buttons we want our player to interact with from the keyboard.
         _createKeyboardListeners();
-        _addSpinnerIconToVideoOverlay();
     };
 
     //  ##########################
@@ -2000,7 +1999,6 @@ var freeVideoPlayer = function(initiationObject){
                     baseUrl = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
                     currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
                 }
-
             }
 
             if(timeDifferenceFromLastAppendedSegment >= highestValue){
@@ -2177,6 +2175,17 @@ var freeVideoPlayer = function(initiationObject){
             if(!isSubtitleTrack){
 
                 initializationFile = mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate);
+
+                sourceBuffer.addEventListener('updatestart', function(){
+                    console.log('Should start with update... sourceBuffer.updating should be true..' + sourceBuffer.updating);
+                    videoControlsModule.addSpinnerIconToVideoOverlay();
+                });
+
+                sourceBuffer.addEventListener('update', function(){
+                    console.log('Should be done with update... sourceBuffer.updating should be false..' + sourceBuffer.updating);
+                    videoControlsModule.removeSpinnerIconToVideoOverlay();
+                });
+
                 sourceBuffer.addEventListener('updateend', function() {
                     if(that._videoElement.error)
                         console.log(that._videoElement.error);

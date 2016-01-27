@@ -322,7 +322,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Lets now also add keyboard events to
         //the different buttons we want our player to interact with from the keyboard.
         _createKeyboardListeners();
-        _addSpinnerIconToVideoOverlay();
     };
 
     //  ##########################
