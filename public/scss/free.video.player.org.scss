@@ -9,6 +9,9 @@ $player-controls-shadow-color: darken($player-controls-color, 30%);
 $player-controls-background-color: rgba(176, 228, 255, 0.8);
 $header-color: #f0ff9d;
 $bootstrap-blue-color: #337AB7;
+$background-blue-color: #c0fbff;
+$grey-menu-color: #464646;
+$white-menu-color:#f0f0f0;
 
 $player-controls-progress-slider-width-large: 400px;
 $player-controls-progress-slider-width-medium: 260px;
@@ -38,11 +41,14 @@ $player-controls-button-width: 15px;
 
 //$subtitle-buttons-background
 body {
-  backround-image: url('../images/background-pattern.png');
-  background-color: $player-controls-background-color;
-  background-size: 10px 10px;
+  background-image: url(../images/free_video_player_org_background.png);
+  background-color: $background-blue-color;
+  background-size: cover;
   background-position: top left;
-  background-repeat: repeat;
+  background-repeat: no-repeat;
+  height:100%;
+  color:#333333;
+  text-shadow:1px 1px 1px $white-menu-color;
 }
 
 .video-page-wrapper {
@@ -75,15 +81,28 @@ h4 {
 }
 .navbar-default {
   background-color:transparent;
-  border:1px solid $player-controls-color;
+  border:1px solid $white-menu-color;
   border-top:0px solid $player-controls-color;
 }
 .navbar-toggle {
   background: transparent;
   border-radius:5px;
-  border: 1px solid $player-controls-color !important;
-  span {
-    color:$bootstrap-blue-color !important;
+  border: 1px solid $white-menu-color !important;
+}
+
+.navbar-default .navbar-nav>li>a {
+  color: $white-menu-color;
+  text-shadow: 1px 1px 2px $grey-menu-color;
+
+
+  &:visited {
+    color: #f0f0f0;
+    text-shadow: 1px 1px 2px $grey-menu-color;
+  }
+
+  &:hover{
+    color:$bootstrap-blue-color;
+    text-shadow: 1px 1px 2px $white-menu-color;
   }
 }
 

@@ -20,11 +20,14 @@
   font-weight: normal;
   font-style: normal; }
 body {
-  backround-image: url("../images/background-pattern.png");
-  background-color: rgba(176, 228, 255, 0.8);
-  background-size: 10px 10px;
+  background-image: url(../images/free_video_player_org_background.png);
+  background-color: #c0fbff;
+  background-size: cover;
   background-position: top left;
-  background-repeat: repeat; }
+  background-repeat: no-repeat;
+  height: 100%;
+  color: #333333;
+  text-shadow: 1px 1px 1px #f0f0f0; }
 
 .video-page-wrapper {
   margin-top: 10px; }
@@ -48,15 +51,23 @@ h4 {
 
 .navbar-default {
   background-color: transparent;
-  border: 1px solid rgba(75, 96, 108, 0.7);
+  border: 1px solid #f0f0f0;
   border-top: 0px solid rgba(75, 96, 108, 0.7); }
 
 .navbar-toggle {
   background: transparent;
   border-radius: 5px;
-  border: 1px solid rgba(75, 96, 108, 0.7) !important; }
-  .navbar-toggle span {
-    color: #337AB7 !important; }
+  border: 1px solid #f0f0f0 !important; }
+
+.navbar-default .navbar-nav > li > a {
+  color: #f0f0f0;
+  text-shadow: 1px 1px 2px #464646; }
+  .navbar-default .navbar-nav > li > a:visited {
+    color: #f0f0f0;
+    text-shadow: 1px 1px 2px #464646; }
+  .navbar-default .navbar-nav > li > a:hover {
+    color: #337AB7;
+    text-shadow: 1px 1px 2px #f0f0f0; }
 
 .menu {
   border-bottom: 1px solid #f0ff9d; }
