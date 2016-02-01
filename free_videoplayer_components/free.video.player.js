@@ -35,6 +35,7 @@ var freeVideoPlayer = function(initiationObject){
                 fullscreenExpandIconInnerHtml:'<i class="fa fa-expand"></i>',
                 fullscreenCompressIconInnerHtml:'<i class="fa fa-compress"></i>',
                 spinnerIconInnerHtml: '<i class="fa fa-spinner fa-spin"></i>',
+                settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
                 subtitlesMenuInnerHtml:'CC',
                 subtitlesMenuOffButtonInnerHtml:'Off'
             },
@@ -53,15 +54,17 @@ var freeVideoPlayer = function(initiationObject){
                 displayControlClass: videoPlayerNameCss + '-controls-display',
                 hideVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-hide',
                 showVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-show',
+                settingsIconClass: videoPlayerNameCss + '-controls-settings',
                 videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
                 videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon'
             },
             videoControlsDisplay: {
                 showPlayPauseButton: true,
                 showProgressSlider: true,
-                showVolumeIcon:true,
+                showVolumeIcon: true,
                 showVolumeSlider: true,
                 showSubtitlesMenu: true,
+                showSettingsIcon: true,
                 showFullScreenButton: true
             },
             videoControlsVolumeTresholdValues: {
@@ -321,10 +324,12 @@ var freeVideoPlayer = function(initiationObject){
 
 
 
+
+
+
     //  #################################
     //  #### ADAPTIVE STREAM METHODS ####
     //  #################################
-
 
     var _adaptiveStreamGetAverageSegmentDuration = function(){
 
@@ -509,6 +514,35 @@ var freeVideoPlayer = function(initiationObject){
     //}
 
 
+    var _selectBitrateFromVideoControls = function(bitrateIndex){
+
+    };
+
+
+    /**
+     * @description A bitrate method, that generates an array of bitrateObjects which includes name and bitrate for
+     * each representationSet, this can be used to select a bitrate the user wants to see.
+     * @private
+     */
+    var _generateArrayOfBitratesFromArrayOfRepresentationSets = function(arrayOfRepresentationSets){
+
+        var arrayOfBitrateObjects = [];
+        try {
+            //Lets do some stuff here
+
+
+
+        } catch(e){
+            var messageObject = {};
+                messageObject.message = 'Could not generate an array of bitrateObjects from the array of representationSets, check input';
+                messageObject.methodName = '_generateArrayOfBitratesFromArrayOfRepresentationSets';
+                messageObject.moduleName = moduleName;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return arrayOfBitrateObjects;
+    };
+
+
     /**
      * @description This method takes the baseUrlObjectsArray and then parses through that to find
      * out which bitrate should be used
@@ -644,7 +678,6 @@ var freeVideoPlayer = function(initiationObject){
         console.log(representationSets);
 
         //lets set a start number so we actually do not currently add more than just one video and audio buffer
-
         adaptionSets.forEach(function(currentAdaptionSet, index, adaptionSetArray){
 
             var startRepresentationIndex = 0,
@@ -785,7 +818,7 @@ var freeVideoPlayer = function(initiationObject){
 
                 sourceBuffer.addEventListener('update', function(){
                     console.log('Should be done with update... sourceBuffer.updating should be false..' + sourceBuffer.updating);
-                    videoControlsModule.removeSpinnerIconToVideoOverlay();
+                    videoControlsModule.removeSpinnerIconFromVideoOverlay();
                 });
 
                 sourceBuffer.addEventListener('updateend', function() {
@@ -1164,7 +1197,6 @@ var freeVideoPlayer = function(initiationObject){
         //Lets clear all timestamps for the next stream
         currentVideoObject.adaptiveStreamBitrateObjectMap.clear();
     };
-
 
     //  ############################
     //  #### INITIATION METHODS ####

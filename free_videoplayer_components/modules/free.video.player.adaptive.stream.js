@@ -17,11 +17,15 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(){
     //Indicate that the returned object is a module
     that._isModule = true;
 
-
     //Create methods here
+    //Some methods we will be using for the player here. We will write them like the way we do. Just the way it should be.
+    //Awesomeness.
+
 
 
     //Lets make the methods we need public
+
+
 
 
     //Lets return our object

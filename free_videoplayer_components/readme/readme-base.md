@@ -89,8 +89,11 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     novolumeIconInnerHtml:'<i class="fa fa-volume-off"></i>',
                     fullscreenExpandIconInnerHtml:'<i class="fa fa-expand"></i>',
                     fullscreenCompressIconInnerHtml:'<i class="fa fa-compress"></i>',
+                    spinnerIconInnerHtml: '<i class="fa fa-spinner fa-spin"></i>',
+                    settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
                     subtitlesMenuInnerHtml:'CC',
-                    subtitlesMenuOffButtonInnerHtml:'Off'
+                    subtitlesMenuOffButtonInnerHtml:'Off',
+                    
                 },
                 //This object shows the different css classes that are being applied to the different video control
                 //elements, and as described above if you want to customize one property all need to be changed or modified
@@ -105,7 +108,10 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     volumeContainerClass: 'free-video-player-controls-volume',
                     fullscreenContainerClass: 'free-video-player-controls-fullscreen',
                     subtitlesMenuClass: 'free-video-player-controls-subtitles-menu',
-                    subtitleButtonClass: 'free-video-player-controls-subtitles-button'
+                    subtitleButtonClass: 'free-video-player-controls-subtitles-button',
+                    settingsIconClass: 'free-video-player-controls-settings',
+                    videoOverlayPlayPauseIconClass: 'free-video-player-controls-overlay-play-pause-icon',
+                    videoOverlaySpinnerIconClass: 'free-video-player-controls-overlay-spinner-icon'
                 },
                 //These sub properties decides which of the video controls that should be generated to the DOM,
                 //same procedure as the above properties, if one is changed all need to be added to not make them "undefined"
@@ -115,6 +121,7 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     showProgressSlider: true,
                     showVolumeIcon:true,
                     showVolumeSlider: true,
+                    showSettingsIcon: true,
                     showSubtitlesMenu: true,
                     showFullScreenButton: true
                 },

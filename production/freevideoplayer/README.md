@@ -4,12 +4,12 @@
 ##Version information
 ***
 
-- version 0.9.0 - The first ALPHA release of Free Video Player. This release (should ;)) include things as:
+- version 0.9.0 - (COMING SOON) The first ALPHA release of Free Video Player. This release include things as:
     - Ability to play adaptive bitrated DASHed content, muxxed (audio/video) and separated content (audio and video). The two first versions of DASH structures aimed to work are:
         - urn:mpeg:dash:profile:isoff-live:2011,http://dashif.org/guidelines/dash264
         - Another.. profile here.. (can't find it currently ;)).
-    - Ability to play MP4, webm (not tested yet).
-    - Creating video player controls with play/pause, progress-slider, progress-timer, volume-slider, subtitle(captions) and fullscreen functionality.
+    - Ability to play MP4, webm.
+    - Creating video player controls with play/pause, progress-slider, progress-timer, volume-slider, subtitle(captions), settings-button(with possibility to change quality) and fullscreen functionality.
     - Utilizing the Media Source Extension module to make playback available with the player.
     - Styling video control structure, with information on which video controls to paint to the DOM, the inner html of 
  the video control element and the corresponding css class (for styling).
@@ -105,8 +105,11 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     novolumeIconInnerHtml:'<i class="fa fa-volume-off"></i>',
                     fullscreenExpandIconInnerHtml:'<i class="fa fa-expand"></i>',
                     fullscreenCompressIconInnerHtml:'<i class="fa fa-compress"></i>',
+                    spinnerIconInnerHtml: '<i class="fa fa-spinner fa-spin"></i>',
+                    settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
                     subtitlesMenuInnerHtml:'CC',
-                    subtitlesMenuOffButtonInnerHtml:'Off'
+                    subtitlesMenuOffButtonInnerHtml:'Off',
+                    
                 },
                 //This object shows the different css classes that are being applied to the different video control
                 //elements, and as described above if you want to customize one property all need to be changed or modified
@@ -121,7 +124,10 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     volumeContainerClass: 'free-video-player-controls-volume',
                     fullscreenContainerClass: 'free-video-player-controls-fullscreen',
                     subtitlesMenuClass: 'free-video-player-controls-subtitles-menu',
-                    subtitleButtonClass: 'free-video-player-controls-subtitles-button'
+                    subtitleButtonClass: 'free-video-player-controls-subtitles-button',
+                    settingsIconClass: 'free-video-player-controls-settings',
+                    videoOverlayPlayPauseIconClass: 'free-video-player-controls-overlay-play-pause-icon',
+                    videoOverlaySpinnerIconClass: 'free-video-player-controls-overlay-spinner-icon'
                 },
                 //These sub properties decides which of the video controls that should be generated to the DOM,
                 //same procedure as the above properties, if one is changed all need to be added to not make them "undefined"
@@ -131,6 +137,7 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     showProgressSlider: true,
                     showVolumeIcon:true,
                     showVolumeSlider: true,
+                    showSettingsIcon: true,
                     showSubtitlesMenu: true,
                     showFullScreenButton: true
                 },

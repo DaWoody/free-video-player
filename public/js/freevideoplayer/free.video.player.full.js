@@ -169,7 +169,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
         //Lets remove the older controls div before adding the new one
         if(currentControls){
+            //Remove old control structure
             videoWrapper.removeChild(currentControls);
+            //Remove old keyboard listeners
+            _removeKeyboardListeners();
         }
 
         var playButton = document.createElement('div'),
@@ -183,7 +186,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             progressTimerCurrentTime = document.createElement('span'),
             progressTimerTotalDuration = document.createElement('span'),
             videoOverlayPlayPauseIcon = document.createElement('div'),
-            videoOverlaySpinnerIcon = document.createElement('div');
+            videoOverlaySpinnerIcon = document.createElement('div'),
+            settingsIcon = document.createElement('div');
 
 
         //Adding the data to class scoped variable
@@ -200,6 +204,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoControlsObject.videoOverlayPlayPauseIcon = videoOverlayPlayPauseIcon;
         that.currentVideoControlsObject.videoOverlaySpinnerIcon = videoOverlaySpinnerIcon;
         that.currentVideoControlsObject.controlsWrapper = controlsWrapper;
+        that.currentVideoControlsObject.settingsIcon = settingsIcon;
 
         //DO MORE STUFF WITH PROGRESS TIMER ETC
         //LETS UPDATE THIS ON THE FLY AS THE VIDEO PROGRESSES!
@@ -219,6 +224,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         progressTimerContainer.setAttribute('class', settingsObject.videoControlsCssClasses.progressTimerContainerClass);
         videoOverlayPlayPauseIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlayPlayPauseIconClass);
         videoOverlaySpinnerIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlaySpinnerIconClass);
+        settingsIcon.setAttribute('class', settingsObject.videoControlsCssClasses.settingsIconClass);
 
         //Add some attributes to our sliders
         volumeSlider.setAttribute('type','range');
@@ -237,13 +243,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         volumeSlider.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'volume');
         videoOverlayPlayPauseIcon.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'video-overlay-play-pause');
         videoOverlaySpinnerIcon.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'video-overlay-spinner');
-
+        settingsIcon.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'settings');
 
         //Paint our DOM with the correct HTML
         playButton.innerHTML = settingsObject.videoControlsInnerHtml.playIconInnerHtml;
         volumeIcon.innerHTML = settingsObject.videoControlsInnerHtml.volumeHighIconInnerHtml;
         fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
         subtitlesButton.innerHTML = settingsObject.videoControlsInnerHtml.subtitlesMenuInnerHtml;
+        settingsIcon.innerHTML = settingsObject.videoControlsInnerHtml.settingsIconInnerHtml;
         progressTimerCurrentTime.innerHTML = '0:00';
 
         //  #############################
@@ -269,6 +276,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         volumeSliderContainer.addEventListener('mouseout', _hideVolumeSlider);
 
         volumeSlider.addEventListener('change', _volumeShiftMethod);
+
+        settingsIcon.addEventListener('click', _changeSettings);
 
         //Lets add event listeners to the video element so we can update the progress bar when we need it
         videoElement.addEventListener('loadedmetadata', _printMediaTotalDuration);
@@ -311,6 +320,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             controlsWrapper.appendChild(subtitlesButton);
             controlsWrapper.appendChild(subtitlesMenu);
         }
+
+        if(settingsObject.videoControlsDisplay.showSettingsIcon){
+            controlsWrapper.appendChild(settingsIcon);
+        }
+
         if(settingsObject.videoControlsDisplay.showFullScreenButton){
             controlsWrapper.appendChild(fullScreenButton);
         }
@@ -401,6 +415,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function _pauseMethodFromSlider(){
         that.videoElement.pause();
+        //that.currentVideoObject.playing = false;
         _addPlayIconToControls();
     };
 
@@ -477,7 +492,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         if(!that.currentVideoObject.playing){
             _pauseMethodFromSlider();
         }
-
     };
 
     /**
@@ -516,6 +530,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function _hideVolumeSlider(){
         that.currentVideoControlsObject.volumeSliderContainer.style.visibility="hidden";
+    };
+
+    /**
+     * @description A method that will make changes to the settings easy :).
+     * @private
+     */
+    function _changeSettings(){
+      console.log('Ok clicked the setting sbuttons');
     };
 
     /**
@@ -574,7 +596,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @description A method that removes the spinner icon from the video overlay
      * @private
      */
-    function _removeSpinnerIconToVideoOverlay(){
+    function _removeSpinnerIconFromVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
         that.currentVideoControlsObject.videoOverlayPlayPauseIcon.innerHTML = settingsObject.videoControlsInnerHtml.spinnerIconInnerHtml;
         _addCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
@@ -638,24 +660,59 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Lets add more listeners here
     };
 
+
+    /**
+     * @description An overall method to remove eventListeners connected to the keyboard, if say a previous asset was loaded and
+     * a new one is loaded.
+     * @private
+     */
+    function _removeKeyboardListeners(){
+        //Remove space bar key listener
+      _removePlayPauseSpaceBarListener();
+    };
+
     /**
      * @description A method that enables to play/pause from the keyboard spacebar.
      * @private
      */
     function _createPlayPauseSpaceBarListener(){
-        document.addEventListener('keypress', function(event){
-            var code;
-            if (event.keyCode) {
-                code = event.keyCode;
-            } else if (event.which) {
-                code = event.which;
-            }
-            if (code === 32 || code === 0) {
-                event.preventDefault();
-                _playPauseMethod();
-            }
-        });
+        document.addEventListener('keypress', _spaceBarKeyPress);
     };
+
+    /**
+     * @description The actual method that catches the event from the spacebar button
+     * @param event
+     * @private
+     */
+    function _spaceBarKeyPress(event){
+        var code;
+        if (event.keyCode) {
+            code = event.keyCode;
+        } else if (event.which) {
+            code = event.which;
+        }
+        if (code === 32 || code === 0) {
+            event.preventDefault();
+            _playPauseMethod();
+        }
+    };
+
+    /**
+     * @description The method that removes the play/pause button from the spacebar.
+     * @private
+     */
+    function _removePlayPauseSpaceBarListener(){
+        try {
+            document.removeEventListener('keypress', _spaceBarKeyPress);
+        } catch(e){
+            var messageObject = {};
+                messageObject.message = 'Could not remove play/pause spacebar eventlistener';
+                messageObject.methodName = '_removePlayPauseSpaceBarListener';
+                messageObject.moduleName = moduleName;
+            messagesModule.printOutMessageToConsole(messageObject);
+        }
+    };
+
 
     //  ################################
     //  #### CALCULATE TIME METHODS ####
@@ -702,6 +759,63 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             }
         return returnHourMinutesSeconds;
     };
+
+
+
+    //  ################################
+    //  #### BITRATE METHODS / DOM ####
+    //  ################################
+    /**
+     * @description Creates a bitrate menu and returns that menu
+     * @private
+     * @param bitrateObject
+     * @returns {*}
+     */
+    function _createBitrateMenuAndReturnMenu(bitrateObject){
+        var bitrateMenu = null,
+            documentFragment,
+            createBitrateMenuItemConfigObject = {};
+        try {
+
+            if (videoElement.textTracks.length > 0) {
+                bitrateMenu = document.createElement('div');
+                bitrateMenu.innerHTML = settingsObject.videoControlsInnerHtml.bitrateMenuInnerHtml;
+                documentFragment = document.createDocumentFragment();
+                bitrateMenu = documentFragment.appendChild(document.createElement('ul'));
+                bitrateMenu.className =  settingsObject.videoControlsCssClasses.bitrateMenuClass;
+                that.currentVideoObject.bitrateMenu = bitrateMenu;
+                //subtitlesMenu.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'subtitles-menu');
+
+                //Since we are setting the language to a value here, this subtitle button will appear
+                //as a choice in the menu, with label name set to the subtitlesMenuOffButtonInnerHtml,
+                //and this button will act as a deactivator of subtitles
+                createBitrateMenuItemConfigObject = {
+                    bitrateName: 'auto',
+                    bitrateIndex: 0,
+                };
+
+                bitrateMenu.appendChild(_createBitrateMenuItem(createBitrateMenuItemConfigObject));
+
+                for (var i = 0; i < bitrateObject.length; i++) {
+
+                    var createBitrateMenuItemConfigObject = {
+                        bitrateName: bitrateObject[i].bitrateName,
+                        bitrateIndex: bitrateObject[i].bitrateIndex
+                    };
+                    bitrateMenu.appendChild(_createBitrateMenuItem(createBitrateMenuItemConfigObject));
+                }
+            }
+        } catch(e){
+
+            var messageObject = {};
+            messageObject.message = 'Could not create a bitrate menu and return the menu';
+            messageObject.methodName = '_createBitrateMenuAndReturnMenu';
+            messageObject.moduleName = moduleName;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return bitrateMenu;
+    };
+
 
 
     //  ################################
@@ -828,7 +942,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //Make methods public
     that.createVideoControls = _createVideoControls;
     that.addSpinnerIconToVideoOverlay = _addSpinnerIconToVideoOverlay;
-    that.removeSpinnerIconToVideoOverlay = _removeSpinnerIconToVideoOverlay;
+    that.removeSpinnerIconFromVideoOverlay = _removeSpinnerIconFromVideoOverlay;
     return that;
 };
 /**
@@ -1433,6 +1547,7 @@ var freeVideoPlayer = function(initiationObject){
                 fullscreenExpandIconInnerHtml:'<i class="fa fa-expand"></i>',
                 fullscreenCompressIconInnerHtml:'<i class="fa fa-compress"></i>',
                 spinnerIconInnerHtml: '<i class="fa fa-spinner fa-spin"></i>',
+                settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
                 subtitlesMenuInnerHtml:'CC',
                 subtitlesMenuOffButtonInnerHtml:'Off'
             },
@@ -1451,15 +1566,17 @@ var freeVideoPlayer = function(initiationObject){
                 displayControlClass: videoPlayerNameCss + '-controls-display',
                 hideVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-hide',
                 showVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-show',
+                settingsIconClass: videoPlayerNameCss + '-controls-settings',
                 videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
                 videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon'
             },
             videoControlsDisplay: {
                 showPlayPauseButton: true,
                 showProgressSlider: true,
-                showVolumeIcon:true,
+                showVolumeIcon: true,
                 showVolumeSlider: true,
                 showSubtitlesMenu: true,
+                showSettingsIcon: true,
                 showFullScreenButton: true
             },
             videoControlsVolumeTresholdValues: {
@@ -1719,10 +1836,12 @@ var freeVideoPlayer = function(initiationObject){
 
 
 
+
+
+
     //  #################################
     //  #### ADAPTIVE STREAM METHODS ####
     //  #################################
-
 
     var _adaptiveStreamGetAverageSegmentDuration = function(){
 
@@ -1907,6 +2026,35 @@ var freeVideoPlayer = function(initiationObject){
     //}
 
 
+    var _selectBitrateFromVideoControls = function(bitrateIndex){
+
+    };
+
+
+    /**
+     * @description A bitrate method, that generates an array of bitrateObjects which includes name and bitrate for
+     * each representationSet, this can be used to select a bitrate the user wants to see.
+     * @private
+     */
+    var _generateArrayOfBitratesFromArrayOfRepresentationSets = function(arrayOfRepresentationSets){
+
+        var arrayOfBitrateObjects = [];
+        try {
+            //Lets do some stuff here
+
+
+
+        } catch(e){
+            var messageObject = {};
+                messageObject.message = 'Could not generate an array of bitrateObjects from the array of representationSets, check input';
+                messageObject.methodName = '_generateArrayOfBitratesFromArrayOfRepresentationSets';
+                messageObject.moduleName = moduleName;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return arrayOfBitrateObjects;
+    };
+
+
     /**
      * @description This method takes the baseUrlObjectsArray and then parses through that to find
      * out which bitrate should be used
@@ -2042,7 +2190,6 @@ var freeVideoPlayer = function(initiationObject){
         console.log(representationSets);
 
         //lets set a start number so we actually do not currently add more than just one video and audio buffer
-
         adaptionSets.forEach(function(currentAdaptionSet, index, adaptionSetArray){
 
             var startRepresentationIndex = 0,
@@ -2183,7 +2330,7 @@ var freeVideoPlayer = function(initiationObject){
 
                 sourceBuffer.addEventListener('update', function(){
                     console.log('Should be done with update... sourceBuffer.updating should be false..' + sourceBuffer.updating);
-                    videoControlsModule.removeSpinnerIconToVideoOverlay();
+                    videoControlsModule.removeSpinnerIconFromVideoOverlay();
                 });
 
                 sourceBuffer.addEventListener('updateend', function() {
@@ -2562,7 +2709,6 @@ var freeVideoPlayer = function(initiationObject){
         //Lets clear all timestamps for the next stream
         currentVideoObject.adaptiveStreamBitrateObjectMap.clear();
     };
-
 
     //  ############################
     //  #### INITIATION METHODS ####
