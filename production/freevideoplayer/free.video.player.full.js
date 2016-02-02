@@ -219,6 +219,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         playButton.setAttribute('class', settingsObject.videoControlsCssClasses.playpauseContainerClass);
         progressSlider.setAttribute('class', settingsObject.videoControlsCssClasses.progressbarContainerClass);
         volumeSliderContainer.setAttribute('class', settingsObject.videoControlsCssClasses.volumeContainerClass);
+        volumeIcon.setAttribute('class', settingsObject.videoControlsCssClasses.volumeIconClass)
         subtitlesButton.setAttribute('class', settingsObject.videoControlsCssClasses.subtitlesContainerClass);
         fullScreenButton.setAttribute('class', settingsObject.videoControlsCssClasses.fullscreenContainerClass);
         progressTimerContainer.setAttribute('class', settingsObject.videoControlsCssClasses.progressTimerContainerClass);
@@ -300,15 +301,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         volumeSliderContainer.appendChild(volumeSlider);
         currentVideoObject.volumeSliderContainer = volumeSliderContainer;
 
+
+        //LETS ALSO ADD VERIFICATION FOR LIVE ASSETS HERE, IF LIVE WE SHOULD NOT DISPLAY PROGRESS BAR
+        if(settingsObject.videoControlsDisplay.showProgressSlider) {
+            //Adds both the progress bar and the progress timer container showing current time and the medias
+            controlsWrapper.appendChild(progressSlider);
+        }
+
         if(settingsObject.videoControlsDisplay.showPlayPauseButton){
             controlsWrapper.appendChild(playButton);
         }
-        if(settingsObject.videoControlsDisplay.showProgressSlider){
-            //Adds both the progress bar and the progress timer container showing current time and the medias
-            //total duration
-            controlsWrapper.appendChild(progressSlider);
-            controlsWrapper.appendChild(progressTimerContainer);
-        }
+
         if(settingsObject.videoControlsDisplay.showVolumeIcon){
             volumeIcon.appendChild(volumeSliderContainer);
             controlsWrapper.appendChild(volumeIcon);
@@ -325,6 +328,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             controlsWrapper.appendChild(settingsIcon);
         }
 
+        if(settingsObject.videoControlsDisplay.showTimer){
+            controlsWrapper.appendChild(progressTimerContainer);
+        }
+
         if(settingsObject.videoControlsDisplay.showFullScreenButton){
             controlsWrapper.appendChild(fullScreenButton);
         }
@@ -336,6 +343,28 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Lets now also add keyboard events to
         //the different buttons we want our player to interact with from the keyboard.
         _createKeyboardListeners();
+    };
+
+    /**
+     * @description A method that in turn will modify the settingsMenu on videoControls to correspond
+     * to different choices the user has to decide which quality the video should be streamed at.
+     * @param typeOfStream
+     * @param bitrateObjectsArray
+     * @private
+     */
+    function _addBitrateMenuToSettingsIcon(typeOfStream, bitrateObjectsArray){
+        console.log('Reached the bitrate object method on video controls module');
+        console.log('The stream is..' + typeOfStream);
+        if(typeOfStream !== 'audio'){
+            //Lets print out the bitrateObjectArray and modify the menu
+            console.log(bitrateObjectsArray);
+            console.log('Should be video or videoAndAudio stream now');
+
+            var bitrateMenu = document.createElement('div');
+            bitrateMenu.setAttribute('class','free-video-player-controls-settings-menu');
+
+            that.currentVideoControlsObject.settingsIcon.appendChild(bitrateMenu);
+        }
     };
 
     //  ##########################
@@ -680,6 +709,22 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
+     * @description The method that removes the play/pause button from the spacebar.
+     * @private
+     */
+    function _removePlayPauseSpaceBarListener(){
+        try {
+            document.removeEventListener('keypress', _spaceBarKeyPress);
+        } catch(e){
+            var messageObject = {};
+                messageObject.message = 'Could not remove play/pause spacebar eventlistener';
+                messageObject.methodName = '_removePlayPauseSpaceBarListener';
+                messageObject.moduleName = moduleName;
+            messagesModule.printOutMessageToConsole(messageObject);
+        }
+    };
+
+    /**
      * @description The actual method that catches the event from the spacebar button
      * @param event
      * @private
@@ -694,22 +739,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         if (code === 32 || code === 0) {
             event.preventDefault();
             _playPauseMethod();
-        }
-    };
-
-    /**
-     * @description The method that removes the play/pause button from the spacebar.
-     * @private
-     */
-    function _removePlayPauseSpaceBarListener(){
-        try {
-            document.removeEventListener('keypress', _spaceBarKeyPress);
-        } catch(e){
-            var messageObject = {};
-                messageObject.message = 'Could not remove play/pause spacebar eventlistener';
-                messageObject.methodName = '_removePlayPauseSpaceBarListener';
-                messageObject.moduleName = moduleName;
-            messagesModule.printOutMessageToConsole(messageObject);
         }
     };
 
@@ -759,7 +788,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             }
         return returnHourMinutesSeconds;
     };
-
 
 
     //  ################################
@@ -941,8 +969,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
     //Make methods public
     that.createVideoControls = _createVideoControls;
+    //Spinner methods
     that.addSpinnerIconToVideoOverlay = _addSpinnerIconToVideoOverlay;
     that.removeSpinnerIconFromVideoOverlay = _removeSpinnerIconFromVideoOverlay;
+    //Bitrate method, used by adaptive streaming module/player
+    that.addBitrateMenuToSettingsIcon = _addBitrateMenuToSettingsIcon;
+    //Return our object
     return that;
 };
 /**
@@ -1559,6 +1591,7 @@ var freeVideoPlayer = function(initiationObject){
                 progressbarContainerClass: videoPlayerNameCss + '-controls-progress',
                 progressTimerContainerClass: videoPlayerNameCss + '-controls-progress-timer',
                 volumeContainerClass: videoPlayerNameCss + '-controls-volume',
+                volumeIconClass: videoPlayerNameCss + '-controls-volume-icon',
                 fullscreenContainerClass: videoPlayerNameCss + '-controls-fullscreen',
                 subtitlesMenuClass: videoPlayerNameCss + '-controls-subtitles-menu',
                 subtitleButtonClass: videoPlayerNameCss + '-controls-subtitles-button',
@@ -1577,6 +1610,7 @@ var freeVideoPlayer = function(initiationObject){
                 showVolumeSlider: true,
                 showSubtitlesMenu: true,
                 showSettingsIcon: true,
+                showTimer: true,
                 showFullScreenButton: true
             },
             videoControlsVolumeTresholdValues: {
@@ -2323,6 +2357,14 @@ var freeVideoPlayer = function(initiationObject){
 
                 initializationFile = mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate);
 
+                var bitrateSettingObject = {};
+                    bitrateSettingObject.baseUrlObjectArray = baseUrlObjectArray;
+                    bitrateSettingObject.typeOfStream = typeOfStream;
+
+                //Lets try updating our videoControls
+                _updateVideoControlsWithBitrateSettings(bitrateSettingObject);
+
+                //These two following should probably be rewritten and changed
                 sourceBuffer.addEventListener('updatestart', function(){
                     console.log('Should start with update... sourceBuffer.updating should be true..' + sourceBuffer.updating);
                     videoControlsModule.addSpinnerIconToVideoOverlay();
@@ -2333,6 +2375,7 @@ var freeVideoPlayer = function(initiationObject){
                     videoControlsModule.removeSpinnerIconFromVideoOverlay();
                 });
 
+                //When we are done updating
                 sourceBuffer.addEventListener('updateend', function() {
                     if(that._videoElement.error)
                         console.log(that._videoElement.error);
@@ -2388,6 +2431,23 @@ var freeVideoPlayer = function(initiationObject){
         //    setMediaSourceDuration(arrayOfSourceBuffers);
         //}, 2000);
     };
+
+
+    /**
+     * @description A method that first verifies that the videoControlsModule is in use, then tries to contact
+     * the module by accessing a public method that generates
+     * @param bitrateSettingsObject
+     * @private
+     */
+    var _updateVideoControlsWithBitrateSettings = function(bitrateSettingsObject){
+        var typeOfStream = bitrateSettingsObject.typeOfStream,
+            baseUrlObjectArray = bitrateSettingsObject.baseUrlObjectArray;
+        //If the videoControlsModule is defined
+        if(videoControlsModule){
+            videoControlsModule.addBitrateMenuToSettingsIcon(typeOfStream, baseUrlObjectArray);
+        }
+    };
+
 
     /**
      * @description This method checks the buffers

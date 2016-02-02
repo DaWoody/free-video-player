@@ -63,13 +63,13 @@
 .free-video-player-controls {
   position: absolute;
   width: 100%;
-  height: 40px;
+  height: 50px;
   display: inline-block;
   opacity: 0;
   left: 0;
   bottom: 0;
-  color: rgba(75, 96, 108, 0.7);
-  background: rgba(176, 228, 255, 0.8);
+  color: rgba(176, 228, 255, 0.8);
+  text-shadow: none;
   margin: 0;
   -webkit-transition: opacity 0.5s;
   -moz-transition: opacity  0.5s;
@@ -78,18 +78,18 @@
   transition: opacity  0.5s; }
   .free-video-player-controls input {
     background-color: transparent;
-    display: inline;
-    margin: 0 0 0 15px; }
+    display: inline-block;
+    margin: 0; }
   .free-video-player-controls div {
-    display: inline;
+    display: inline-block;
     width: 6%;
     min-width: 20px;
-    margin: 5px 0 0 15px;
-    padding: 6px 4px;
+    margin: 0 10px 0 0;
+    padding: 0;
     font-size: 25px; }
     .free-video-player-controls div:hover {
       cursor: pointer;
-      color: rgba(12, 16, 18, 0.7); }
+      text-shadow: 1px 1px 2px rgba(12, 16, 18, 0.7); }
     .free-video-player-controls div i {
       width: 15px; }
   .free-video-player-controls .free-video-player-controls-subtitles-menu {
@@ -121,27 +121,59 @@
     color: rgba(12, 16, 18, 0.7); }
   .free-video-player-controls [data-free-video-player-state="active"] {
     color: rgba(75, 96, 108, 0.7); }
+  .free-video-player-controls .free-video-player-controls-playpause {
+    margin-left: 5px; }
+  .free-video-player-controls .free-video-player-controls-fullscreen {
+    right: 0;
+    position: absolute;
+    width: 40px;
+    text-align: center;
+    margin-right: 0; }
+  .free-video-player-controls .free-video-player-controls-settings {
+    right: 40px;
+    position: absolute;
+    width: 40px;
+    text-align: center;
+    margin-right: 0; }
+  .free-video-player-controls .free-video-player-controls-settings-menu {
+    display: inline-block;
+    position: absolute;
+    background: red;
+    bottom: 39px;
+    left: -80px;
+    width: 120px;
+    height: 100px; }
+  .free-video-player-controls .free-video-player-controls-progress-timer {
+    right: 100px;
+    top: 25px;
+    position: absolute;
+    text-align: center;
+    margin-right: 0; }
+  .free-video-player-controls .free-video-player-controls-volume-icon {
+    position: relative; }
   .free-video-player-controls .free-video-player-controls-progress {
     -webkit-appearance: none;
-    padding: 0 20px 0 0;
-    width: 400px;
+    width: 100%;
+    display: block;
+    padding: 0;
     height: 15px; }
     .free-video-player-controls .free-video-player-controls-progress::-webkit-slider-runnable-track {
       height: 5px;
       cursor: pointer;
       animate: 0.2s;
-      background: rgba(75, 96, 108, 0.7);
+      background: rgba(176, 228, 255, 0.8);
       border-radius: 1.3px; }
     .free-video-player-controls .free-video-player-controls-progress::-webkit-slider-thumb {
       height: 20px;
       width: 10px;
       border-radius: 3px;
-      background: rgba(75, 96, 108, 0.7);
+      background: rgba(176, 228, 255, 0.8);
+      box-shadow: 1px 1px 2px rgba(75, 96, 108, 0.7);
       cursor: pointer;
       -webkit-appearance: none;
       margin-top: -7px; }
     .free-video-player-controls .free-video-player-controls-progress:focus::-webkit-slider-runnable-track {
-      background: rgba(12, 16, 18, 0.7); }
+      background: rgba(176, 228, 255, 0.8); }
     .free-video-player-controls .free-video-player-controls-progress::-moz-range-track {
       width: 100%;
       height: 5px;
@@ -194,22 +226,15 @@
       color: rgba(75, 96, 108, 0.7);
       cursor: default; }
   .free-video-player-controls .free-video-player-controls-volume {
-    padding: 0 0px 0 0;
-    width: 400px;
-    height: 50px;
+    height: 15px;
     width: 110px;
-    padding: 0 10px 0 0;
+    padding: 0;
     margin: 0px;
     visibility: hidden;
-    background: rgba(176, 228, 255, 0.8);
+    display: inline-block;
     position: absolute;
-    bottom: 70px;
-    left: 510px;
-    -webkit-transform: rotate(-90deg);
-    -moz-transform: rotate(-90deg);
-    -o-transform: rotate(-90deg);
-    -ms-transform: rotate(-90deg);
-    transform: rotate(-90deg); }
+    left: 30px;
+    bottom: 25px; }
     .free-video-player-controls .free-video-player-controls-volume input[type=range] {
       position: relative;
       -webkit-appearance: none;
@@ -219,18 +244,19 @@
         height: 5px;
         cursor: pointer;
         animate: 0.2s;
-        background: rgba(75, 96, 108, 0.7);
+        background: rgba(176, 228, 255, 0.8);
         border-radius: 1.3px; }
       .free-video-player-controls .free-video-player-controls-volume input[type=range]::-webkit-slider-thumb {
         height: 20px;
         width: 10px;
         border-radius: 3px;
-        background: rgba(75, 96, 108, 0.7);
+        background: rgba(176, 228, 255, 0.8);
+        box-shadow: 1px 1px 2px rgba(75, 96, 108, 0.7);
         cursor: pointer;
         -webkit-appearance: none;
         margin-top: -7px; }
       .free-video-player-controls .free-video-player-controls-volume input[type=range]:focus::-webkit-slider-runnable-track {
-        background: rgba(12, 16, 18, 0.7); }
+        background: rgba(176, 228, 255, 0.8); }
       .free-video-player-controls .free-video-player-controls-volume input[type=range]::-moz-range-track {
         width: 100%;
         height: 5px;
@@ -292,53 +318,6 @@
   .free-video-player-container-style {
     width: 450px;
     height: 252px; }
-  .free-video-player-controls {
-    position: absolute;
-    width: 100%;
-    height: 30px;
-    display: inline-block;
-    opacity: 0;
-    left: 0;
-    bottom: 0;
-    color: rgba(75, 96, 108, 0.7);
-    background: rgba(176, 228, 255, 0.8);
-    margin: 0;
-    -webkit-transition: opacity 0.5s;
-    -moz-transition: opacity 0.5s;
-    -ms-transition: opacity 0.5s;
-    -o-transition: opacity 0.5s;
-    transition: opacity 0.5s; }
-    .free-video-player-controls input {
-      background-color: transparent;
-      display: inline;
-      margin: 0 0 0 8px; }
-    .free-video-player-controls div {
-      display: inline;
-      width: 6%;
-      min-width: 18px;
-      margin: 3px 0 0 10px;
-      padding: 3px 2px;
-      font-size: 22px; }
-      .free-video-player-controls div:hover {
-        cursor: pointer;
-        color: rgba(12, 16, 18, 0.7); }
-      .free-video-player-controls div i {
-        width: 15px; }
-    .free-video-player-controls .free-video-player-controls-progress {
-      -webkit-appearance: none;
-      padding: 0;
-      width: 220px;
-      height: 10px; }
-    .free-video-player-controls .free-video-player-controls-progress-timer {
-      margin-top: -7px;
-      font-size: 0.7em; }
-    .free-video-player-controls .free-video-player-controls-volume {
-      visibility: hidden;
-      position: absolute;
-      height: 50px;
-      width: 110px;
-      bottom: 60px;
-      left: 280px; }
   .free-video-player-controls-overlay-play-pause-icon i {
     font-size: 4em; }
   .free-video-player-controls-overlay-spinner-icon i {
@@ -348,30 +327,6 @@
   .free-video-player-container-style {
     width: 320px;
     height: 180px; }
-  .free-video-player-controls {
-    height: 24px; }
-    .free-video-player-controls div {
-      min-width: 15px;
-      margin: 0 0 0 5px;
-      padding: 2px 2px;
-      font-size: 18px; }
-    .free-video-player-controls input {
-      margin: 0 0 0 5px; }
-    .free-video-player-controls .free-video-player-controls-progress {
-      -webkit-appearance: none;
-      padding: 0;
-      width: 140px;
-      height: 10px; }
-    .free-video-player-controls .free-video-player-controls-progress-timer {
-      margin-top: -10px;
-      font-size: 0.5em; }
-    .free-video-player-controls .free-video-player-controls-volume {
-      visibility: hidden;
-      position: absolute;
-      height: 50px;
-      width: 110px;
-      bottom: 52px;
-      left: 170px; }
   .free-video-player-controls-overlay-play-pause-icon i {
     font-size: 2.5em; }
   .free-video-player-controls-overlay-spinner-icon i {

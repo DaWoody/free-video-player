@@ -47,7 +47,6 @@ var freeVideoPlayer = function(initiationObject){
                 progressbarContainerClass: videoPlayerNameCss + '-controls-progress',
                 progressTimerContainerClass: videoPlayerNameCss + '-controls-progress-timer',
                 volumeContainerClass: videoPlayerNameCss + '-controls-volume',
-                volumeIconClass: videoPlayerNameCss + '-controls-volume-icon',
                 fullscreenContainerClass: videoPlayerNameCss + '-controls-fullscreen',
                 subtitlesMenuClass: videoPlayerNameCss + '-controls-subtitles-menu',
                 subtitleButtonClass: videoPlayerNameCss + '-controls-subtitles-button',
@@ -66,7 +65,6 @@ var freeVideoPlayer = function(initiationObject){
                 showVolumeSlider: true,
                 showSubtitlesMenu: true,
                 showSettingsIcon: true,
-                showTimer: true,
                 showFullScreenButton: true
             },
             videoControlsVolumeTresholdValues: {
@@ -813,14 +811,6 @@ var freeVideoPlayer = function(initiationObject){
 
                 initializationFile = mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate);
 
-                var bitrateSettingObject = {};
-                    bitrateSettingObject.baseUrlObjectArray = baseUrlObjectArray;
-                    bitrateSettingObject.typeOfStream = typeOfStream;
-
-                //Lets try updating our videoControls
-                _updateVideoControlsWithBitrateSettings(bitrateSettingObject);
-
-                //These two following should probably be rewritten and changed
                 sourceBuffer.addEventListener('updatestart', function(){
                     console.log('Should start with update... sourceBuffer.updating should be true..' + sourceBuffer.updating);
                     videoControlsModule.addSpinnerIconToVideoOverlay();
@@ -831,7 +821,6 @@ var freeVideoPlayer = function(initiationObject){
                     videoControlsModule.removeSpinnerIconFromVideoOverlay();
                 });
 
-                //When we are done updating
                 sourceBuffer.addEventListener('updateend', function() {
                     if(that._videoElement.error)
                         console.log(that._videoElement.error);
@@ -887,23 +876,6 @@ var freeVideoPlayer = function(initiationObject){
         //    setMediaSourceDuration(arrayOfSourceBuffers);
         //}, 2000);
     };
-
-
-    /**
-     * @description A method that first verifies that the videoControlsModule is in use, then tries to contact
-     * the module by accessing a public method that generates
-     * @param bitrateSettingsObject
-     * @private
-     */
-    var _updateVideoControlsWithBitrateSettings = function(bitrateSettingsObject){
-        var typeOfStream = bitrateSettingsObject.typeOfStream,
-            baseUrlObjectArray = bitrateSettingsObject.baseUrlObjectArray;
-        //If the videoControlsModule is defined
-        if(videoControlsModule){
-            videoControlsModule.addBitrateMenuToSettingsIcon(typeOfStream, baseUrlObjectArray);
-        }
-    };
-
 
     /**
      * @description This method checks the buffers

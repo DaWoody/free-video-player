@@ -19,7 +19,7 @@ The home of *Free Video Player*, besides here on GitHub, is [www.freevideoplayer
 Currently there is me, (Johan Wedfelt) doing most of the work on the Free Video Player javascript side. If you find this project cool/interesting
 and wanna help, fork the project do some cool things and make a pull-request, or contact me directly and lets create a core-group of developers that
 want to make this project better together! :) If you wanna get in contact with us, contact us through GitHub or come and chat with us
-through our [HipChat channel](https://www.hipchat.com/gcTxoHaOk)
+through our [Slack channel](https://awesome-ninja-kittens.slack.com)
 
 ##Issues / Todo
 ***
