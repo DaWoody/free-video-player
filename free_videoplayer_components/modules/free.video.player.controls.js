@@ -63,11 +63,16 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             videoWrapper.removeChild(currentControls);
             //Remove old keyboard listeners
             _removeKeyboardListeners();
+            //Reset previous controls
+            that.currentVideoControlsObject = {};
         }
 
         var playButton = document.createElement('div'),
             volumeIcon = document.createElement('div'),
-            subtitlesButton = document.createElement('div'),
+            settingsIcon = document.createElement('div'),
+            settingsMenu = document.createElement('div'),
+            subtitlesContainer = document.createElement('div'),
+            bitrateButton = document.createElement('div'),
             fullScreenButton = document.createElement('div'),
             progressSlider = document.createElement('input'),
             volumeSliderContainer = document.createElement('div'),
@@ -76,14 +81,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             progressTimerCurrentTime = document.createElement('span'),
             progressTimerTotalDuration = document.createElement('span'),
             videoOverlayPlayPauseIcon = document.createElement('div'),
-            videoOverlaySpinnerIcon = document.createElement('div'),
-            settingsIcon = document.createElement('div');
+            videoOverlaySpinnerIcon = document.createElement('div');
 
 
         //Adding the data to class scoped variable
         that.currentVideoControlsObject.playButton = playButton;
         that.currentVideoControlsObject.volumeIcon = volumeIcon;
-        that.currentVideoControlsObject.subtitlesButton = subtitlesButton;
         that.currentVideoControlsObject.fullScreenButton = fullScreenButton;
         that.currentVideoControlsObject.progressSlider = progressSlider;
         that.currentVideoControlsObject.volumeSliderContainer = volumeSliderContainer;
@@ -95,6 +98,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoControlsObject.videoOverlaySpinnerIcon = videoOverlaySpinnerIcon;
         that.currentVideoControlsObject.controlsWrapper = controlsWrapper;
         that.currentVideoControlsObject.settingsIcon = settingsIcon;
+        that.currentVideoControlsObject.settingsMenu = settingsMenu;
+        that.currentVideoControlsObject.subtitlesContainer = subtitlesContainer;
+        that.currentVideoControlsObject.bitrateButton = bitrateButton;
 
         //DO MORE STUFF WITH PROGRESS TIMER ETC
         //LETS UPDATE THIS ON THE FLY AS THE VIDEO PROGRESSES!
@@ -109,13 +115,15 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         playButton.setAttribute('class', settingsObject.videoControlsCssClasses.playpauseContainerClass);
         progressSlider.setAttribute('class', settingsObject.videoControlsCssClasses.progressbarContainerClass);
         volumeSliderContainer.setAttribute('class', settingsObject.videoControlsCssClasses.volumeContainerClass);
-        volumeIcon.setAttribute('class', settingsObject.videoControlsCssClasses.volumeIconClass)
-        subtitlesButton.setAttribute('class', settingsObject.videoControlsCssClasses.subtitlesContainerClass);
+        volumeIcon.setAttribute('class', settingsObject.videoControlsCssClasses.volumeIconClass);
+        subtitlesContainer.setAttribute('class', settingsObject.videoControlsCssClasses.subtitlesContainerClass);
+
         fullScreenButton.setAttribute('class', settingsObject.videoControlsCssClasses.fullscreenContainerClass);
         progressTimerContainer.setAttribute('class', settingsObject.videoControlsCssClasses.progressTimerContainerClass);
         videoOverlayPlayPauseIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlayPlayPauseIconClass);
         videoOverlaySpinnerIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlaySpinnerIconClass);
         settingsIcon.setAttribute('class', settingsObject.videoControlsCssClasses.settingsIconClass);
+        settingsMenu.setAttribute('class', settingsObject.videoControlsCssClasses.settingsMenuClass + ' ' + settingsObject.videoControlsCssClasses.displayNoneClass);;
 
         //Add some attributes to our sliders
         volumeSlider.setAttribute('type','range');
@@ -127,7 +135,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Add the data attribute to the different elements, maybe we should use this for selection in the future
         playButton.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'playpause');
         volumeIcon.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'mute');
-        subtitlesButton.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'subtitles');
+        subtitlesContainer.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'subtitles');
         fullScreenButton.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'fullscreen');
         progressTimerContainer.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'progress-timer');
         progressSlider.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'progress');
@@ -140,7 +148,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         playButton.innerHTML = settingsObject.videoControlsInnerHtml.playIconInnerHtml;
         volumeIcon.innerHTML = settingsObject.videoControlsInnerHtml.volumeHighIconInnerHtml;
         fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
-        subtitlesButton.innerHTML = settingsObject.videoControlsInnerHtml.subtitlesMenuInnerHtml;
+        subtitlesContainer.innerHTML = settingsObject.videoControlsInnerHtml.subtitlesMenuInnerHtml;
         settingsIcon.innerHTML = settingsObject.videoControlsInnerHtml.settingsIconInnerHtml;
         progressTimerCurrentTime.innerHTML = '0:00';
 
@@ -157,12 +165,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         progressSlider.addEventListener('mousedown', _pauseMethodFromSlider);
         progressSlider.addEventListener('mouseup', _playMethodFromSlider);
 
-        progressTimerContainer.appendChild(progressTimerCurrentTime);
-        progressTimerContainer.appendChild(progressTimerTotalDuration);
-
         volumeIcon.addEventListener('click', _volumeMuteUnmuteMethod);
         volumeIcon.addEventListener('mouseover', _showVolumeSlider);
-        volumeIcon.addEventListener('mouseout', _hideVolumeSlider);;
+        volumeIcon.addEventListener('mouseout', _hideVolumeSlider);
 
         volumeSliderContainer.addEventListener('mouseout', _hideVolumeSlider);
 
@@ -179,7 +184,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
         if(subtitlesMenu){
             //Lets add the subtitles menu to the subtitles button
-            subtitlesButton.addEventListener('click', function(event){
+            subtitlesContainer.addEventListener('click', function(event){
                 subtitlesMenu.style.display = (subtitlesMenu.style.display === 'block' ? 'none' : 'block');
             });
         }
@@ -187,10 +192,16 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //  #############################
         //  #### APPEND DOM ELEMENTS ####
         //  #############################
+
+        progressTimerContainer.appendChild(progressTimerCurrentTime);
+        progressTimerContainer.appendChild(progressTimerTotalDuration);
+
+        //settingsIcon.appendChild(settingsMenu);
+
         //Lets add the volume slider to the volume slider container
         volumeSliderContainer.appendChild(volumeSlider);
+        //Move this part..?
         currentVideoObject.volumeSliderContainer = volumeSliderContainer;
-
 
         //LETS ALSO ADD VERIFICATION FOR LIVE ASSETS HERE, IF LIVE WE SHOULD NOT DISPLAY PROGRESS BAR
         if(settingsObject.videoControlsDisplay.showProgressSlider) {
@@ -210,8 +221,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             //controlsWrapper.appendChild(volumeSliderContainer);
         }
         if(subtitlesMenu && settingsObject.videoControlsDisplay.showSubtitlesMenu){
-            controlsWrapper.appendChild(subtitlesButton);
-            controlsWrapper.appendChild(subtitlesMenu);
+            subtitlesContainer.appendChild(subtitlesMenu);
+            settingsMenu.appendChild(subtitlesContainer);
+            console.log('Adding a menu to the video controls..');
         }
 
         if(settingsObject.videoControlsDisplay.showSettingsIcon){
@@ -225,6 +237,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         if(settingsObject.videoControlsDisplay.showFullScreenButton){
             controlsWrapper.appendChild(fullScreenButton);
         }
+
+        //Lets add the settingsIcon to the videoControls
+        settingsIcon.appendChild(settingsMenu);
 
         videoWrapper.appendChild(videoOverlaySpinnerIcon);
         videoWrapper.appendChild(videoOverlayPlayPauseIcon);
@@ -456,7 +471,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _changeSettings(){
-      console.log('Ok clicked the setting sbuttons');
+        console.log('Clicked settings button');
+        console.log('Lets try adding css classes here');
+        if(_checkIfElementHasCssClassReturnBoolean(that.currentVideoControlsObject.settingsMenu, settingsObject.videoControlsCssClasses.displayNoneClass)){
+            _removeCssClassToElementAndReturn(that.currentVideoControlsObject.settingsMenu, settingsObject.videoControlsCssClasses.displayNoneClass)
+        } else {
+            _addCssClassToElementAndReturn(that.currentVideoControlsObject.settingsMenu, settingsObject.videoControlsCssClasses.displayNoneClass)
+        }
     };
 
     /**
@@ -566,6 +587,28 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         element.setAttribute('class', classString);
     };
 
+    /**
+     * @description A utility method meant to be able to filter.
+     * @param element
+     * @param className
+     * @returns {boolean}
+     * @private
+     */
+    function _checkIfElementHasCssClassReturnBoolean(element, className){
+        var classString = element.getAttribute('class'),
+            elementHasClass = false;
+
+        classString = classString.split(className);
+
+        if(classString.length > 1){
+            // If we found an instance of the className and split
+            // into at least to different parts
+            // we should now fetch the first instance
+            elementHasClass = true;
+        }
+        return elementHasClass;
+    };
+
     //  #########################
     //  #### KEYBOARD EVENTS ####
     //  #########################
@@ -578,7 +621,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         _createPlayPauseSpaceBarListener();
         //Lets add more listeners here
     };
-
 
     /**
      * @description An overall method to remove eventListeners connected to the keyboard, if say a previous asset was loaded and

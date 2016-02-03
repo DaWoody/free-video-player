@@ -36,7 +36,7 @@ var freeVideoPlayer = function(initiationObject){
                 fullscreenCompressIconInnerHtml:'<i class="fa fa-compress"></i>',
                 spinnerIconInnerHtml: '<i class="fa fa-spinner fa-spin"></i>',
                 settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
-                subtitlesMenuInnerHtml:'CC',
+                subtitlesMenuInnerHtml:'Subtitles',
                 subtitlesMenuOffButtonInnerHtml:'Off'
             },
             videoControlsCssClasses: {
@@ -55,9 +55,11 @@ var freeVideoPlayer = function(initiationObject){
                 displayControlClass: videoPlayerNameCss + '-controls-display',
                 hideVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-hide',
                 showVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-show',
-                settingsIconClass: videoPlayerNameCss + '-controls-settings',
+                settingsIconClass: videoPlayerNameCss + '-controls-settings-icon',
+                settingsMenuClass: videoPlayerNameCss + '-controls-settings-menu',
                 videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
-                videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon'
+                videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon',
+                displayNoneClass: videoPlayerNameCss + '-controls-display-none'
             },
             videoControlsDisplay: {
                 showPlayPauseButton: true,

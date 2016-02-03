@@ -9,6 +9,7 @@
 $player-controls-color: rgba(75,96, 108, 0.7);
 $player-controls-shadow-color: darken($player-controls-color, 30%);
 $player-controls-background-color: rgba(176, 228, 255, 0.8);
+$player-controls-white-color: rgba(255,255,255,0.7);
 $header-color: #f0ff9d;
 $bootstrap-blue-color: #337AB7;
 
@@ -130,9 +131,11 @@ $player-controls-button-width: 15px;
   //Subtitles CSS
   .free-video-player-controls-subtitles-menu {
     display:none;
+    font-size:1.4em;
     position:absolute;
-    bottom:100%;
-    right:5%;
+    bottom:0;
+    left:-99px;
+    width:100px;
     background:$player-controls-background-color;
     list-style-type:none;
     margin:0;
@@ -154,12 +157,15 @@ $player-controls-button-width: 15px;
      }
   }
 
+  .free-video-player-controls-subtitles {
+    width:100%;
+  }
+
   //Subtitles button
   .free-video-player-controls-subtitles-button {
+      position:relative;
       display:block;
-      min-width:20px;
-      font-size:1em;
-      padding:0 5px;
+      margin-left:10px;
   }
 
   //Css for active and inactive subtitle menu buttons
@@ -169,6 +175,7 @@ $player-controls-button-width: 15px;
 
   [data-free-video-player-state="active"]{
     color: $player-controls-color;
+    text-shadow: 1px 1px 2px $player-controls-white-color;
   }
 
   //Player controls
@@ -187,7 +194,7 @@ $player-controls-button-width: 15px;
   }
 
   //Settings button
-  .free-video-player-controls-settings{
+  .free-video-player-controls-settings-icon{
     right: 40px;
     position: absolute;
     width: 40px;
@@ -196,13 +203,21 @@ $player-controls-button-width: 15px;
   }
 
   .free-video-player-controls-settings-menu {
-    display:inline-block;
     position: absolute;
-    background:red;
-    bottom: 39px;
+    background:$player-controls-background-color;
+    bottom: 42px;
     left: -80px;
-    width: 120px;
-    height: 100px;
+    min-width: 120px;
+    height:auto;
+    color:$player-controls-shadow-color;
+    text-shadow: 1px 1px 2px $player-controls-color;
+    div {
+      font-size: 0.7em;
+    }
+  }
+
+  .free-video-player-controls-display-none {
+    display:none;
   }
 
   .free-video-player-controls-progress-timer{
@@ -335,7 +350,7 @@ $player-controls-button-width: 15px;
     display:inline-block;
     position:absolute;
     left:30px;
-    bottom:25px;
+    bottom:27px;
 
     //z-index: 0;
     input[type=range] {
