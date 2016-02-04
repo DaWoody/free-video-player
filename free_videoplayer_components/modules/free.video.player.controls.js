@@ -45,7 +45,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             videoElement = videoWrapper.getElementsByTagName('video')[0] || null,
             volumeHighStart = parseInt(settingsObject.videoControlsVolumeTresholdValues.volumeHighStart, 10),
             volumeLowEnd = parseInt(settingsObject.videoControlsVolumeTresholdValues.volumeLowEnd, 10),
-            controlsWrapper = document.createElement('div');
+            controlsWrapper = document.createElement('div'),
+            mediaType = currentVideoObject.mediaType || 'static';
         controlsWrapper.setAttribute('data-video-player-control', 'wrapper');
         controlsWrapper.setAttribute('class', settingsObject.videoControlsCssClasses.videoControlsClass);
 
@@ -204,7 +205,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         currentVideoObject.volumeSliderContainer = volumeSliderContainer;
 
         //LETS ALSO ADD VERIFICATION FOR LIVE ASSETS HERE, IF LIVE WE SHOULD NOT DISPLAY PROGRESS BAR
-        if(settingsObject.videoControlsDisplay.showProgressSlider) {
+        if(settingsObject.videoControlsDisplay.showProgressSlider
+            && mediaType === 'static') {
             //Adds both the progress bar and the progress timer container showing current time and the medias
             controlsWrapper.appendChild(progressSlider);
         }

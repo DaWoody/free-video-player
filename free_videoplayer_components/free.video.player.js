@@ -188,6 +188,9 @@ var freeVideoPlayer = function(initiationObject){
         try {
             //Set a flag to decide what kind of stream is played.
             currentVideoObject.adaptiveStream = false;
+            //Lets set this flag to know that we are dealing with static/VOD content.
+            currentVideoObject.mediaType = 'static';
+
             var videoElement = document.createElement('video'),
                 videoSourceElement = document.createElement('source');
 
@@ -287,6 +290,7 @@ var freeVideoPlayer = function(initiationObject){
 
                 mpdParserModule.setMpdObject(responseObject.MPD);
 
+                currentVideoObject.mediaType = mpdParserModule.returnMediaTypeFromMpdObject();
                 currentVideoObject.averageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject();
                 currentVideoObject.maxSegmentDuration = mpdParserModule.returnMaxSegmentDurationFromMpdObject();
                 currentVideoObject.mediaDurationInSeconds = mpdParserModule.returnMediaDurationInSecondsFromMpdObject();

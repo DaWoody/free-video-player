@@ -37,6 +37,31 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     //  ############################
     //  #### MPD OBJECT METHODS ####
     //  ############################
+
+
+    /**
+     * @description This method returns the asset type, static or dynamic, meaning LIVE or VOD
+     * @public
+     * @returns {string}
+     */
+    function returnMediaTypeFromMpdObject(){
+        var mediaType = 'static';
+        //First lets set that the segment length should not be more than one minute
+        //then we should parse the information we get
+        try {
+            mediaType = currentVideoObject.mpdObject._type || 'static';
+        } catch(e){
+
+            var messageObject = {};
+                messageObject.message = 'Could not retrieve media type from the MPD';
+                messageObject.methodName = 'returnMediaTypeFromMpdObject';
+                messageObject.moduleName = moduleName;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return mediaType;
+    };
+
+
     /**
      * @description Returns the max segment duration from the MPD object
      * @public
@@ -542,6 +567,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     that.returnArrayOfContentComponentsFromAdaptionSet = returnArrayOfContentComponentsFromAdaptionSet;
 
     //MpdObject methods
+    that.returnMediaTypeFromMpdObject = returnMediaTypeFromMpdObject;
     that.returnMaxSegmentDurationFromMpdObject = returnMaxSegmentDurationFromMpdObject;
     that.returnAverageSegmentDurationFromMpdObject = returnAverageSegmentDurationFromMpdObject;
     that.returnMediaDurationInSecondsFromMpdObject = returnMediaDurationInSecondsFromMpdObject;
