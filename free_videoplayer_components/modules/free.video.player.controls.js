@@ -82,7 +82,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             progressTimerCurrentTime = document.createElement('span'),
             progressTimerTotalDuration = document.createElement('span'),
             videoOverlayPlayPauseIcon = document.createElement('div'),
-            videoOverlaySpinnerIcon = document.createElement('div');
+            videoOverlaySpinnerIcon = document.createElement('div'),
+            liveIcon = document.createElement('div');
 
 
         //Adding the data to class scoped variable
@@ -102,6 +103,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoControlsObject.settingsMenu = settingsMenu;
         that.currentVideoControlsObject.subtitlesContainer = subtitlesContainer;
         that.currentVideoControlsObject.bitrateButton = bitrateButton;
+        that.currentVideoControlsObject.liveIcon = liveIcon;
 
         //DO MORE STUFF WITH PROGRESS TIMER ETC
         //LETS UPDATE THIS ON THE FLY AS THE VIDEO PROGRESSES!
@@ -124,7 +126,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         videoOverlayPlayPauseIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlayPlayPauseIconClass);
         videoOverlaySpinnerIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlaySpinnerIconClass);
         settingsIcon.setAttribute('class', settingsObject.videoControlsCssClasses.settingsIconClass);
-        settingsMenu.setAttribute('class', settingsObject.videoControlsCssClasses.settingsMenuClass + ' ' + settingsObject.videoControlsCssClasses.displayNoneClass);;
+        settingsMenu.setAttribute('class', settingsObject.videoControlsCssClasses.settingsMenuClass + ' ' + settingsObject.videoControlsCssClasses.displayNoneClass);
+        liveIcon.setAttribute('class', settingsObject.videoControlsCssClasses.liveIconClass);
 
         //Add some attributes to our sliders
         volumeSlider.setAttribute('type','range');
@@ -152,6 +155,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         subtitlesContainer.innerHTML = settingsObject.videoControlsInnerHtml.subtitlesMenuInnerHtml;
         settingsIcon.innerHTML = settingsObject.videoControlsInnerHtml.settingsIconInnerHtml;
         progressTimerCurrentTime.innerHTML = '0:00';
+        liveIcon.innerHTML = settingsObject.videoControlsInnerHtml.liveIconInnerHtml;
 
         //  #############################
         //  #### ADD EVENT LISTENERS ####
@@ -204,6 +208,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Move this part..?
         currentVideoObject.volumeSliderContainer = volumeSliderContainer;
 
+
         //LETS ALSO ADD VERIFICATION FOR LIVE ASSETS HERE, IF LIVE WE SHOULD NOT DISPLAY PROGRESS BAR
         if(settingsObject.videoControlsDisplay.showProgressSlider
             && mediaType === 'static') {
@@ -232,12 +237,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             controlsWrapper.appendChild(settingsIcon);
         }
 
-        if(settingsObject.videoControlsDisplay.showTimer){
+        if(settingsObject.videoControlsDisplay.showTimer
+            && mediaType === 'static'){
             controlsWrapper.appendChild(progressTimerContainer);
         }
 
         if(settingsObject.videoControlsDisplay.showFullScreenButton){
             controlsWrapper.appendChild(fullScreenButton);
+        }
+
+        //Lets add the live icon if the asset is LIVE
+        if(mediaType !== 'static'){
+            videoWrapper.appendChild(liveIcon);
         }
 
         //Lets add the settingsIcon to the videoControls

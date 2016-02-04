@@ -60,6 +60,17 @@
 .free-video-player-controls-overlay-hide {
   opacity: 0; }
 
+.free-video-player-controls-live-icon {
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 1px 1px 2px rgba(75, 96, 108, 0.7);
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 50px;
+  height: 50px; }
+  .free-video-player-controls-live-icon i {
+    color: #7cff92; }
+
 .free-video-player-controls {
   position: absolute;
   width: 100%;

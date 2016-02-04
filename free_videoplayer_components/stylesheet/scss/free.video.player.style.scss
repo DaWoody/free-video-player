@@ -85,6 +85,19 @@ $player-controls-button-width: 15px;
   opacity:0;
 }
 
+.free-video-player-controls-live-icon {
+  i {
+    color: #7cff92;
+  }
+  color:$player-controls-white-color;
+  text-shadow: 1px 1px 2px $player-controls-color;
+  position: absolute;
+  top:5px;
+  right:5px;
+  width:50px;
+  height:50px;
+};
+
 //Styles for the video controls
 .free-video-player-controls {
   position:absolute;

@@ -155,7 +155,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             videoElement = videoWrapper.getElementsByTagName('video')[0] || null,
             volumeHighStart = parseInt(settingsObject.videoControlsVolumeTresholdValues.volumeHighStart, 10),
             volumeLowEnd = parseInt(settingsObject.videoControlsVolumeTresholdValues.volumeLowEnd, 10),
-            controlsWrapper = document.createElement('div');
+            controlsWrapper = document.createElement('div'),
+            mediaType = currentVideoObject.mediaType || 'static';
         controlsWrapper.setAttribute('data-video-player-control', 'wrapper');
         controlsWrapper.setAttribute('class', settingsObject.videoControlsCssClasses.videoControlsClass);
 
@@ -191,7 +192,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             progressTimerCurrentTime = document.createElement('span'),
             progressTimerTotalDuration = document.createElement('span'),
             videoOverlayPlayPauseIcon = document.createElement('div'),
-            videoOverlaySpinnerIcon = document.createElement('div');
+            videoOverlaySpinnerIcon = document.createElement('div'),
+            liveIcon = document.createElement('div');
 
 
         //Adding the data to class scoped variable
@@ -211,6 +213,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoControlsObject.settingsMenu = settingsMenu;
         that.currentVideoControlsObject.subtitlesContainer = subtitlesContainer;
         that.currentVideoControlsObject.bitrateButton = bitrateButton;
+        that.currentVideoControlsObject.liveIcon = liveIcon;
 
         //DO MORE STUFF WITH PROGRESS TIMER ETC
         //LETS UPDATE THIS ON THE FLY AS THE VIDEO PROGRESSES!
@@ -233,7 +236,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         videoOverlayPlayPauseIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlayPlayPauseIconClass);
         videoOverlaySpinnerIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlaySpinnerIconClass);
         settingsIcon.setAttribute('class', settingsObject.videoControlsCssClasses.settingsIconClass);
-        settingsMenu.setAttribute('class', settingsObject.videoControlsCssClasses.settingsMenuClass + ' ' + settingsObject.videoControlsCssClasses.displayNoneClass);;
+        settingsMenu.setAttribute('class', settingsObject.videoControlsCssClasses.settingsMenuClass + ' ' + settingsObject.videoControlsCssClasses.displayNoneClass);
+        liveIcon.setAttribute('class', settingsObject.videoControlsCssClasses.liveIconClass);
 
         //Add some attributes to our sliders
         volumeSlider.setAttribute('type','range');
@@ -261,6 +265,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         subtitlesContainer.innerHTML = settingsObject.videoControlsInnerHtml.subtitlesMenuInnerHtml;
         settingsIcon.innerHTML = settingsObject.videoControlsInnerHtml.settingsIconInnerHtml;
         progressTimerCurrentTime.innerHTML = '0:00';
+        liveIcon.innerHTML = settingsObject.videoControlsInnerHtml.liveIconInnerHtml;
 
         //  #############################
         //  #### ADD EVENT LISTENERS ####
@@ -313,8 +318,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Move this part..?
         currentVideoObject.volumeSliderContainer = volumeSliderContainer;
 
+
         //LETS ALSO ADD VERIFICATION FOR LIVE ASSETS HERE, IF LIVE WE SHOULD NOT DISPLAY PROGRESS BAR
-        if(settingsObject.videoControlsDisplay.showProgressSlider) {
+        if(settingsObject.videoControlsDisplay.showProgressSlider
+            && mediaType === 'static') {
             //Adds both the progress bar and the progress timer container showing current time and the medias
             controlsWrapper.appendChild(progressSlider);
         }
@@ -340,12 +347,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             controlsWrapper.appendChild(settingsIcon);
         }
 
-        if(settingsObject.videoControlsDisplay.showTimer){
+        if(settingsObject.videoControlsDisplay.showTimer
+            && mediaType === 'static'){
             controlsWrapper.appendChild(progressTimerContainer);
         }
 
         if(settingsObject.videoControlsDisplay.showFullScreenButton){
             controlsWrapper.appendChild(fullScreenButton);
+        }
+
+        //Lets add the live icon if the asset is LIVE
+        if(mediaType !== 'static'){
+            videoWrapper.appendChild(liveIcon);
         }
 
         //Lets add the settingsIcon to the videoControls
@@ -1058,6 +1071,31 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     //  ############################
     //  #### MPD OBJECT METHODS ####
     //  ############################
+
+
+    /**
+     * @description This method returns the asset type, static or dynamic, meaning LIVE or VOD
+     * @public
+     * @returns {string}
+     */
+    function returnMediaTypeFromMpdObject(){
+        var mediaType = 'static';
+        //First lets set that the segment length should not be more than one minute
+        //then we should parse the information we get
+        try {
+            mediaType = currentVideoObject.mpdObject._type || 'static';
+        } catch(e){
+
+            var messageObject = {};
+                messageObject.message = 'Could not retrieve media type from the MPD';
+                messageObject.methodName = 'returnMediaTypeFromMpdObject';
+                messageObject.moduleName = moduleName;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return mediaType;
+    };
+
+
     /**
      * @description Returns the max segment duration from the MPD object
      * @public
@@ -1563,6 +1601,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     that.returnArrayOfContentComponentsFromAdaptionSet = returnArrayOfContentComponentsFromAdaptionSet;
 
     //MpdObject methods
+    that.returnMediaTypeFromMpdObject = returnMediaTypeFromMpdObject;
     that.returnMaxSegmentDurationFromMpdObject = returnMaxSegmentDurationFromMpdObject;
     that.returnAverageSegmentDurationFromMpdObject = returnAverageSegmentDurationFromMpdObject;
     that.returnMediaDurationInSecondsFromMpdObject = returnMediaDurationInSecondsFromMpdObject;

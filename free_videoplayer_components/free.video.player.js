@@ -36,6 +36,7 @@ var freeVideoPlayer = function(initiationObject){
                 fullscreenCompressIconInnerHtml:'<i class="fa fa-compress"></i>',
                 spinnerIconInnerHtml: '<i class="fa fa-spinner fa-spin"></i>',
                 settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
+                liveIconInnerHtml:'<i class="fa fa-circle"></i> LIVE',
                 subtitlesMenuInnerHtml:'Subtitles',
                 subtitlesMenuOffButtonInnerHtml:'Off'
             },
@@ -57,6 +58,7 @@ var freeVideoPlayer = function(initiationObject){
                 showVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-show',
                 settingsIconClass: videoPlayerNameCss + '-controls-settings-icon',
                 settingsMenuClass: videoPlayerNameCss + '-controls-settings-menu',
+                liveIconClass: videoPlayerNameCss + '-controls-live-icon',
                 videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
                 videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon',
                 displayNoneClass: videoPlayerNameCss + '-controls-display-none'
