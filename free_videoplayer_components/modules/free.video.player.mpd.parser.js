@@ -414,6 +414,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 currentBaseUrlObject.mimeType = arrayOfRepresentations[i]._mimeType;
                 currentBaseUrlObject.codecs = arrayOfRepresentations[i]._codecs;
                 currentBaseUrlObject.baseUrl = arrayOfRepresentations[i].BaseURL;
+                currentBaseUrlObject.width = arrayOfRepresentations[i]._width || '';
+                currentBaseUrlObject.height = arrayOfRepresentations[i]._height || '';
+                currentBaseUrlObject.type = returnTypeFromMimeTypeAndCodecString(arrayOfRepresentations[i]._mimeType, arrayOfRepresentations[i]._codecs);
                 currentBaseUrlObject.index = i;
                 arrayOfBaseUrlObjects.push(currentBaseUrlObject);
             }
@@ -480,6 +483,39 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     //  #########################
     //  #### GENERAL METHODS ####
     //  #########################
+
+    function returnTypeFromMimeTypeAndCodecString(mimeType, codecString){
+        var returnType = 'audio',
+            tempCodecArray = [],
+            tempMimeTypeArray = [];
+            try {
+
+                tempCodecArray = codecString.split(',');
+                tempMimeTypeArray = mimeType.split('video');
+
+                if(tempCodecArray.length > 1){
+                    //We have two codecs, should indicate that the stream is muxxed, this should indicate that
+                    //the stream we are returning should include both an audio and video part
+                    returnType = 'video';
+                }
+
+                if(tempMimeTypeArray.length > 1){
+                    //The other option is that the stream we are testing is a video stream but separated
+                    //Then this condition should take care of this.
+                    returnType = 'video';
+                }
+
+            } catch (e){
+                var messageObject = {};
+                    messageObject.message = 'Could not parse and return type (video or audio) from mimeType, check input';
+                    messageObject.methodName = 'returnTypeFromMimeType';
+                    messageObject.moduleName = moduleName;
+                messagesModule.printOutErrorMessageToConsole(messageObject, e);
+            }
+        return returnType;
+    };
+
+
     function setMpdObject(mpdObject){
         currentVideoObject.mpdObject = mpdObject;
     };
@@ -558,6 +594,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     that.getVersion = getVersion;
     that.checkIfAdapationSetContainSingleRepresentation = checkIfAdapationSetContainSingleRepresentation;
     that.returnStreamBaseUrlFromMpdUrl = returnStreamBaseUrlFromMpdUrl;
+    that.returnTypeFromMimeTypeAndCodecString = returnTypeFromMimeTypeAndCodecString;
 
     //AdapationSet methods
     that.returnMimeTypeFromAdaptionSet = returnMimeTypeFromAdaptionSet;

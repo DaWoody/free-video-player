@@ -18,7 +18,7 @@ var freeVideoPlayer = function(initiationObject){
             version:'0.9.0'
         },//videoConstructor(),
         moduleName = 'Free Video Player',
-        videoPlayerNameCss = 'free-video-player',
+        videoPlayerNameCss = 'fvp',
         xml2json = new X2JS(),
         defaultSettingsObject = {
             videoWrapperClassName: 'js-' + videoPlayerNameCss + '-container',
@@ -38,10 +38,13 @@ var freeVideoPlayer = function(initiationObject){
                 settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
                 liveIconInnerHtml:'<i class="fa fa-circle"></i> LIVE',
                 subtitlesMenuInnerHtml:'Subtitles',
+                bitrateQualityMenuInnerHtml:'Quality',
                 subtitlesMenuOffButtonInnerHtml:'Off'
             },
             videoControlsCssClasses: {
                 videoControlsClass: videoPlayerNameCss + '-controls',
+                hideControlClass: videoPlayerNameCss + '-controls-hide',
+                displayControlClass: videoPlayerNameCss + '-controls-display',
                 videoFullScreenClass: videoPlayerNameCss + '-controls-fullscreen',
                 playpauseContainerClass: videoPlayerNameCss + '-controls-playpause',
                 subtitlesContainerClass: videoPlayerNameCss + '-controls-subtitles',
@@ -50,14 +53,13 @@ var freeVideoPlayer = function(initiationObject){
                 volumeContainerClass: videoPlayerNameCss + '-controls-volume',
                 volumeIconClass: videoPlayerNameCss + '-controls-volume-icon',
                 fullscreenContainerClass: videoPlayerNameCss + '-controls-fullscreen',
-                subtitlesMenuClass: videoPlayerNameCss + '-controls-subtitles-menu',
-                subtitleButtonClass: videoPlayerNameCss + '-controls-subtitles-button',
-                hideControlClass: videoPlayerNameCss + '-controls-hide',
-                displayControlClass: videoPlayerNameCss + '-controls-display',
                 hideVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-hide',
                 showVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-show',
                 settingsIconClass: videoPlayerNameCss + '-controls-settings-icon',
                 settingsMenuClass: videoPlayerNameCss + '-controls-settings-menu',
+                subtitlesMenuClass: videoPlayerNameCss + '-controls-subtitles-menu',
+                subtitleButtonClass: videoPlayerNameCss + '-controls-subtitles-button',
+                bitrateQualityMenuClass: videoPlayerNameCss + '-controls-bitrate-quality-menu',
                 liveIconClass: videoPlayerNameCss + '-controls-live-icon',
                 videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
                 videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon',
@@ -906,6 +908,10 @@ var freeVideoPlayer = function(initiationObject){
     var _updateVideoControlsWithBitrateSettings = function(bitrateSettingsObject){
         var typeOfStream = bitrateSettingsObject.typeOfStream,
             baseUrlObjectArray = bitrateSettingsObject.baseUrlObjectArray;
+
+        console.log('Ok reached this thing here.. baseUrlObejctsArray..:');
+        console.log(bitrateSettingsObject);
+
         //If the videoControlsModule is defined
         if(videoControlsModule){
             videoControlsModule.addBitrateMenuToSettingsIcon(typeOfStream, baseUrlObjectArray);

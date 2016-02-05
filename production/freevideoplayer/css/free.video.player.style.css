@@ -5,19 +5,19 @@
  * @license GPLv3, see http://www.gnu.org/licenses/gpl-3.0.en.html
 *
 */
-.free-video-player-container-style {
+.fvp-container-style {
   display: block;
   margin: 0 auto 40px auto;
   width: 700px;
   height: 393px;
   position: relative; }
-  .free-video-player-container-style video {
+  .fvp-container-style video {
     width: 100%;
     height: auto; }
-  .free-video-player-container-style:hover .free-video-player-controls {
+  .fvp-container-style:hover .fvp-controls {
     opacity: 1; }
 
-.free-video-player-controls-overlay-spinner-icon {
+.fvp-controls-overlay-spinner-icon {
   display: inline-block;
   position: absolute;
   left: 0;
@@ -31,13 +31,13 @@
   -ms-transition: opacity  0.3s;
   -o-transition: opacity  0.3s;
   transition: opacity  0.3s; }
-  .free-video-player-controls-overlay-spinner-icon i {
+  .fvp-controls-overlay-spinner-icon i {
     font-size: 6em;
     display: block;
     margin: 22% 0;
     text-align: center; }
 
-.free-video-player-controls-overlay-play-pause-icon {
+.fvp-controls-overlay-play-pause-icon {
   display: inline-block;
   position: absolute;
   left: 0;
@@ -51,16 +51,16 @@
   -ms-transition: opacity  0.3s;
   -o-transition: opacity  0.3s;
   transition: opacity  0.3s; }
-  .free-video-player-controls-overlay-play-pause-icon i {
+  .fvp-controls-overlay-play-pause-icon i {
     font-size: 6em;
     display: block;
     margin: 22% 0;
     text-align: center; }
 
-.free-video-player-controls-overlay-hide {
+.fvp-controls-overlay-hide {
   opacity: 0; }
 
-.free-video-player-controls-live-icon {
+.fvp-controls-live-icon {
   color: rgba(255, 255, 255, 0.7);
   text-shadow: 1px 1px 2px rgba(75, 96, 108, 0.7);
   position: absolute;
@@ -68,10 +68,10 @@
   right: 5px;
   width: 50px;
   height: 50px; }
-  .free-video-player-controls-live-icon i {
+  .fvp-controls-live-icon i {
     color: #7cff92; }
 
-.free-video-player-controls {
+.fvp-controls {
   position: absolute;
   width: 100%;
   height: 50px;
@@ -87,23 +87,23 @@
   -ms-transition: opacity  0.5s;
   -o-transition: opacity  0.5s;
   transition: opacity  0.5s; }
-  .free-video-player-controls input {
+  .fvp-controls input {
     background-color: transparent;
     display: inline-block;
     margin: 0; }
-  .free-video-player-controls div {
+  .fvp-controls div {
     display: inline-block;
     width: 6%;
     min-width: 20px;
     margin: 0 10px 0 0;
     padding: 0;
     font-size: 25px; }
-    .free-video-player-controls div:hover {
+    .fvp-controls div:hover {
       cursor: pointer;
       text-shadow: 1px 1px 2px rgba(12, 16, 18, 0.7); }
-    .free-video-player-controls div i {
+    .fvp-controls div i {
       width: 15px; }
-  .free-video-player-controls .free-video-player-controls-subtitles-menu {
+  .fvp-controls .fvp-controls-subtitles-menu {
     display: none;
     font-size: 1.4em;
     position: absolute;
@@ -116,41 +116,41 @@
     padding: 0;
     min-width: 20px;
     color: rgba(75, 96, 108, 0.7); }
-    .free-video-player-controls .free-video-player-controls-subtitles-menu li {
+    .fvp-controls .fvp-controls-subtitles-menu li {
       padding: 0;
       text-align: center; }
-    .free-video-player-controls .free-video-player-controls-subtitles-menu li div {
+    .fvp-controls .fvp-controls-subtitles-menu li div {
       border: none;
       background: transparent;
       color: rgba(12, 16, 18, 0.7);
       cursor: pointer;
       width: 90%; }
-  .free-video-player-controls .free-video-player-controls-subtitles {
+  .fvp-controls .fvp-controls-subtitles {
     width: 100%; }
-  .free-video-player-controls .free-video-player-controls-subtitles-button {
+  .fvp-controls .fvp-controls-subtitles-button {
     position: relative;
     display: block;
     margin-left: 10px; }
-  .free-video-player-controls [data-free-video-player-state="inactive"] {
+  .fvp-controls [data-fvp-state="inactive"] {
     color: rgba(12, 16, 18, 0.7); }
-  .free-video-player-controls [data-free-video-player-state="active"] {
+  .fvp-controls [data-fvp-state="active"] {
     color: rgba(75, 96, 108, 0.7);
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7); }
-  .free-video-player-controls .free-video-player-controls-playpause {
+  .fvp-controls .fvp-controls-playpause {
     margin-left: 5px; }
-  .free-video-player-controls .free-video-player-controls-fullscreen {
+  .fvp-controls .fvp-controls-fullscreen {
     right: 0;
     position: absolute;
     width: 40px;
     text-align: center;
     margin-right: 0; }
-  .free-video-player-controls .free-video-player-controls-settings-icon {
+  .fvp-controls .fvp-controls-settings-icon {
     right: 40px;
     position: absolute;
     width: 40px;
     text-align: center;
     margin-right: 0; }
-  .free-video-player-controls .free-video-player-controls-settings-menu {
+  .fvp-controls .fvp-controls-settings-menu {
     position: absolute;
     background: rgba(176, 228, 255, 0.8);
     bottom: 42px;
@@ -159,31 +159,31 @@
     height: auto;
     color: rgba(12, 16, 18, 0.7);
     text-shadow: 1px 1px 2px rgba(75, 96, 108, 0.7); }
-    .free-video-player-controls .free-video-player-controls-settings-menu div {
+    .fvp-controls .fvp-controls-settings-menu div {
       font-size: 0.7em; }
-  .free-video-player-controls .free-video-player-controls-display-none {
+  .fvp-controls .fvp-controls-display-none {
     display: none; }
-  .free-video-player-controls .free-video-player-controls-progress-timer {
+  .fvp-controls .fvp-controls-progress-timer {
     right: 100px;
     top: 25px;
     position: absolute;
     text-align: center;
     margin-right: 0; }
-  .free-video-player-controls .free-video-player-controls-volume-icon {
+  .fvp-controls .fvp-controls-volume-icon {
     position: relative; }
-  .free-video-player-controls .free-video-player-controls-progress {
+  .fvp-controls .fvp-controls-progress {
     -webkit-appearance: none;
     width: 100%;
     display: block;
     padding: 0;
     height: 15px; }
-    .free-video-player-controls .free-video-player-controls-progress::-webkit-slider-runnable-track {
+    .fvp-controls .fvp-controls-progress::-webkit-slider-runnable-track {
       height: 5px;
       cursor: pointer;
       animate: 0.2s;
       background: rgba(176, 228, 255, 0.8);
       border-radius: 1.3px; }
-    .free-video-player-controls .free-video-player-controls-progress::-webkit-slider-thumb {
+    .fvp-controls .fvp-controls-progress::-webkit-slider-thumb {
       height: 20px;
       width: 10px;
       border-radius: 3px;
@@ -192,9 +192,9 @@
       cursor: pointer;
       -webkit-appearance: none;
       margin-top: -7px; }
-    .free-video-player-controls .free-video-player-controls-progress:focus::-webkit-slider-runnable-track {
+    .fvp-controls .fvp-controls-progress:focus::-webkit-slider-runnable-track {
       background: rgba(176, 228, 255, 0.8); }
-    .free-video-player-controls .free-video-player-controls-progress::-moz-range-track {
+    .fvp-controls .fvp-controls-progress::-moz-range-track {
       width: 100%;
       height: 5px;
       cursor: pointer;
@@ -203,14 +203,14 @@
       background: #3071a9;
       border-radius: 1.3px;
       border: 0.2px solid #010101; }
-    .free-video-player-controls .free-video-player-controls-progress::-moz-range-thumb {
+    .fvp-controls .fvp-controls-progress::-moz-range-thumb {
       box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
       border: 1px solid #000000;
       height: 36px;
       width: 16px;
       border-radius: 3px;
       cursor: pointer; }
-    .free-video-player-controls .free-video-player-controls-progress::-ms-track {
+    .fvp-controls .fvp-controls-progress::-ms-track {
       width: 100%;
       height: 8.4px;
       cursor: pointer;
@@ -219,33 +219,33 @@
       border-color: transparent;
       border-width: 16px 0;
       color: transparent; }
-    .free-video-player-controls .free-video-player-controls-progress::-ms-fill-lower {
+    .fvp-controls .fvp-controls-progress::-ms-fill-lower {
       background: #2a6495;
       border: 0.2px solid #010101;
       border-radius: 2.6px;
       box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; }
-    .free-video-player-controls .free-video-player-controls-progress::-ms-fill-upper {
+    .fvp-controls .fvp-controls-progress::-ms-fill-upper {
       background: #3071a9;
       border: 0.2px solid #010101;
       border-radius: 2.6px;
       box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; }
-    .free-video-player-controls .free-video-player-controls-progress::-ms-thumb {
+    .fvp-controls .fvp-controls-progress::-ms-thumb {
       box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
       border: 1px solid #000000;
       height: 36px;
       width: 16px;
       border-radius: 3px;
       cursor: pointer; }
-    .free-video-player-controls .free-video-player-controls-progress:focus::-ms-fill-lower {
+    .fvp-controls .fvp-controls-progress:focus::-ms-fill-lower {
       background: #3071a9; }
-    .free-video-player-controls .free-video-player-controls-progress:focus::-ms-fill-upper {
+    .fvp-controls .fvp-controls-progress:focus::-ms-fill-upper {
       background: #367ebd; }
-  .free-video-player-controls .free-video-player-controls-progress-timer {
+  .fvp-controls .fvp-controls-progress-timer {
     font-size: 1em; }
-    .free-video-player-controls .free-video-player-controls-progress-timer:hover {
+    .fvp-controls .fvp-controls-progress-timer:hover {
       color: rgba(75, 96, 108, 0.7);
       cursor: default; }
-  .free-video-player-controls .free-video-player-controls-volume {
+  .fvp-controls .fvp-controls-volume {
     height: 15px;
     width: 110px;
     padding: 0;
@@ -255,18 +255,18 @@
     position: absolute;
     left: 30px;
     bottom: 27px; }
-    .free-video-player-controls .free-video-player-controls-volume input[type=range] {
+    .fvp-controls .fvp-controls-volume input[type=range] {
       position: relative;
       -webkit-appearance: none;
       margin: 0;
       padding: 0 0 0 0; }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]::-webkit-slider-runnable-track {
+      .fvp-controls .fvp-controls-volume input[type=range]::-webkit-slider-runnable-track {
         height: 5px;
         cursor: pointer;
         animate: 0.2s;
         background: rgba(176, 228, 255, 0.8);
         border-radius: 1.3px; }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]::-webkit-slider-thumb {
+      .fvp-controls .fvp-controls-volume input[type=range]::-webkit-slider-thumb {
         height: 20px;
         width: 10px;
         border-radius: 3px;
@@ -275,9 +275,9 @@
         cursor: pointer;
         -webkit-appearance: none;
         margin-top: -7px; }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]:focus::-webkit-slider-runnable-track {
+      .fvp-controls .fvp-controls-volume input[type=range]:focus::-webkit-slider-runnable-track {
         background: rgba(176, 228, 255, 0.8); }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]::-moz-range-track {
+      .fvp-controls .fvp-controls-volume input[type=range]::-moz-range-track {
         width: 100%;
         height: 5px;
         cursor: pointer;
@@ -286,14 +286,14 @@
         background: #3071a9;
         border-radius: 1.3px;
         border: 0.2px solid #010101; }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]::-moz-range-thumb {
+      .fvp-controls .fvp-controls-volume input[type=range]::-moz-range-thumb {
         box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
         border: 1px solid #000000;
         height: 36px;
         width: 16px;
         border-radius: 3px;
         cursor: pointer; }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]::-ms-track {
+      .fvp-controls .fvp-controls-volume input[type=range]::-ms-track {
         width: 100%;
         height: 8.4px;
         cursor: pointer;
@@ -302,52 +302,52 @@
         border-color: transparent;
         border-width: 16px 0;
         color: transparent; }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]::-ms-fill-lower {
+      .fvp-controls .fvp-controls-volume input[type=range]::-ms-fill-lower {
         background: #2a6495;
         border: 0.2px solid #010101;
         border-radius: 2.6px;
         box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]::-ms-fill-upper {
+      .fvp-controls .fvp-controls-volume input[type=range]::-ms-fill-upper {
         background: #3071a9;
         border: 0.2px solid #010101;
         border-radius: 2.6px;
         box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]::-ms-thumb {
+      .fvp-controls .fvp-controls-volume input[type=range]::-ms-thumb {
         box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
         border: 1px solid #000000;
         height: 36px;
         width: 16px;
         border-radius: 3px;
         cursor: pointer; }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]:focus::-ms-fill-lower {
+      .fvp-controls .fvp-controls-volume input[type=range]:focus::-ms-fill-lower {
         background: #3071a9; }
-      .free-video-player-controls .free-video-player-controls-volume input[type=range]:focus::-ms-fill-upper {
+      .fvp-controls .fvp-controls-volume input[type=range]:focus::-ms-fill-upper {
         background: #367ebd; }
 
-.free-video-player-controls-hide {
+.fvp-controls-hide {
   display: none !important; }
 
-.free-video-player-controls-display {
+.fvp-controls-display {
   display: block; }
 
-.free-video-player-controls-fullscreen video {
+.fvp-controls-fullscreen video {
   width: 100%;
   height: 100%; }
 
 @media all and (max-width: 700px) {
-  .free-video-player-container-style {
+  .fvp-container-style {
     width: 450px;
     height: 252px; }
-  .free-video-player-controls-overlay-play-pause-icon i {
+  .fvp-controls-overlay-play-pause-icon i {
     font-size: 4em; }
-  .free-video-player-controls-overlay-spinner-icon i {
+  .fvp-controls-overlay-spinner-icon i {
     font-size: 4em; } }
 
 @media all and (max-width: 450px) {
-  .free-video-player-container-style {
+  .fvp-container-style {
     width: 320px;
     height: 180px; }
-  .free-video-player-controls-overlay-play-pause-icon i {
+  .fvp-controls-overlay-play-pause-icon i {
     font-size: 2.5em; }
-  .free-video-player-controls-overlay-spinner-icon i {
+  .fvp-controls-overlay-spinner-icon i {
     font-size: 2.5em; } }

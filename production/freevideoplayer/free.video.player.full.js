@@ -388,11 +388,45 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             console.log(bitrateObjectsArray);
             console.log('Should be video or videoAndAudio stream now');
 
-            var bitrateMenu = document.createElement('div');
-            bitrateMenu.setAttribute('class','free-video-player-controls-settings-menu');
+            var bitrateMenu = document.createElement('div'),
+                bitrateList = document.createElement('ul'),
+                bitrateObjectArrayLength = bitrateObjectsArray.length;
 
-            that.currentVideoControlsObject.settingsIcon.appendChild(bitrateMenu);
+            bitrateMenu.innerHTML = settingsObject.videoControlsInnerHtml.bitrateQualityMenuInnerHtml;
+            bitrateMenu.setAttribute('class', settingsObject.videoControlsCssClasses.bitrateQualityMenuClass);
+
+            for(var i = 0; i < bitrateObjectArrayLength; i++){
+                var bitrateItem = document.createElement('li');
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', bitrateObjectsArray[i].index);
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', bitrateObjectsArray[i].baseUrl);
+                bitrateItem.innerHTML = bitrateObjectsArray[i].width;
+                bitrateItem.addEventListener('click', _changeVideoBitrate);
+                bitrateList.appendChild(bitrateItem);
+            }
+
+            //Lets add an auto option here
+            if(bitrateObjectArrayLength > 0){
+                //Lets create the auto option last
+                var bitrateItem = document.createElement('li');
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', 'auto');
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', 'auto');
+                bitrateItem.innerHTML = 'auto';
+                bitrateItem.addEventListener('click', _changeVideoBitrate);
+                bitrateList.appendChild(bitrateItem);
+            }
+
+            bitrateMenu.appendChild(bitrateList);
+            that.currentVideoControlsObject.settingsMenu.appendChild(bitrateMenu);
         }
+    };
+
+    function _changeVideoBitrate(){
+        console.log('Hey clicked videoBitrate..');
+        console.log('Consoling out the buttion?');
+        console.log(this);
+        var baseUrl = this.getAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url');
+        console.log('The base url is...' + baseUrl);
+        that.currentVideoObject.currentBaseUrl = baseUrl;
     };
 
     //  ##########################
@@ -1448,6 +1482,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 currentBaseUrlObject.mimeType = arrayOfRepresentations[i]._mimeType;
                 currentBaseUrlObject.codecs = arrayOfRepresentations[i]._codecs;
                 currentBaseUrlObject.baseUrl = arrayOfRepresentations[i].BaseURL;
+                currentBaseUrlObject.width = arrayOfRepresentations[i]._width || '';
+                currentBaseUrlObject.height = arrayOfRepresentations[i]._height || '';
+                currentBaseUrlObject.type = returnTypeFromMimeTypeAndCodecString(arrayOfRepresentations[i]._mimeType, arrayOfRepresentations[i]._codecs);
                 currentBaseUrlObject.index = i;
                 arrayOfBaseUrlObjects.push(currentBaseUrlObject);
             }
@@ -1514,6 +1551,39 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     //  #########################
     //  #### GENERAL METHODS ####
     //  #########################
+
+    function returnTypeFromMimeTypeAndCodecString(mimeType, codecString){
+        var returnType = 'audio',
+            tempCodecArray = [],
+            tempMimeTypeArray = [];
+            try {
+
+                tempCodecArray = codecString.split(',');
+                tempMimeTypeArray = mimeType.split('video');
+
+                if(tempCodecArray.length > 1){
+                    //We have two codecs, should indicate that the stream is muxxed, this should indicate that
+                    //the stream we are returning should include both an audio and video part
+                    returnType = 'video';
+                }
+
+                if(tempMimeTypeArray.length > 1){
+                    //The other option is that the stream we are testing is a video stream but separated
+                    //Then this condition should take care of this.
+                    returnType = 'video';
+                }
+
+            } catch (e){
+                var messageObject = {};
+                    messageObject.message = 'Could not parse and return type (video or audio) from mimeType, check input';
+                    messageObject.methodName = 'returnTypeFromMimeType';
+                    messageObject.moduleName = moduleName;
+                messagesModule.printOutErrorMessageToConsole(messageObject, e);
+            }
+        return returnType;
+    };
+
+
     function setMpdObject(mpdObject){
         currentVideoObject.mpdObject = mpdObject;
     };
@@ -1592,6 +1662,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     that.getVersion = getVersion;
     that.checkIfAdapationSetContainSingleRepresentation = checkIfAdapationSetContainSingleRepresentation;
     that.returnStreamBaseUrlFromMpdUrl = returnStreamBaseUrlFromMpdUrl;
+    that.returnTypeFromMimeTypeAndCodecString = returnTypeFromMimeTypeAndCodecString;
 
     //AdapationSet methods
     that.returnMimeTypeFromAdaptionSet = returnMimeTypeFromAdaptionSet;
@@ -1643,7 +1714,7 @@ var freeVideoPlayer = function(initiationObject){
             version:'0.9.0'
         },//videoConstructor(),
         moduleName = 'Free Video Player',
-        videoPlayerNameCss = 'free-video-player',
+        videoPlayerNameCss = 'fvp',
         xml2json = new X2JS(),
         defaultSettingsObject = {
             videoWrapperClassName: 'js-' + videoPlayerNameCss + '-container',
@@ -1663,10 +1734,13 @@ var freeVideoPlayer = function(initiationObject){
                 settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
                 liveIconInnerHtml:'<i class="fa fa-circle"></i> LIVE',
                 subtitlesMenuInnerHtml:'Subtitles',
+                bitrateQualityMenuInnerHtml:'Quality',
                 subtitlesMenuOffButtonInnerHtml:'Off'
             },
             videoControlsCssClasses: {
                 videoControlsClass: videoPlayerNameCss + '-controls',
+                hideControlClass: videoPlayerNameCss + '-controls-hide',
+                displayControlClass: videoPlayerNameCss + '-controls-display',
                 videoFullScreenClass: videoPlayerNameCss + '-controls-fullscreen',
                 playpauseContainerClass: videoPlayerNameCss + '-controls-playpause',
                 subtitlesContainerClass: videoPlayerNameCss + '-controls-subtitles',
@@ -1675,14 +1749,13 @@ var freeVideoPlayer = function(initiationObject){
                 volumeContainerClass: videoPlayerNameCss + '-controls-volume',
                 volumeIconClass: videoPlayerNameCss + '-controls-volume-icon',
                 fullscreenContainerClass: videoPlayerNameCss + '-controls-fullscreen',
-                subtitlesMenuClass: videoPlayerNameCss + '-controls-subtitles-menu',
-                subtitleButtonClass: videoPlayerNameCss + '-controls-subtitles-button',
-                hideControlClass: videoPlayerNameCss + '-controls-hide',
-                displayControlClass: videoPlayerNameCss + '-controls-display',
                 hideVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-hide',
                 showVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-show',
                 settingsIconClass: videoPlayerNameCss + '-controls-settings-icon',
                 settingsMenuClass: videoPlayerNameCss + '-controls-settings-menu',
+                subtitlesMenuClass: videoPlayerNameCss + '-controls-subtitles-menu',
+                subtitleButtonClass: videoPlayerNameCss + '-controls-subtitles-button',
+                bitrateQualityMenuClass: videoPlayerNameCss + '-controls-quality-menu',
                 liveIconClass: videoPlayerNameCss + '-controls-live-icon',
                 videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
                 videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon',
@@ -2531,6 +2604,10 @@ var freeVideoPlayer = function(initiationObject){
     var _updateVideoControlsWithBitrateSettings = function(bitrateSettingsObject){
         var typeOfStream = bitrateSettingsObject.typeOfStream,
             baseUrlObjectArray = bitrateSettingsObject.baseUrlObjectArray;
+
+        console.log('Ok reached this thing here.. baseUrlObejctsArray..:');
+        console.log(bitrateSettingsObject);
+
         //If the videoControlsModule is defined
         if(videoControlsModule){
             videoControlsModule.addBitrateMenuToSettingsIcon(typeOfStream, baseUrlObjectArray);

@@ -18,7 +18,7 @@ $player-controls-progress-slider-width-small: 140px;
 $player-controls-button-width: 15px;
 
 //Main styling class
-.free-video-player-container-style {
+.fvp-container-style {
   display:block;
   margin:0 auto 40px auto;
   width:700px;
@@ -30,13 +30,13 @@ $player-controls-button-width: 15px;
     height:auto;
   }
 
-  &:hover .free-video-player-controls {
+  &:hover .fvp-controls {
     opacity: 1;
   }
 }
 
 //Overlay Icons
-.free-video-player-controls-overlay-spinner-icon {
+.fvp-controls-overlay-spinner-icon {
   display: inline-block;
   position:absolute;
   left:0;
@@ -58,7 +58,7 @@ $player-controls-button-width: 15px;
   transition: opacity  0.3s;
 }
 
-.free-video-player-controls-overlay-play-pause-icon {
+.fvp-controls-overlay-play-pause-icon {
   display: inline-block;
   position:absolute;
   left:0;
@@ -81,11 +81,11 @@ $player-controls-button-width: 15px;
 }
 
 //Styles
-.free-video-player-controls-overlay-hide {
+.fvp-controls-overlay-hide {
   opacity:0;
 }
 
-.free-video-player-controls-live-icon {
+.fvp-controls-live-icon {
   i {
     color: #7cff92;
   }
@@ -99,7 +99,7 @@ $player-controls-button-width: 15px;
 };
 
 //Styles for the video controls
-.free-video-player-controls {
+.fvp-controls {
   position:absolute;
   width: 100%;
   height: 50px;
@@ -141,7 +141,7 @@ $player-controls-button-width: 15px;
   }
 
   //Subtitles CSS
-  .free-video-player-controls-subtitles-menu {
+  .fvp-controls-subtitles-menu {
     display:none;
     font-size:1.4em;
     position:absolute;
@@ -169,35 +169,35 @@ $player-controls-button-width: 15px;
      }
   }
 
-  .free-video-player-controls-subtitles {
+  .fvp-controls-subtitles {
     width:100%;
   }
 
   //Subtitles button
-  .free-video-player-controls-subtitles-button {
+  .fvp-controls-subtitles-button {
       position:relative;
       display:block;
       margin-left:10px;
   }
 
   //Css for active and inactive subtitle menu buttons
-  [data-free-video-player-state="inactive"]{
+  [data-fvp-state="inactive"]{
     color:$player-controls-shadow-color;
   }
 
-  [data-free-video-player-state="active"]{
+  [data-fvp-state="active"]{
     color: $player-controls-color;
     text-shadow: 1px 1px 2px $player-controls-white-color;
   }
 
   //Player controls
 
-  .free-video-player-controls-playpause{
+  .fvp-controls-playpause{
     margin-left:5px;
   }
 
    //Fullscreen button
-  .free-video-player-controls-fullscreen{
+  .fvp-controls-fullscreen{
     right: 0;
     position: absolute;
     width: 40px;
@@ -206,7 +206,7 @@ $player-controls-button-width: 15px;
   }
 
   //Settings button
-  .free-video-player-controls-settings-icon{
+  .fvp-controls-settings-icon{
     right: 40px;
     position: absolute;
     width: 40px;
@@ -214,7 +214,7 @@ $player-controls-button-width: 15px;
     margin-right: 0;
   }
 
-  .free-video-player-controls-settings-menu {
+  .fvp-controls-settings-menu {
     position: absolute;
     background:$player-controls-background-color;
     bottom: 42px;
@@ -228,11 +228,11 @@ $player-controls-button-width: 15px;
     }
   }
 
-  .free-video-player-controls-display-none {
+  .fvp-controls-display-none {
     display:none;
   }
 
-  .free-video-player-controls-progress-timer{
+  .fvp-controls-progress-timer{
     right: 100px;
     top:25px;
     position: absolute;
@@ -240,12 +240,12 @@ $player-controls-button-width: 15px;
     margin-right: 0;
   }
 
-  .free-video-player-controls-volume-icon{
+  .fvp-controls-volume-icon{
     position: relative;
   }
 
    //Styles for the progress bar
-  .free-video-player-controls-progress {
+  .fvp-controls-progress {
     -webkit-appearance: none;
     width:100%;
     display: block;
@@ -339,12 +339,12 @@ $player-controls-button-width: 15px;
     }
   }
 
-  .free-video-player-controls-volume-container {
+  .fvp-controls-volume-container {
 
   }
 
    //Progress timer
-  .free-video-player-controls-progress-timer {
+  .fvp-controls-progress-timer {
     font-size:1em;
     &:hover {
       color: $player-controls-color;
@@ -353,7 +353,7 @@ $player-controls-button-width: 15px;
   }
 
   //Styles for the volume slider
-  .free-video-player-controls-volume {
+  .fvp-controls-volume {
     height: 15px;
     width: 110px;
     padding: 0;
@@ -460,15 +460,15 @@ $player-controls-button-width: 15px;
   }
 }
 
-.free-video-player-controls-hide {
+.fvp-controls-hide {
   display:none !important;
 }
 
-.free-video-player-controls-display {
+.fvp-controls-display {
   display:block;
 }
 
-.free-video-player-controls-fullscreen {
+.fvp-controls-fullscreen {
   video {
     width:100%;
     height:100%;
@@ -478,18 +478,18 @@ $player-controls-button-width: 15px;
 //Lets make this mid-size
 @media all and (max-width: 700px) {
   //Add css for the actual video control wrapper
-  .free-video-player-container-style{
+  .fvp-container-style{
     width:450px;
     height:252px;
   }
 
-  .free-video-player-controls-overlay-play-pause-icon {
+  .fvp-controls-overlay-play-pause-icon {
     i {
       font-size:4em;
     }
   }
 
-  .free-video-player-controls-overlay-spinner-icon{
+  .fvp-controls-overlay-spinner-icon{
     i {
       font-size:4em;
     }
@@ -499,7 +499,7 @@ $player-controls-button-width: 15px;
 
 //Lets change the video player here when its really small(mobile devices and such)
 @media all and (max-width: 450px){
-  .free-video-player-container-style{
+  .fvp-container-style{
     width:320px;
     height:180px;
     div {
@@ -507,13 +507,13 @@ $player-controls-button-width: 15px;
     }
   }
 
-  .free-video-player-controls-overlay-play-pause-icon {
+  .fvp-controls-overlay-play-pause-icon {
     i {
       font-size:2.5em;
     }
   }
 
-  .free-video-player-controls-overlay-spinner-icon{
+  .fvp-controls-overlay-spinner-icon{
     i {
       font-size:2.5em;
     }

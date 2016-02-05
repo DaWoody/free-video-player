@@ -1,5 +1,5 @@
 <div class="container">
-    <h4 class="free-video-player-header">Installing</h4>
+    <h4 class="fvp-header">Installing</h4>
     <p>
         Some cool text about installing the <b>Free Video Player</b>. Will add more examples on how the player can be installed within a regular HTML page and stuff here.
     </p>
@@ -20,7 +20,7 @@
             &lt;body&gt;<br>
             <br>
             &lt;!-- some html stuff here.. --&gt;<br>
-            &lt;div class=&quot;js-free-video-player-container optional-other-classes-used-for-styling&quot;&gt;<br>
+            &lt;div class=&quot;js-fvp-container optional-other-classes-used-for-styling&quot;&gt;<br>
             &lt;!-- here the free video player will be instantiated --&gt;<br>
             &lt;/div&gt;<br>
             <br>
@@ -68,8 +68,8 @@
                 <br>
                 var freeVideoPlayerOptionalConfigurationObject = {<br>
                 //Add this parameter if you want to change the actual js class name that the Free Video Player uses<br>
-                //as a target to instantiate the player, the default value is js-free-video-player-container.<br>
-                videoWrapperClassName: 'js-free-video-player-container',<br>
+                //as a target to instantiate the player, the default value is js-fvp-container.<br>
+                videoWrapperClassName: 'js-fvp-container',<br>
                 //This is the default video splash image used on videos if no splash image is provided for the asset<br>
                 //when using the load method<br>
                 videoSplashImageUrl:'../images/free-video-player-logo.png',<br>
@@ -95,18 +95,18 @@
 
             //This object shows the different css classes that are being applied to the different video control<br>
             //elements, and as described above if you want to customize one property all need to be changed or modified<br>
-            //since all will be overwritten once one of these sub-properties. The default value for the variable videoPlayerNameCss is free-video-player,<br>
-            //so for instance the videoControlsClass would generate the css class: free-video-player-controls<br>
+            //since all will be overwritten once one of these sub-properties. The default value for the variable videoPlayerNameCss is fvp,<br>
+            //so for instance the videoControlsClass would generate the css class: fvp-controls<br>
             videoControlsCssClasses: {<br>
-            videoControlsClass: 'free-video-player-controls',<br>
-            videoFullScreenClass: 'free-video-player-controls-fullscreen',<br>
-            playpauseContainerClass: 'free-video-player-controls-playpause',<br>
-            subtitlesContainerClass: 'free-video-player-controls-subtitles',<br>
-            progressbarContainerClass: 'free-video-player-controls-progress',<br>
-            volumeContainerClass: 'free-video-player-controls-volume',<br>
-            fullscreenContainerClass: 'free-video-player-controls-fullscreen',<br>
-            subtitlesMenuClass: 'free-video-player-controls-subtitles-menu',<br>
-            subtitleButtonClass: 'free-video-player-controls-subtitles-button'<br>
+            videoControlsClass: 'fvp-controls',<br>
+            videoFullScreenClass: 'fvp-controls-fullscreen',<br>
+            playpauseContainerClass: 'fvp-controls-playpause',<br>
+            subtitlesContainerClass: 'fvp-controls-subtitles',<br>
+            progressbarContainerClass: 'fvp-controls-progress',<br>
+            volumeContainerClass: 'fvp-controls-volume',<br>
+            fullscreenContainerClass: 'fvp-controls-fullscreen',<br>
+            subtitlesMenuClass: 'fvp-controls-subtitles-menu',<br>
+            subtitleButtonClass: 'fvp-controls-subtitles-button'<br>
             },<br>
             //These sub properties decides which of the video controls that should be generated to the DOM,<br>
             //same procedure as the above properties, if one is changed all need to be added to not make them &quot;undefined&quot;<br>

@@ -278,11 +278,45 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             console.log(bitrateObjectsArray);
             console.log('Should be video or videoAndAudio stream now');
 
-            var bitrateMenu = document.createElement('div');
-            bitrateMenu.setAttribute('class','free-video-player-controls-settings-menu');
+            var bitrateMenu = document.createElement('div'),
+                bitrateList = document.createElement('ul'),
+                bitrateObjectArrayLength = bitrateObjectsArray.length;
 
-            that.currentVideoControlsObject.settingsIcon.appendChild(bitrateMenu);
+            bitrateMenu.innerHTML = settingsObject.videoControlsInnerHtml.bitrateQualityMenuInnerHtml;
+            bitrateMenu.setAttribute('class', settingsObject.videoControlsCssClasses.bitrateQualityMenuClass);
+
+            for(var i = 0; i < bitrateObjectArrayLength; i++){
+                var bitrateItem = document.createElement('li');
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', bitrateObjectsArray[i].index);
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', bitrateObjectsArray[i].baseUrl);
+                bitrateItem.innerHTML = bitrateObjectsArray[i].width;
+                bitrateItem.addEventListener('click', _changeVideoBitrate);
+                bitrateList.appendChild(bitrateItem);
+            }
+
+            //Lets add an auto option here
+            if(bitrateObjectArrayLength > 0){
+                //Lets create the auto option last
+                var bitrateItem = document.createElement('li');
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', 'auto');
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', 'auto');
+                bitrateItem.innerHTML = 'auto';
+                bitrateItem.addEventListener('click', _changeVideoBitrate);
+                bitrateList.appendChild(bitrateItem);
+            }
+
+            bitrateMenu.appendChild(bitrateList);
+            that.currentVideoControlsObject.settingsMenu.appendChild(bitrateMenu);
         }
+    };
+
+    function _changeVideoBitrate(){
+        console.log('Hey clicked videoBitrate..');
+        console.log('Consoling out the buttion?');
+        console.log(this);
+        var baseUrl = this.getAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url');
+        console.log('The base url is...' + baseUrl);
+        that.currentVideoObject.currentBaseUrl = baseUrl;
     };
 
     //  ##########################

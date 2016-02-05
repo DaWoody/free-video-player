@@ -100,18 +100,18 @@ var freeVideoPlayerOptionalConfigurationObject = {
                 //since all will be overwritten once one of these sub-properties. The default value for the variable videoPlayerNameCss is free-video-player,
                 //so for instance the videoControlsClass would generate the css class: free-video-player-controls
                 videoControlsCssClasses: {
-                    videoControlsClass: 'free-video-player-controls',
-                    videoFullScreenClass: 'free-video-player-controls-fullscreen',
-                    playpauseContainerClass: 'free-video-player-controls-playpause',
-                    subtitlesContainerClass: 'free-video-player-controls-subtitles',
-                    progressbarContainerClass: 'free-video-player-controls-progress',
-                    volumeContainerClass: 'free-video-player-controls-volume',
-                    fullscreenContainerClass: 'free-video-player-controls-fullscreen',
-                    subtitlesMenuClass: 'free-video-player-controls-subtitles-menu',
-                    subtitleButtonClass: 'free-video-player-controls-subtitles-button',
-                    settingsIconClass: 'free-video-player-controls-settings',
-                    videoOverlayPlayPauseIconClass: 'free-video-player-controls-overlay-play-pause-icon',
-                    videoOverlaySpinnerIconClass: 'free-video-player-controls-overlay-spinner-icon'
+                    videoControlsClass: 'fvp-controls',
+                    videoFullScreenClass: 'fvp-controls-fullscreen',
+                    playpauseContainerClass: 'fvp-controls-playpause',
+                    subtitlesContainerClass: 'fvp-controls-subtitles',
+                    progressbarContainerClass: 'fvp-controls-progress',
+                    volumeContainerClass: 'fvp-controls-volume',
+                    fullscreenContainerClass: 'fvp-controls-fullscreen',
+                    subtitlesMenuClass: 'fvp-controls-subtitles-menu',
+                    subtitleButtonClass: 'fvp-controls-subtitles-button',
+                    settingsIconClass: 'fvp-controls-settings',
+                    videoOverlayPlayPauseIconClass: 'fvp-controls-overlay-play-pause-icon',
+                    videoOverlaySpinnerIconClass: 'fvp-controls-overlay-spinner-icon'
                 },
                 //These sub properties decides which of the video controls that should be generated to the DOM,
                 //same procedure as the above properties, if one is changed all need to be added to not make them "undefined"
