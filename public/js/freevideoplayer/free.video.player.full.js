@@ -1755,7 +1755,7 @@ var freeVideoPlayer = function(initiationObject){
                 settingsMenuClass: videoPlayerNameCss + '-controls-settings-menu',
                 subtitlesMenuClass: videoPlayerNameCss + '-controls-subtitles-menu',
                 subtitleButtonClass: videoPlayerNameCss + '-controls-subtitles-button',
-                bitrateQualityMenuClass: videoPlayerNameCss + '-controls-quality-menu',
+                bitrateQualityMenuClass: videoPlayerNameCss + '-controls-bitrate-quality-menu',
                 liveIconClass: videoPlayerNameCss + '-controls-live-icon',
                 videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
                 videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon',
