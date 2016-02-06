@@ -18,7 +18,7 @@ $player-controls-progress-slider-width-small: 140px;
 $player-controls-button-width: 15px;
 
 //Main styling class
-.fvp-container-style {
+.free-video-player-container-style {
   display:block;
   margin:0 auto 40px auto;
   width:700px;
@@ -30,13 +30,13 @@ $player-controls-button-width: 15px;
     height:auto;
   }
 
-  &:hover .fvp-controls {
+  &:hover .free-video-player-controls {
     opacity: 1;
   }
 }
 
 //Overlay Icons
-.fvp-controls-overlay-spinner-icon {
+.free-video-player-controls-overlay-spinner-icon {
   display: inline-block;
   position:absolute;
   left:0;
@@ -58,7 +58,7 @@ $player-controls-button-width: 15px;
   transition: opacity  0.3s;
 }
 
-.fvp-controls-overlay-play-pause-icon {
+.free-video-player-controls-overlay-play-pause-icon {
   display: inline-block;
   position:absolute;
   left:0;
@@ -81,11 +81,11 @@ $player-controls-button-width: 15px;
 }
 
 //Styles
-.fvp-controls-overlay-hide {
+.free-video-player-controls-overlay-hide {
   opacity:0;
 }
 
-.fvp-controls-live-icon {
+.free-video-player-controls-live-icon {
   i {
     color: #7cff92;
   }
@@ -99,7 +99,7 @@ $player-controls-button-width: 15px;
 };
 
 //Styles for the video controls
-.fvp-controls {
+.free-video-player-controls {
   position:absolute;
   width: 100%;
   height: 50px;
@@ -140,8 +140,12 @@ $player-controls-button-width: 15px;
     }
   }
 
-  //Subtitles CSS
-  .fvp-controls-subtitles-menu {
+  //### Subtitles CSS
+  .free-video-player-controls-subtitles-container {
+    width:100%;
+  }
+
+  .free-video-player-controls-subtitles-menu {
     display:none;
     font-size:1.4em;
     position:absolute;
@@ -167,37 +171,48 @@ $player-controls-button-width: 15px;
        cursor: pointer;
        width: 90%;
      }
-  }
 
-  .fvp-controls-subtitles {
-    width:100%;
+    //Css for active and inactive subtitle menu buttons
+    & [data-free-video-player-state="inactive"]{
+      color:$player-controls-shadow-color;
+    }
+
+    & [data-free-video-player-state="active"]{
+      color: $player-controls-color;
+      text-shadow: 1px 1px 2px $player-controls-white-color;
+    }
   }
 
   //Subtitles button
-  .fvp-controls-subtitles-button {
+  .free-video-player-controls-subtitles-button {
       position:relative;
       display:block;
       margin-left:10px;
   }
 
-  //Css for active and inactive subtitle menu buttons
-  [data-fvp-state="inactive"]{
-    color:$player-controls-shadow-color;
+  //Bitrate
+  .free-video-player-bitrate-quality-menu {
+    //Css for active and inactive subtitle menu buttons
+    & [data-free-video-player-state="inactive"]{
+      color:red;
+    }
+
+    & [data-free-video-player-state="active"]{
+      color: green;
+      text-shadow: 1px 1px 2px $player-controls-white-color;
+    }
   }
 
-  [data-fvp-state="active"]{
-    color: $player-controls-color;
-    text-shadow: 1px 1px 2px $player-controls-white-color;
-  }
 
+  //####
   //Player controls
-
-  .fvp-controls-playpause{
+  //####
+  .free-video-player-controls-playpause{
     margin-left:5px;
   }
 
    //Fullscreen button
-  .fvp-controls-fullscreen{
+  .free-video-player-controls-fullscreen{
     right: 0;
     position: absolute;
     width: 40px;
@@ -206,7 +221,7 @@ $player-controls-button-width: 15px;
   }
 
   //Settings button
-  .fvp-controls-settings-icon{
+  .free-video-player-controls-settings-icon{
     right: 40px;
     position: absolute;
     width: 40px;
@@ -214,7 +229,7 @@ $player-controls-button-width: 15px;
     margin-right: 0;
   }
 
-  .fvp-controls-settings-menu {
+  .free-video-player-controls-settings-menu {
     position: absolute;
     background:$player-controls-background-color;
     bottom: 42px;
@@ -228,11 +243,11 @@ $player-controls-button-width: 15px;
     }
   }
 
-  .fvp-controls-display-none {
+  .free-video-player-controls-display-none {
     display:none;
   }
 
-  .fvp-controls-progress-timer{
+  .free-video-player-controls-progress-timer{
     right: 100px;
     top:25px;
     position: absolute;
@@ -240,12 +255,12 @@ $player-controls-button-width: 15px;
     margin-right: 0;
   }
 
-  .fvp-controls-volume-icon{
+  .free-video-player-controls-volume-icon{
     position: relative;
   }
 
    //Styles for the progress bar
-  .fvp-controls-progress {
+  .free-video-player-controls-progress {
     -webkit-appearance: none;
     width:100%;
     display: block;
@@ -339,12 +354,12 @@ $player-controls-button-width: 15px;
     }
   }
 
-  .fvp-controls-volume-container {
+  .free-video-player-controls-volume-container {
 
   }
 
    //Progress timer
-  .fvp-controls-progress-timer {
+  .free-video-player-controls-progress-timer {
     font-size:1em;
     &:hover {
       color: $player-controls-color;
@@ -353,7 +368,7 @@ $player-controls-button-width: 15px;
   }
 
   //Styles for the volume slider
-  .fvp-controls-volume {
+  .free-video-player-controls-volume {
     height: 15px;
     width: 110px;
     padding: 0;
@@ -460,15 +475,15 @@ $player-controls-button-width: 15px;
   }
 }
 
-.fvp-controls-hide {
+.free-video-player-controls-hide {
   display:none !important;
 }
 
-.fvp-controls-display {
+.free-video-player-controls-display {
   display:block;
 }
 
-.fvp-controls-fullscreen {
+.free-video-player-controls-fullscreen {
   video {
     width:100%;
     height:100%;
@@ -478,18 +493,18 @@ $player-controls-button-width: 15px;
 //Lets make this mid-size
 @media all and (max-width: 700px) {
   //Add css for the actual video control wrapper
-  .fvp-container-style{
+  .free-video-player-container-style{
     width:450px;
     height:252px;
   }
 
-  .fvp-controls-overlay-play-pause-icon {
+  .free-video-player-controls-overlay-play-pause-icon {
     i {
       font-size:4em;
     }
   }
 
-  .fvp-controls-overlay-spinner-icon{
+  .free-video-player-controls-overlay-spinner-icon{
     i {
       font-size:4em;
     }
@@ -499,7 +514,7 @@ $player-controls-button-width: 15px;
 
 //Lets change the video player here when its really small(mobile devices and such)
 @media all and (max-width: 450px){
-  .fvp-container-style{
+  .free-video-player-container-style{
     width:320px;
     height:180px;
     div {
@@ -507,13 +522,13 @@ $player-controls-button-width: 15px;
     }
   }
 
-  .fvp-controls-overlay-play-pause-icon {
+  .free-video-player-controls-overlay-play-pause-icon {
     i {
       font-size:2.5em;
     }
   }
 
-  .fvp-controls-overlay-spinner-icon{
+  .free-video-player-controls-overlay-spinner-icon{
     i {
       font-size:2.5em;
     }

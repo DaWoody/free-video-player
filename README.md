@@ -35,7 +35,7 @@ The home of *Free Video Player*, besides here on GitHub, is [www.freevideoplayer
 Currently there is me, (Johan Wedfelt) doing most of the work on the Free Video Player javascript side. If you find this project cool/interesting
 and wanna help, fork the project do some cool things and make a pull-request, or contact me directly and lets create a core-group of developers that
 want to make this project better together! :) If you wanna get in contact with us, contact us through GitHub or come and chat with us
-through our [Slack channel](https://awesome-ninja-kittens.slack.com)
+through our [Slack channel](https://awesome-ninja-kittens.slack.com), or sometimes we might be @  our [HipChat channel](https://www.hipchat.com/gcTxoHaOk)
 
 ##Issues / Todo
 ***
@@ -116,18 +116,27 @@ var freeVideoPlayerOptionalConfigurationObject = {
                 //since all will be overwritten once one of these sub-properties. The default value for the variable videoPlayerNameCss is free-video-player,
                 //so for instance the videoControlsClass would generate the css class: free-video-player-controls
                 videoControlsCssClasses: {
-                    videoControlsClass: 'fvp-controls',
-                    videoFullScreenClass: 'fvp-controls-fullscreen',
-                    playpauseContainerClass: 'fvp-controls-playpause',
-                    subtitlesContainerClass: 'fvp-controls-subtitles',
-                    progressbarContainerClass: 'fvp-controls-progress',
-                    volumeContainerClass: 'fvp-controls-volume',
-                    fullscreenContainerClass: 'fvp-controls-fullscreen',
-                    subtitlesMenuClass: 'fvp-controls-subtitles-menu',
-                    subtitleButtonClass: 'fvp-controls-subtitles-button',
-                    settingsIconClass: 'fvp-controls-settings',
-                    videoOverlayPlayPauseIconClass: 'fvp-controls-overlay-play-pause-icon',
-                    videoOverlaySpinnerIconClass: 'fvp-controls-overlay-spinner-icon'
+                    hideControlClass: 'free-video-player-controls-hide',
+                    displayControlClass: 'free-video-player-controls-display',
+                    videoFullScreenClass: 'free-video-player-controls-fullscreen',
+                    playpauseContainerClass: 'free-video-player-controls-playpause',
+                    subtitlesContainerClass: 'free-video-player-controls-subtitles',
+                    progressbarContainerClass: 'free-video-player-controls-progress',
+                    progressTimerContainerClass: 'free-video-player-controls-progress-timer',
+                    volumeContainerClass: 'free-video-player-controls-volume',
+                    volumeIconClass: 'free-video-player-controls-volume-icon',
+                    fullscreenContainerClass: 'free-video-player-controls-fullscreen',
+                    hideVideoOverlayClass: 'free-video-player-controls-overlay-hide',
+                    showVideoOverlayClass: 'free-video-player-controls-overlay-show',
+                    settingsIconClass: 'free-video-player-controls-settings-icon',
+                    settingsMenuClass: 'free-video-player-controls-settings-menu',
+                    subtitlesMenuClass: 'free-video-player-controls-subtitles-menu',
+                    subtitleButtonClass: 'free-video-player-controls-subtitles-button',
+                    bitrateQualityMenuClass: 'free-video-player-controls-bitrate-quality-menu',
+                    liveIconClass: 'free-video-player-controls-live-icon',
+                    videoOverlayPlayPauseIconClass: 'free-video-player-controls-overlay-play-pause-icon',
+                    videoOverlaySpinnerIconClass: 'free-video-player-controls-overlay-spinner-icon',
+                    displayNoneClass: 'free-video-player-controls-display-none'
                 },
                 //These sub properties decides which of the video controls that should be generated to the DOM,
                 //same procedure as the above properties, if one is changed all need to be added to not make them "undefined"

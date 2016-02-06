@@ -229,7 +229,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         progressSlider.setAttribute('class', settingsObject.videoControlsCssClasses.progressbarContainerClass);
         volumeSliderContainer.setAttribute('class', settingsObject.videoControlsCssClasses.volumeContainerClass);
         volumeIcon.setAttribute('class', settingsObject.videoControlsCssClasses.volumeIconClass);
-        subtitlesContainer.setAttribute('class', settingsObject.videoControlsCssClasses.subtitlesContainerClass);
+        subtitlesContainer.setAttribute('class', settingsObject.videoControlsCssClasses.subtitlesMenuContainerClass);
 
         fullScreenButton.setAttribute('class', settingsObject.videoControlsCssClasses.fullscreenContainerClass);
         progressTimerContainer.setAttribute('class', settingsObject.videoControlsCssClasses.progressTimerContainerClass);
@@ -307,7 +307,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //  #############################
         //  #### APPEND DOM ELEMENTS ####
         //  #############################
-
         progressTimerContainer.appendChild(progressTimerCurrentTime);
         progressTimerContainer.appendChild(progressTimerTotalDuration);
 
@@ -317,7 +316,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         volumeSliderContainer.appendChild(volumeSlider);
         //Move this part..?
         currentVideoObject.volumeSliderContainer = volumeSliderContainer;
-
 
         //LETS ALSO ADD VERIFICATION FOR LIVE ASSETS HERE, IF LIVE WE SHOULD NOT DISPLAY PROGRESS BAR
         if(settingsObject.videoControlsDisplay.showProgressSlider
@@ -364,6 +362,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Lets add the settingsIcon to the videoControls
         settingsIcon.appendChild(settingsMenu);
 
+        //Add stuff to the videoWrapper
         videoWrapper.appendChild(videoOverlaySpinnerIcon);
         videoWrapper.appendChild(videoOverlayPlayPauseIcon);
         videoWrapper.appendChild(controlsWrapper);
@@ -388,20 +387,25 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             console.log(bitrateObjectsArray);
             console.log('Should be video or videoAndAudio stream now');
 
-            var bitrateMenu = document.createElement('div'),
-                bitrateList = document.createElement('ul'),
+            var bitrateMenuContainer = document.createElement('div'),
+                bitrateMenu = document.createElement('ul'),
                 bitrateObjectArrayLength = bitrateObjectsArray.length;
 
-            bitrateMenu.innerHTML = settingsObject.videoControlsInnerHtml.bitrateQualityMenuInnerHtml;
-            bitrateMenu.setAttribute('class', settingsObject.videoControlsCssClasses.bitrateQualityMenuClass);
+            //Add classes and html to the actual bit
+            bitrateMenuContainer.innerHTML = settingsObject.videoControlsInnerHtml.bitrateQualityMenuInnerHtml;
+            bitrateMenuContainer.setAttribute('class', settingsObject.videoControlsCssClasses.bitrateQualityMenuContainerClass);
+            bitrateMenuContainer.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'quality')
+
+            bitrateMenu.setAttribute('class', settingsObject.videoControlsCssClasses.bitrateQualityMenuClass)
 
             for(var i = 0; i < bitrateObjectArrayLength; i++){
                 var bitrateItem = document.createElement('li');
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', bitrateObjectsArray[i].index);
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', bitrateObjectsArray[i].baseUrl);
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
                 bitrateItem.innerHTML = bitrateObjectsArray[i].width;
                 bitrateItem.addEventListener('click', _changeVideoBitrate);
-                bitrateList.appendChild(bitrateItem);
+                bitrateMenu.appendChild(bitrateItem);
             }
 
             //Lets add an auto option here
@@ -410,13 +414,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 var bitrateItem = document.createElement('li');
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', 'auto');
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', 'auto');
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
                 bitrateItem.innerHTML = 'auto';
                 bitrateItem.addEventListener('click', _changeVideoBitrate);
-                bitrateList.appendChild(bitrateItem);
+                bitrateMenu.appendChild(bitrateItem);
             }
 
-            bitrateMenu.appendChild(bitrateList);
-            that.currentVideoControlsObject.settingsMenu.appendChild(bitrateMenu);
+            bitrateMenuContainer.appendChild(bitrateMenu);
+            that.currentVideoControlsObject.settingsMenu.appendChild(bitrateMenuContainer);
         }
     };
 
@@ -424,8 +429,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         console.log('Hey clicked videoBitrate..');
         console.log('Consoling out the buttion?');
         console.log(this);
-        var baseUrl = this.getAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url');
+        var elementTagName = this.nodeName,
+            baseUrl = this.getAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url'),
+            listElement = this.parentNode,
+            listElements = listElement.getElementsByTagName(elementTagName);
+
+        for(var i = 0, listLength = listElements.length; i < listLength; i++ ){
+            //Lets reset all items to be not selected
+            listElements[i].setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
+        }
+        //Lets set this current item to be active
+        this.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
+
         console.log('The base url is...' + baseUrl);
+        //Now lets also save the baseUrl we fetched from the DOM node
         that.currentVideoObject.currentBaseUrl = baseUrl;
     };
 

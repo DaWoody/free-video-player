@@ -18,7 +18,7 @@ var freeVideoPlayer = function(initiationObject){
             version:'0.9.0'
         },//videoConstructor(),
         moduleName = 'Free Video Player',
-        videoPlayerNameCss = 'fvp',
+        videoPlayerNameCss = 'free-video-player',
         xml2json = new X2JS(),
         defaultSettingsObject = {
             videoWrapperClassName: 'js-' + videoPlayerNameCss + '-container',
@@ -47,7 +47,6 @@ var freeVideoPlayer = function(initiationObject){
                 displayControlClass: videoPlayerNameCss + '-controls-display',
                 videoFullScreenClass: videoPlayerNameCss + '-controls-fullscreen',
                 playpauseContainerClass: videoPlayerNameCss + '-controls-playpause',
-                subtitlesContainerClass: videoPlayerNameCss + '-controls-subtitles',
                 progressbarContainerClass: videoPlayerNameCss + '-controls-progress',
                 progressTimerContainerClass: videoPlayerNameCss + '-controls-progress-timer',
                 volumeContainerClass: videoPlayerNameCss + '-controls-volume',
@@ -56,9 +55,11 @@ var freeVideoPlayer = function(initiationObject){
                 hideVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-hide',
                 showVideoOverlayClass: videoPlayerNameCss + '-controls-overlay-show',
                 settingsIconClass: videoPlayerNameCss + '-controls-settings-icon',
+                subtitlesMenuContainerClass: videoPlayerNameCss + '-controls-subtitles-container',
                 settingsMenuClass: videoPlayerNameCss + '-controls-settings-menu',
                 subtitlesMenuClass: videoPlayerNameCss + '-controls-subtitles-menu',
                 subtitleButtonClass: videoPlayerNameCss + '-controls-subtitles-button',
+                bitrateQualityMenuContainerClass: videoPlayerNameCss + '-controls-bitrate-quality-menu-container',
                 bitrateQualityMenuClass: videoPlayerNameCss + '-controls-bitrate-quality-menu',
                 liveIconClass: videoPlayerNameCss + '-controls-live-icon',
                 videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
