@@ -104,7 +104,7 @@ $player-controls-button-width: 15px;
   width: 100%;
   height: 50px;
   display: inline-block;
-  opacity: 0;
+  opacity: 1;
   left:0;
   bottom:0;
   color: $player-controls-background-color;
@@ -130,19 +130,26 @@ $player-controls-button-width: 15px;
     margin: 0 10px 0 0;
     padding: 0;
     font-size: 25px;
-    &:hover {
-      cursor: pointer;
-      text-shadow: 1px 1px 2px $player-controls-shadow-color;
-      //color: $player-controls-shadow-color;
-    }
+
     i {
       width:$player-controls-button-width;
+    }
+
+    li {
+      &:hover {
+        cursor: pointer;
+        text-shadow: 1px 1px 2px $player-controls-shadow-color;
+      }
     }
   }
 
   //### Subtitles CSS
   .free-video-player-controls-subtitles-container {
     width:100%;
+    margin-left:10px;
+    &:hover {
+      cursor:pointer;
+    }
   }
 
   .free-video-player-controls-subtitles-menu {
@@ -154,10 +161,13 @@ $player-controls-button-width: 15px;
     width:100px;
     background:$player-controls-background-color;
     list-style-type:none;
-    margin:0;
-    padding:0;
+    padding:10px 0;
     min-width:20px;
-    color: $player-controls-color;
+
+    border-radius: 3px;
+    -webkit-border-radius:3px;
+    -o-border-radius:3px;
+    -moz-border-radius: 3px;
 
      & li {
        padding:0;
@@ -172,15 +182,19 @@ $player-controls-button-width: 15px;
        width: 90%;
      }
 
-    //Css for active and inactive subtitle menu buttons
-    & [data-free-video-player-state="inactive"]{
-      color:$player-controls-shadow-color;
+    div[data-free-video-player-state="inactive"]{
+      //Style the inactive bitrate choices
+    }
+    div[data-free-video-player-state="active"]{
+      color: $player-controls-white-color;
+      text-shadow: 1px 1px 2px $player-controls-color;
     }
 
-    & [data-free-video-player-state="active"]{
-      color: $player-controls-color;
-      text-shadow: 1px 1px 2px $player-controls-white-color;
+    div:hover {
+      cursor:pointer;
+      text-shadow: 1px 1px 2px $player-controls-shadow-color;
     }
+
   }
 
   //Subtitles button
@@ -191,18 +205,16 @@ $player-controls-button-width: 15px;
   }
 
   //Bitrate
-  .free-video-player-bitrate-quality-menu {
+  .free-video-player-controls-bitrate-quality-menu {
     //Css for active and inactive subtitle menu buttons
-    & [data-free-video-player-state="inactive"]{
-      color:red;
+    li[data-free-video-player-state="inactive"]{
+      //Style the inactive bitrate choices
     }
-
-    & [data-free-video-player-state="active"]{
-      color: green;
-      text-shadow: 1px 1px 2px $player-controls-white-color;
+    li[data-free-video-player-state="active"]{
+      color: $player-controls-white-color;
+      text-shadow: 1px 1px 2px $player-controls-color;
     }
   }
-
 
   //####
   //Player controls
@@ -225,21 +237,58 @@ $player-controls-button-width: 15px;
     right: 40px;
     position: absolute;
     width: 40px;
-    text-align: center;
     margin-right: 0;
   }
 
   .free-video-player-controls-settings-menu {
     position: absolute;
     background:$player-controls-background-color;
-    bottom: 42px;
+    bottom: 50px;
     left: -80px;
     min-width: 120px;
     height:auto;
     color:$player-controls-shadow-color;
     text-shadow: 1px 1px 2px $player-controls-color;
+    text-align: left;
+    margin:0;
+    border-radius: 3px;
+    -webkit-border-radius:3px;
+    -o-border-radius:3px;
+    -moz-border-radius: 3px;
     div {
-      font-size: 0.7em;
+      margin-left:0;
+      padding-left:10px;
+      font-size: 12px;
+      width:100%;
+    }
+  }
+
+  .free-video-player-controls-video-format {
+    color:$player-controls-white-color;
+    background: $player-controls-color;
+    text-align: left;
+    padding-left:0;
+    margin-left:10px;
+    &:hover {
+      cursor:default;
+    }
+  }
+
+  .free-video-player-controls-bitrate-quality-menu-container{
+    text-align: left;
+    margin:0;
+    position: relative;
+    ul {
+      position: relative;
+      bottom: 15px;
+      left: 70px;
+      list-style: none;
+      padding:0;
+      margin:0;
+      border-radius: 3px;
+      -webkit-border-radius:3px;
+      -o-border-radius:3px;
+      -moz-border-radius: 3px;
     }
   }
 
@@ -498,6 +547,12 @@ $player-controls-button-width: 15px;
     height:252px;
   }
 
+  .free-video-player-controls-progress-timer {
+    span {
+      font-size:0.8em;
+    }
+  }
+
   .free-video-player-controls-overlay-play-pause-icon {
     i {
       font-size:4em;
@@ -519,6 +574,12 @@ $player-controls-button-width: 15px;
     height:180px;
     div {
 
+    }
+  }
+
+  .free-video-player-controls-progress-timer {
+    span {
+      font-size:0.7em;
     }
   }
 
