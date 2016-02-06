@@ -37,8 +37,9 @@ var freeVideoPlayer = function(initiationObject){
                 spinnerIconInnerHtml: '<i class="fa fa-spinner fa-spin"></i>',
                 settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
                 liveIconInnerHtml:'<i class="fa fa-circle"></i> LIVE',
-                subtitlesMenuInnerHtml:'Subtitles',
-                bitrateQualityMenuInnerHtml:'Quality',
+                videoFormatContainerInnerHtml:'format: ',
+                subtitlesMenuInnerHtml:'subtitles',
+                bitrateQualityMenuInnerHtml:'quality',
                 subtitlesMenuOffButtonInnerHtml:'Off'
             },
             videoControlsCssClasses: {
@@ -62,6 +63,7 @@ var freeVideoPlayer = function(initiationObject){
                 bitrateQualityMenuContainerClass: videoPlayerNameCss + '-controls-bitrate-quality-menu-container',
                 bitrateQualityMenuClass: videoPlayerNameCss + '-controls-bitrate-quality-menu',
                 liveIconClass: videoPlayerNameCss + '-controls-live-icon',
+                videoFormatContainerClass: videoPlayerNameCss + '-controls-video-format',
                 videoOverlayPlayPauseIconClass: videoPlayerNameCss + '-controls-overlay-play-pause-icon',
                 videoOverlaySpinnerIconClass: videoPlayerNameCss + '-controls-overlay-spinner-icon',
                 displayNoneClass: videoPlayerNameCss + '-controls-display-none'
@@ -226,6 +228,10 @@ var freeVideoPlayer = function(initiationObject){
             //Ok fetching the video wrapper which we previously defined in the load method.
             that._videoWrapper.appendChild(videoElement);
 
+            //Lets set the videoFormat on our current asset on the currentVideoObject so this can be
+            //be used within the video player controls for instance
+            currentVideoObject.videoFormat = typeOfVideo;
+
             if(settingsObject.createControls){
                 //If we want to create the video controls our selves
                 videoControlsModule.createVideoControls(that._videoWrapper, currentVideoObject);
@@ -299,6 +305,11 @@ var freeVideoPlayer = function(initiationObject){
                 currentVideoObject.averageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject();
                 currentVideoObject.maxSegmentDuration = mpdParserModule.returnMaxSegmentDurationFromMpdObject();
                 currentVideoObject.mediaDurationInSeconds = mpdParserModule.returnMediaDurationInSecondsFromMpdObject();
+
+                //Lets set the videoFormat on our current asset on the currentVideoObject so this can be
+                //be used within the video player controls for instance
+                currentVideoObject.videoFormat = 'dash';
+
                 //Lets set our streamBaseUrl based on the mpdUrl
                 streamBaseUrl = mpdParserModule.returnStreamBaseUrlFromMpdUrl(mpdUrl);
                 //Lets add methods so we can parse the mpd already here and decide if

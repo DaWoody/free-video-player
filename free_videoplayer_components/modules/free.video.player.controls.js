@@ -70,10 +70,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
         var playButton = document.createElement('div'),
             volumeIcon = document.createElement('div'),
-            settingsIcon = document.createElement('div'),
-            settingsMenu = document.createElement('div'),
-            subtitlesContainer = document.createElement('div'),
-            bitrateButton = document.createElement('div'),
             fullScreenButton = document.createElement('div'),
             progressSlider = document.createElement('input'),
             volumeSliderContainer = document.createElement('div'),
@@ -83,6 +79,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             progressTimerTotalDuration = document.createElement('span'),
             videoOverlayPlayPauseIcon = document.createElement('div'),
             videoOverlaySpinnerIcon = document.createElement('div'),
+            settingsIcon = document.createElement('div'),
+            settingsMenu = document.createElement('div'),
+            videoFormatContainer = document.createElement('div'),
+            subtitlesContainer = document.createElement('div'),
+            bitrateButton = document.createElement('div'),
             liveIcon = document.createElement('div');
 
 
@@ -103,6 +104,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoControlsObject.settingsMenu = settingsMenu;
         that.currentVideoControlsObject.subtitlesContainer = subtitlesContainer;
         that.currentVideoControlsObject.bitrateButton = bitrateButton;
+        that.currentVideoControlsObject.videoFormatContainer = videoFormatContainer;
         that.currentVideoControlsObject.liveIcon = liveIcon;
 
         //DO MORE STUFF WITH PROGRESS TIMER ETC
@@ -127,6 +129,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         videoOverlaySpinnerIcon.setAttribute('class', settingsObject.videoControlsCssClasses.videoOverlaySpinnerIconClass);
         settingsIcon.setAttribute('class', settingsObject.videoControlsCssClasses.settingsIconClass);
         settingsMenu.setAttribute('class', settingsObject.videoControlsCssClasses.settingsMenuClass + ' ' + settingsObject.videoControlsCssClasses.displayNoneClass);
+        videoFormatContainer.setAttribute('class', settingsObject.videoControlsCssClasses.videoFormatContainerClass);
         liveIcon.setAttribute('class', settingsObject.videoControlsCssClasses.liveIconClass);
 
         //Add some attributes to our sliders
@@ -155,6 +158,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         subtitlesContainer.innerHTML = settingsObject.videoControlsInnerHtml.subtitlesMenuInnerHtml;
         settingsIcon.innerHTML = settingsObject.videoControlsInnerHtml.settingsIconInnerHtml;
         progressTimerCurrentTime.innerHTML = '0:00';
+        videoFormatContainer.innerHTML = settingsObject.videoControlsInnerHtml.videoFormatContainerInnerHtml;
         liveIcon.innerHTML = settingsObject.videoControlsInnerHtml.liveIconInnerHtml;
 
         //  #############################
@@ -200,7 +204,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         progressTimerContainer.appendChild(progressTimerCurrentTime);
         progressTimerContainer.appendChild(progressTimerTotalDuration);
 
-        //settingsIcon.appendChild(settingsMenu);
+        //Lets add the videoFormat to the videoFormatContainer within
+        //the settings menu
+        videoFormatContainer = _addAndReturnVideoFormatName(videoFormatContainer);
+        settingsMenu.appendChild(videoFormatContainer);
 
         //Lets add the volume slider to the volume slider container
         volumeSliderContainer.appendChild(volumeSlider);
@@ -225,10 +232,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         if(settingsObject.videoControlsDisplay.showVolumeSlider){
             //controlsWrapper.appendChild(volumeSliderContainer);
         }
-        if(subtitlesMenu && settingsObject.videoControlsDisplay.showSubtitlesMenu){
+        if(subtitlesMenu
+            && settingsObject.videoControlsDisplay.showSubtitlesMenu){
             subtitlesContainer.appendChild(subtitlesMenu);
             settingsMenu.appendChild(subtitlesContainer);
-            console.log('Adding a menu to the video controls..');
         }
 
         if(settingsObject.videoControlsDisplay.showSettingsIcon){
@@ -262,6 +269,25 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         _createKeyboardListeners();
     };
 
+
+    /**
+     * @description A helper method to add the videoFormatName to the videoFormatContainer
+     * @param videoFormatContainer
+     * @returns {*}
+     * @private
+     */
+    function _addAndReturnVideoFormatName(videoFormatContainer){
+
+        var videoFormat = that.currentVideoObject.videoFormat,
+            span = document.createElement('span');
+
+        span.innerHTML = videoFormat;
+        videoFormatContainer.appendChild(span);
+
+        return videoFormatContainer;
+    }
+
+
     /**
      * @description A method that in turn will modify the settingsMenu on videoControls to correspond
      * to different choices the user has to decide which quality the video should be streamed at.
@@ -273,10 +299,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         console.log('Reached the bitrate object method on video controls module');
         console.log('The stream is..' + typeOfStream);
         if(typeOfStream !== 'audio'){
-            //Lets print out the bitrateObjectArray and modify the menu
-            console.log(bitrateObjectsArray);
-            console.log('Should be video or videoAndAudio stream now');
-
+            //Should be video or videoAndAudio stream now
             var bitrateMenuContainer = document.createElement('div'),
                 bitrateMenu = document.createElement('ul'),
                 bitrateObjectArrayLength = bitrateObjectsArray.length;
@@ -316,9 +339,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     function _changeVideoBitrate(){
-        console.log('Hey clicked videoBitrate..');
-        console.log('Consoling out the buttion?');
-        console.log(this);
+
         var elementTagName = this.nodeName,
             baseUrl = this.getAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url'),
             listElement = this.parentNode,
@@ -331,6 +352,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Lets set this current item to be active
         this.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
 
+        console.log('Hey clicked videoBitrate..');
+        console.log('Consoling out the buttion?');
+        console.log(this);
         console.log('The base url is...' + baseUrl);
         //Now lets also save the baseUrl we fetched from the DOM node
         that.currentVideoObject.currentBaseUrl = baseUrl;
@@ -646,7 +670,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             // we should now fetch the first instance
             classString = classString[0].trim();
         } else {
-            //Do nothing here since the class name is not here
+            //Do nothing here
         }
         element.setAttribute('class', classString);
     };
