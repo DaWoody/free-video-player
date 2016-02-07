@@ -10,6 +10,7 @@ $player-controls-color: rgba(75,96, 108, 0.7);
 $player-controls-shadow-color: darken($player-controls-color, 30%);
 $player-controls-background-color: rgba(176, 228, 255, 0.8);
 $player-controls-white-color: rgba(255,255,255,0.7);
+$player-green-live-color: #7cff92;
 $header-color: #f0ff9d;
 
 $player-controls-progress-slider-width-large: 400px;
@@ -87,7 +88,7 @@ $player-controls-button-width: 15px;
 
 .free-video-player-controls-live-icon {
   i {
-    color: #7cff92;
+    color: $player-green-live-color;
   }
   color:$player-controls-white-color;
   text-shadow: 1px 1px 2px $player-controls-color;
@@ -104,7 +105,7 @@ $player-controls-button-width: 15px;
   width: 100%;
   height: 50px;
   display: inline-block;
-  opacity: 1;
+  opacity: 0;
   left:0;
   bottom:0;
   color: $player-controls-background-color;

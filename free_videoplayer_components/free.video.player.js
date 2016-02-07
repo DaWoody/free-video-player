@@ -847,12 +847,12 @@ var freeVideoPlayer = function(initiationObject){
                 //These two following should probably be rewritten and changed
                 sourceBuffer.addEventListener('updatestart', function(){
                     console.log('Should start with update... sourceBuffer.updating should be true..' + sourceBuffer.updating);
-                    videoControlsModule.addSpinnerIconToVideoOverlay();
+                    //videoControlsModule.addSpinnerIconToVideoOverlay();
                 });
 
                 sourceBuffer.addEventListener('update', function(){
                     console.log('Should be done with update... sourceBuffer.updating should be false..' + sourceBuffer.updating);
-                    videoControlsModule.removeSpinnerIconFromVideoOverlay();
+                    //videoControlsModule.removeSpinnerIconFromVideoOverlay();
                 });
 
                 //When we are done updating
@@ -1284,6 +1284,7 @@ var freeVideoPlayer = function(initiationObject){
         currentVideoObject.subtitleTracksArray = [];
         //Lets clear all timestamps for the next stream
         currentVideoObject.adaptiveStreamBitrateObjectMap.clear();
+        currentVideoObject.currentVideoBaseUrl = 'auto';
     };
 
     //  ############################
