@@ -357,7 +357,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         console.log(this);
         console.log('The base url is...' + baseUrl);
         //Now lets also save the baseUrl we fetched from the DOM node
-        that.currentVideoObject.currentBaseUrl = baseUrl;
+        that.currentVideoObject.currentVideoBaseUrl = baseUrl;
     };
 
     //  ##########################

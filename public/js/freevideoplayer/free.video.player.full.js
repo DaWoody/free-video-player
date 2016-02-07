@@ -467,7 +467,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         console.log(this);
         console.log('The base url is...' + baseUrl);
         //Now lets also save the baseUrl we fetched from the DOM node
-        that.currentVideoObject.currentBaseUrl = baseUrl;
+        that.currentVideoObject.currentVideoBaseUrl = baseUrl;
     };
 
     //  ##########################
@@ -1849,7 +1849,9 @@ var freeVideoPlayer = function(initiationObject){
         fullScreen:false,
         muted:false,
         volumeBeforeMute:1,
-        adaptiveStreamBitrateObjectMap: new Map()
+        adaptiveStreamBitrateObjectMap: new Map(),
+        //used for the adaptive bitrate algo, should probably be refactored later
+        currentVideoBaseUrl:'auto'
     };
 
     var currentVideoStreamObject = {
@@ -2614,7 +2616,12 @@ var freeVideoPlayer = function(initiationObject){
                     currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectArray);
 
                     //Lets switch baseUrl here..
-                    baseUrl = _returnBaseUrlBasedOnBitrateTimeSwitch(typeOfStream);
+                    //We first evaulate if we want to bitrate switch from user settings or from adaptive algorithm
+                    if(_isBitrateAuto()){
+                       baseUrl = _returnBaseUrlBasedOnBitrateTimeSwitch(typeOfStream);
+                    } else {
+                       baseUrl = _returnBaseUrlBasedOnStoredUserSettings();
+                    }
 
                     setTimeout(function(){
                         _appendData(sourceBuffer,
@@ -2647,6 +2654,30 @@ var freeVideoPlayer = function(initiationObject){
         //}, 2000);
     };
 
+    /**
+     * @description Returns the baseUrl that the users stored from the video controls menu
+     * @returns {string}
+     * @private
+     */
+    var _returnBaseUrlBasedOnStoredUserSettings = function(){
+        var returnBaseUrl = currentVideoObject.currentVideoBaseUrl;
+        return returnBaseUrl;
+    };
+
+
+    /**
+     * @description Checks if the bitrate is set to auto, this can be used as a flag to determine if the user wants
+     * to overwrite the automagic bitrate algorithm
+     * @returns {boolean}
+     * @private
+     */
+    var _isBitrateAuto = function(){
+        var bitrateIsAudio = false;
+        if(currentVideoObject.currentVideoBaseUrl === 'auto'){
+            bitrateIsAudio = true;
+        }
+        return bitrateIsAudio;
+    };
 
     /**
      * @description A method that first verifies that the videoControlsModule is in use, then tries to contact
@@ -2666,7 +2697,6 @@ var freeVideoPlayer = function(initiationObject){
             videoControlsModule.addBitrateMenuToSettingsIcon(typeOfStream, baseUrlObjectArray);
         }
     };
-
 
     /**
      * @description This method checks the buffers
