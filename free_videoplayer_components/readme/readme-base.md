@@ -69,7 +69,7 @@ var freeVideoPlayerOptionalConfigurationObject = {
     
                 //Add this parameter if you want to change the actual js class name that the Free Video Player uses
                 //as a target to instantiate the player, the default value is js-free-video-player-container.
-                videoWrapperClassName: 'js-fvp-container',
+                videoWrapperClassName: 'js-free-video-player-container',
                 //This is the default video splash image used on videos if no splash image is provided for the asset
                 //when using the load method
                 videoSplashImageUrl:'../images/free-video-player-logo.png',
