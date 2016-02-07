@@ -2900,6 +2900,10 @@ var freeVideoPlayer = function(initiationObject){
                     streamType = 'mp4';
                     break;
 
+                case 'webm' :
+                    streamType = 'webm';
+                    break;
+
                 case 'ogg' :
                     streamType = 'ogg';
                     break;
