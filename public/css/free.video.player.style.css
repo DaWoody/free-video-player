@@ -71,6 +71,22 @@
   .free-video-player-controls-live-icon i {
     color: #7cff92; }
 
+.free-video-player-fullscreen-mode {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100% !important;
+  height: 100% !important; }
+  .free-video-player-fullscreen-mode video {
+    width: 100% !important;
+    height: auto; }
+
+video::-webkit-media-controls-enclosure {
+  opacity: 0; }
+
+video::-webkit-media-controls-panel {
+  opacity: 0; }
+
 .free-video-player-controls {
   position: absolute;
   width: 100%;
@@ -86,7 +102,8 @@
   -moz-transition: opacity  0.5s;
   -ms-transition: opacity  0.5s;
   -o-transition: opacity  0.5s;
-  transition: opacity  0.5s; }
+  transition: opacity  0.5s;
+  z-index: 2147483647; }
   .free-video-player-controls input {
     background-color: transparent;
     display: inline-block;

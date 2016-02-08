@@ -1102,6 +1102,30 @@ var freeVideoPlayer = function(initiationObject){
         that._videoElement.play();
     };
 
+    var fullscreen = function(){
+        if (_isFullScreen()) {
+            if (document.exitFullscreen) document.exitFullscreen();
+            else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+            else if (document.webkitCancelFullScreen) document.webkitCancelFullScreen();
+            else if (document.msExitFullscreen) document.msExitFullscreen();
+        }
+        else {
+            if (that._videoElement.requestFullscreen) that._videoElement.requestFullscreen();
+            else if (that._videoElement.mozRequestFullScreen) that._videoElement.mozRequestFullScreen();
+            else if (that._videoElement.webkitRequestFullScreen) that._videoElement.webkitRequestFullScreen();
+            else if (that._videoElement.msRequestFullscreen) that._videoElement.msRequestFullscreen();
+        }
+    };
+
+    /**
+     * @description a fullscreen check method for the public API
+     * @returns {boolean}
+     * @private
+     */
+    var _isFullScreen = function() {
+        return !!(document.fullScreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement);
+    }
+
     /**
      * @description This method interacts with the player video element and seeks within the stream/media
      * @public
@@ -1230,6 +1254,12 @@ var freeVideoPlayer = function(initiationObject){
     var _clearVideoContainer = function(){
         try {
             var videoWrapper = document.querySelectorAll('.' + settingsObject.videoWrapperClassName)[0];
+            try {
+                var videoElement = videoWrapper.getElementsByTagName('video')[0];
+                videoElement.src = '';
+            }  catch (e){
+                //Do nothing here, this is done when we first load aswell.
+            }
             videoWrapper.innerHTML = '';
         } catch(e){
             var messageObject = {};
@@ -1256,6 +1286,10 @@ var freeVideoPlayer = function(initiationObject){
         }
     };
 
+    /**
+     * @description Abort the source buffers
+     * @private
+     */
     var _abortSourceBuffers = function(){
         try {
             console.log('Reached abort source buffers');
@@ -1347,6 +1381,7 @@ var freeVideoPlayer = function(initiationObject){
     that.play = play;
     that.seek = seek;
     that.setVolume = setVolume;
+    that.fullscreen = fullscreen;
     //General methods
     //That can be used within the API
     that.getVersion = getVersion;

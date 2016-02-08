@@ -99,6 +99,29 @@ $player-controls-button-width: 15px;
   height:50px;
 };
 
+//Lets hide the native web-controls for fullscreen mode
+.free-video-player-fullscreen-mode {
+  position: absolute;
+  left:0;
+  top:0;
+  width:100% !important;
+  height:100% !important;
+
+  video {
+    width:100% !important;
+    height:auto;
+  }
+}
+
+//Chrome
+video::-webkit-media-controls-enclosure {
+  opacity: 0;
+}
+
+video::-webkit-media-controls-panel {
+  opacity: 0;
+}
+
 //Styles for the video controls
 .free-video-player-controls {
   position:absolute;
@@ -110,13 +133,15 @@ $player-controls-button-width: 15px;
   bottom:0;
   color: $player-controls-background-color;
   text-shadow: none;
-  //background: $player-controls-background-color;
   margin:0;
+
   -webkit-transition: opacity 0.5s;
   -moz-transition: opacity  0.5s;
   -ms-transition: opacity  0.5s;
   -o-transition: opacity  0.5s;
   transition: opacity  0.5s;
+
+  z-index: 2147483647;
 
   input {
     background-color:transparent;

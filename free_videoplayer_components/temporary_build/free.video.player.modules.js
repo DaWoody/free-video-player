@@ -162,6 +162,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
         //Add the data to the class scoped variables
         that.currentVideoObject = currentVideoObject;
+        that.videoWrapper = videoWrapper;
         that.videoElement = videoElement;
         that.currentVideoControlsObject = {
             volumeHighStart: volumeHighStart,
@@ -669,8 +670,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _changeSettings(){
-        console.log('Clicked settings button');
-        console.log('Lets try adding css classes here');
         if(_checkIfElementHasCssClassReturnBoolean(that.currentVideoControlsObject.settingsMenu, settingsObject.videoControlsCssClasses.displayNoneClass)){
             _removeCssClassToElementAndReturn(that.currentVideoControlsObject.settingsMenu, settingsObject.videoControlsCssClasses.displayNoneClass)
         } else {
@@ -679,24 +678,36 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method that will enable full screen mode on the Free Video Player
+     * @description A method that will enable full screen mode on the Free Video Player, or disable it
      * @private
      */
     function _fullScreenMethod(){
-        if (that.videoElement.requestFullscreen) {
-            that.videoElement.requestFullscreen();
-        } else if (that.videoElement.mozRequestFullScreen) {
-            that.videoElement.mozRequestFullScreen();
-        } else if (that.videoElement.webkitRequestFullscreen) {
-            that.videoElement.webkitRequestFullscreen();
-        } else {
-            var messageObject = {};
-                messageObject.message = 'Could not enter fullscreen mode, check if browser is compatible';
-                messageObject.methodName = '_createVideoControls';
-                messageObject.moduleName = moduleName;
-            messagesModule.printOutMessageToConsole(messageObject);
+        if (_isFullScreen()) {
+            if (document.exitFullscreen) document.exitFullscreen();
+            else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+            else if (document.webkitCancelFullScreen) document.webkitCancelFullScreen();
+            else if (document.msExitFullscreen) document.msExitFullscreen();
+            that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
+        }
+        else {
+            if (that.videoElement.requestFullscreen) that.videoElement.requestFullscreen();
+            else if (that.videoElement.mozRequestFullScreen) that.videoElement.mozRequestFullScreen();
+            else if (that.videoElement.webkitRequestFullScreen) that.videoElement.webkitRequestFullScreen();
+            else if (that.videoElement.msRequestFullscreen) that.videoElement.msRequestFullscreen();
+            that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenCompressIconInnerHtml;
         }
     };
+
+    /**
+     * @decription Checks if the browsers is in full-screen mode
+     * @returns {boolean}
+     * @private
+     */
+    function _isFullScreen() {
+        return !!(document.fullScreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement);
+    }
+
+
 
     //  ###############################
     //  #### VIDEO OVERLAY METHODS ####
@@ -817,7 +828,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     function _createKeyboardListeners(){
         //Add event listener for space button - play/pause
         _createPlayPauseSpaceBarListener();
-        //Lets add more listeners here
     };
 
     /**
@@ -827,7 +837,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function _removeKeyboardListeners(){
         //Remove space bar key listener
-      _removePlayPauseSpaceBarListener();
+        _removePlayPauseSpaceBarAndEscFullscreenListener();
     };
 
     /**
@@ -835,42 +845,57 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _createPlayPauseSpaceBarListener(){
-        document.addEventListener('keypress', _spaceBarKeyPress);
+        document.addEventListener('keypress', _spaceBarEscKeyPress);
     };
 
     /**
      * @description The method that removes the play/pause button from the spacebar.
      * @private
      */
-    function _removePlayPauseSpaceBarListener(){
+    function _removePlayPauseSpaceBarAndEscFullscreenListener(){
         try {
-            document.removeEventListener('keypress', _spaceBarKeyPress);
+            document.removeEventListener('keypress', _spaceBarEscKeyPress);
         } catch(e){
             var messageObject = {};
-                messageObject.message = 'Could not remove play/pause spacebar eventlistener';
+                messageObject.message = 'Could not remove play/pause spacebar or esc eventlistener';
                 messageObject.methodName = '_removePlayPauseSpaceBarListener';
                 messageObject.moduleName = moduleName;
             messagesModule.printOutMessageToConsole(messageObject);
         }
     };
 
+
     /**
      * @description The actual method that catches the event from the spacebar button
      * @param event
      * @private
      */
-    function _spaceBarKeyPress(event){
+    function _spaceBarEscKeyPress(event){
         var code;
         if (event.keyCode) {
             code = event.keyCode;
         } else if (event.which) {
             code = event.which;
         }
+
+        console.log('The keyboard code is ' + code);
+
+        //SpaceBar KeyPress
         if (code === 32 || code === 0) {
             event.preventDefault();
             _playPauseMethod();
         }
+        //Esc KeyPress
+        if (code === 27) {
+            event.preventDefault();
+            if(_isFullScreen()){
+                that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
+            } else {
+                that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenCompressIconInnerHtml;
+            }
+        }
     };
+
 
 
     //  ################################

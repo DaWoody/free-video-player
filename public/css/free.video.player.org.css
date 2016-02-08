@@ -98,7 +98,8 @@ h4 {
 .free-video-player-header {
   text-shadow: 1px 1px 3px rgba(75, 96, 108, 0.7);
   color: #f0ff9d;
-  padding-top: 20px; }
+  padding-top: 20px;
+  text-transform: uppercase; }
 
 .video-bullet-list {
   display: block;
