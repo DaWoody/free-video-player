@@ -41,6 +41,7 @@ through our [Slack channel](https://awesome-ninja-kittens.slack.com), or sometim
 ***
 To see a list of todos and current issues, see our issue tracker @
 [Issue-section](http://p.freevideoplayer.org/maniphest/query/open/).
+Or check out the [SCRUM-BOARD](http://p.freevideoplayer.org/project/view/3/).
 
 ##How to build (for developers wanting to contribute)?
 ***
