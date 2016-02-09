@@ -97,10 +97,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
             var mediaDurationFullString = currentVideoObject.mpdObject._mediaPresentationDuration,
                 mediaDurationTemporaryFullString = '';
 
-            if(mediaDurationFullString.split('PT').length > 1){
-                mediaDurationTemporaryFullString = mediaDurationFullString.split('PT')[1];
-            } else {
-                mediaDurationTemporaryFullString = mediaDurationFullString.split('P0DT')[1];
+            if(mediaDurationFullString.split('T').length > 1){
+                mediaDurationTemporaryFullString = mediaDurationFullString.split('T')[1];
             }
 
             var hoursString = mediaDurationTemporaryFullString.split('H')[0],

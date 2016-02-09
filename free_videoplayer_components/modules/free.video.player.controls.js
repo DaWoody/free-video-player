@@ -288,7 +288,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return videoFormatContainer;
     }
 
-
     /**
      * @description A method that in turn will modify the settingsMenu on videoControls to correspond
      * to different choices the user has to decide which quality the video should be streamed at.
@@ -297,8 +296,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _addBitrateMenuToSettingsIcon(typeOfStream, bitrateObjectsArray){
-        console.log('Reached the bitrate object method on video controls module');
-        console.log('The stream is..' + typeOfStream);
+
+        console.log('_addBitrateMenuToSettingsIcon - The stream is..' + typeOfStream);
         if(typeOfStream !== 'audio'){
             //Should be video or videoAndAudio stream now
             var bitrateMenuContainer = document.createElement('div'),
@@ -317,7 +316,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', bitrateObjectsArray[i].index);
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', bitrateObjectsArray[i].baseUrl);
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
-                bitrateItem.innerHTML = bitrateObjectsArray[i].width;
+                bitrateItem.innerHTML = bitrateObjectsArray[i].height + 'p';
                 bitrateItem.addEventListener('click', _changeVideoBitrate);
                 bitrateMenu.appendChild(bitrateItem);
             }
