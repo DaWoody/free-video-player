@@ -1306,6 +1306,7 @@ var freeVideoPlayer = function(initiationObject){
         if(adaptiveStreamingModule){
             adaptiveStreamingModule.abortSourceBuffers();
             adaptiveStreamingModule.clearMediaSource();
+            adaptiveStreamingModule.clearCurrentVideoStreamObject();
         }
     };
 

@@ -48,23 +48,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         moduleVersion = '0.9.0',
         currentVideoObject = {},
         adaptiveBitrateAlgorithmValue = new Map(),
-        currentVideoStreamObject = {
-            bitrateSwitchTimerSegmentAppendTime:0,
-            currentVideoBitrateIndex:0,
-            sourceBuffers: [],
-            mpdObject: {},
-            hlsObject: {},
-            adaptiveStreamBitrateObjectMap: new Map(),
-            //used for the adaptive bitrate algo, should probably be refactored later
-            currentVideoBaseUrl:'auto'
-        };
+        currentVideoStreamObject = _returnClearCurrentVideoStreamObject();
 
     //Import dependencies and modules
     var mpdParserModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser(),
         messagesModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion),
         videoControlsModule = videoControlsModule || null,
         hlsParserModule = 'Add HLS PARSER HERE...';
-
 
     //Populate value in map, used for adaptive bitrate algorithm,
     //these values are used for threshold values in miliseconds,
@@ -77,7 +67,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //Create methods here
     //Some methods we will be using for the player here. We will write them like the way we do. Just the way it should be.
     //Awesomeness.
-
     //  ############################
     //  #### INITIATION METHODS ####
     //  ############################
@@ -142,10 +131,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @private
      */
     var _returnBaseUrlBasedOnStoredUserSettings = function(){
-        var returnBaseUrl = currentVideoObject.currentVideoBaseUrl;
+        var returnBaseUrl = currentVideoStreamObject.currentVideoBaseUrl;
         return returnBaseUrl;
     };
-
 
     /**
      * @description Checks if the bitrate is set to auto, this can be used as a flag to determine if the user wants
@@ -155,7 +143,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     var _isBitrateAuto = function(){
         var bitrateIsAudio = false;
-        if(currentVideoObject.currentVideoBaseUrl === 'auto'){
+        if(currentVideoStreamObject.currentVideoBaseUrl === 'auto'){
             bitrateIsAudio = true;
         }
         return bitrateIsAudio;
@@ -180,11 +168,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
     function loadDashMediaWithMediaSourceExtension(adaptiveVideoObject){
 
-        var streamBaseUrl = adaptiveVideoObject.streamBaseUrl,
-            videoWrapperClassName = adaptiveVideoObject.videoWrapperClassName,
+        var videoWrapperClassName = adaptiveVideoObject.videoWrapperClassName,
             optionalConfigurationObject = adaptiveVideoObject.optionalConfigurationObject,
             mpdObject = adaptiveVideoObject.mpdObject,
             hlsObject = adaptiveVideoObject.hlsObject;
+
+        currentVideoStreamObject.streamBaseUrl = adaptiveVideoObject.streamBaseUrl;
 
         //Lets add the mpdObject to our currentVideoStreamObject
         mpdObject ?  currentVideoStreamObject.mpdObject = mpdObject : adaptiveVideoObject.mpdObject = {};
@@ -192,7 +181,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
         _initiateMediaSource();
         _createVideoElementAndAppendToWrapper(videoWrapperClassName);
-        _createMediaSourceStream(streamBaseUrl, optionalConfigurationObject);
+        _createMediaSourceStream(currentVideoStreamObject.streamBaseUrl, optionalConfigurationObject);
         _addEventListenersToMediaSource();
     };
 
@@ -247,6 +236,16 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #######################
     //  #### VIDEO METHODS ####
     //  #######################
+
+
+    function addStreamBaseUrl(streamBaseUrl){
+        currentVideoStreamObject.streamBaseUrl = streamBaseUrl;
+    };
+
+    function _getStreamBaseUrl(){
+      return currentVideoStreamObject.streamBaseUrl;
+    };
+
     /**
      * @description This is the main media method for adpative bitrate content when the video and mediasource object are ready,
      * this is currently used in conjunction with the mpdParserModule and the DASH format for streaming content.
@@ -261,6 +260,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
             videoBufferAdded = false,
             audioBufferAdded = false,
+            streamBaseUrl = _getStreamBaseUrl(),
             arrayOfSourceBuffers = [];
 
         console.log('The adaptionsets are:');
@@ -447,8 +447,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     //Lets switch baseUrl here..
                     //We first evaulate if we want to bitrate switch from user settings or from adaptive algorithm
                     if(_isBitrateAuto()){
+                        console.log('Should be bitrate auto..');
                         baseUrl = _returnBaseUrlBasedOnBitrateTimeSwitch(typeOfStream);
                     } else {
+                        console.log('Should NOT be bitrate auto..');
                         baseUrl = _returnBaseUrlBasedOnStoredUserSettings();
                     }
 
@@ -648,14 +650,31 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @description This method clears the current video object properties that need to be cleared between plays
      * @private
      */
-    function clearCurrentVideoObjectProperties(that){
-        //Add more stuff that needs clearing here
-        that.currentVideoObject.subtitleTracksArray = [];
-        //Lets clear all timestamps for the next stream
-        that.currentVideoObject.adaptiveStreamBitrateObjectMap.clear();
-        that.currentVideoObject.currentVideoBaseUrl = 'auto';
-        return that;
+    function clearCurrentVideoStreamObject(){
+        ////Add more stuff that needs clearing here
+        //that.currentVideoStreamObject.subtitleTracksArray = [];
+        ////Lets clear all timestamps for the next stream
+        //that.currentVideoStreamObject.adaptiveStreamBitrateObjectMap.clear();
+        //that.currentVideoStreamObject.currentVideoBaseUrl = 'auto';
+
+        currentVideoStreamObject = _returnClearCurrentVideoStreamObject();
     };
+
+    function _returnClearCurrentVideoStreamObject(){
+        var returnObject = {
+            bitrateSwitchTimerSegmentAppendTime:0,
+            currentVideoBitrateIndex:0,
+            sourceBuffers: [],
+            mpdObject: {},
+            hlsObject: {},
+            adaptiveStreamBitrateObjectMap: new Map(),
+            //used for the adaptive bitrate algo, should probably be refactored later
+            currentVideoBaseUrl:'auto',
+            streamBaseUrl:''
+        };
+
+        return returnObject;
+    }
 
 
     //  #########################
@@ -706,28 +725,28 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         try {
             currentTime = new Date().getTime();
 
-            if(!currentVideoObject.adaptiveStreamBitrateObjectMap.has(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime')){
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime', currentTime);
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectsArray);
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
+            if(!currentVideoStreamObject.adaptiveStreamBitrateObjectMap.has(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime')){
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime', currentTime);
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectsArray);
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
             }
 
             timeDifferenceFromLastAppendedSegment = currentTime - currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime');
 
             // Lets add a swtich block here
             if(timeDifferenceFromLastAppendedSegment == 0){
-                var currentIndex = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
-                baseUrl = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
+                var currentIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
+                baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
                 // Lets set our index to the lowest value then make it higher as soon as we start
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
             }
 
             if(timeDifferenceFromLastAppendedSegment < lowestValue){
                 // Lets go high directly since latency is low
                 console.log('Switching to highest bitrate - dl time less than ' + lowestValue);
-                var highestIndex = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlHighestIndex');
-                baseUrl = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[highestIndex].baseUrl;
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', highestIndex);
+                var highestIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlHighestIndex');
+                baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[highestIndex].baseUrl;
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', highestIndex);
             }
 
             if(timeDifferenceFromLastAppendedSegment >= lowestValue
@@ -735,15 +754,15 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 // We still don't have to low latency in this so lets go up a notch at a time
                 // lets take it from here, now we are checking if the latency took
                 console.log('Switching to higher bitrate - dl time less than 2500, higher than ' + lowestValue);
-                var currentIndex = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex'),
-                    highestIndex = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlHighestIndex');
+                var currentIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex'),
+                    highestIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlHighestIndex');
 
                 if(currentIndex < highestIndex){
-                    baseUrl = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex + 1].baseUrl;
-                    currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex + 1);
+                    baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex + 1].baseUrl;
+                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex + 1);
                 } else {
-                    baseUrl = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
-                    currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
+                    baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
+                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
                 }
             }
 
@@ -752,10 +771,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 // We still don't have to low latency in this so lets go up a notch at a time
                 // lets take it from here, now we are checking if the latency took
                 console.log('Staying at this bitrate - dl time more than ' + secondLowestValue + ', less than ' + middleValue);
-                var currentIndex = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
+                var currentIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
 
-                baseUrl = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
+                baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
             }
 
             if(timeDifferenceFromLastAppendedSegment >= middleValue
@@ -764,25 +783,25 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 //  but the dl time was not more than 6000 ms so we should try going down just one notch
                 //  Awesomeness lets see how this works
                 console.log('Switching to lower bitrate - dl time higher than ' +  middleValue + ' but lower than ' + highestValue);
-                var currentIndex = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
+                var currentIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
 
                 if(currentIndex > 0){
-                    baseUrl = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex - 1].baseUrl;
-                    currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex - 1);
+                    baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex - 1].baseUrl;
+                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex - 1);
                 } else {
-                    baseUrl = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
-                    currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
+                    baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
+                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
                 }
             }
 
             if(timeDifferenceFromLastAppendedSegment >= highestValue){
                 // Lets go high directly since latency is low
                 console.log('Switching to lowest bitrate - dl time more than ' + highestValue);
-                baseUrl = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[0].baseUrl;
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
+                baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[0].baseUrl;
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
             }
             //lets overwrite our current time to the time we had now
-            currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime', currentTime)
+            currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime', currentTime)
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not parse base url from the baseUrlObjectsArray';
@@ -816,9 +835,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #############################
 
     //currentVideoObject methods
+    that.addStreamBaseUrl = addStreamBaseUrl;
     that.addCurrentVideoObject = addCurrentVideoObject;
     that.removeCurrentVideoObject = removeCurrentVideoObject;
-    that.clearCurrentVideoObjectProperties = clearCurrentVideoObjectProperties;
+    that.clearCurrentVideoStreamObject = clearCurrentVideoStreamObject;
 
     //Media Source Extension methods
     that.loadDashMediaWithMediaSourceExtension = loadDashMediaWithMediaSourceExtension;
@@ -4116,6 +4136,7 @@ var freeVideoPlayer = function(initiationObject){
         if(adaptiveStreamingModule){
             adaptiveStreamingModule.abortSourceBuffers();
             adaptiveStreamingModule.clearMediaSource();
+            adaptiveStreamingModule.clearCurrentVideoStreamObject();
         }
     };
 
