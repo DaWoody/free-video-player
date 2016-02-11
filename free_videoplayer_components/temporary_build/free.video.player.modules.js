@@ -53,9 +53,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             currentVideoBitrateIndex:0,
             sourceBuffers: [],
             mpdObject: {},
-            hlsObject: {}
+            hlsObject: {},
+            adaptiveStreamBitrateObjectMap: new Map(),
+            //used for the adaptive bitrate algo, should probably be refactored later
+            currentVideoBaseUrl:'auto'
         };
-
 
     //Import dependencies and modules
     var mpdParserModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser(),
@@ -392,9 +394,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 console.log('Setting the highest index to' + baseUrlObjectsArrayHighestIndex);
                 console.log('The stream we have is..' + typeOfStream);
 
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
             } else {
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex', 0);
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex', 0);
             }
 
             if(!isSubtitleTrack){
@@ -440,7 +442,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     }
 
                     //Lets add the baseUrlObjectArray to the specific sourceBuffer (stream type).
-                    currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectArray);
+                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectArray);
 
                     //Lets switch baseUrl here..
                     //We first evaulate if we want to bitrate switch from user settings or from adaptive algorithm
@@ -2158,7 +2160,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     //  ############################
     //  #### MPD OBJECT METHODS ####
     //  ############################
-
     /**
      * @description This method returns the asset type, static or dynamic, meaning LIVE or VOD
      * @public
@@ -2180,6 +2181,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 messageObject.message = 'Could not retrieve media type from the MPD';
                 messageObject.methodName = 'returnMediaTypeFromMpdObject';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mediaType;
@@ -2213,7 +2215,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 messageObject.message = 'Could not generate a max segment duration string from the MPD';
                 messageObject.methodName = 'returnMaxSegmentDurationFromMpdObject';
                 messageObject.moduleName = moduleName;
-            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+                messageObject.moduleVersion = moduleVersion;
+                messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return segmentDuration;
     };
@@ -2259,6 +2262,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 messageObject.message = 'Could not get media duration string from the MPD';
                 messageObject.methodName = 'returnMediaDurationInSecondsFromMpdObject';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mediaDurationInSeconds;

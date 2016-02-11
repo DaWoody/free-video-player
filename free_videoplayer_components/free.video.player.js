@@ -86,8 +86,7 @@ var freeVideoPlayer = function(initiationObject){
             createControls:true
         },
         settingsObject = Object.assign({}, defaultSettingsObject, initiationObject),
-        videoWrapperClassName = settingsObject.videoWrapperClassName,
-        streamBaseUrl = settingsObject.streamBaseUrl;
+        videoWrapperClassName = settingsObject.videoWrapperClassName;
 
 
     //    adaptiveBitrateAlgorithmValue = new Map();
@@ -324,7 +323,7 @@ var freeVideoPlayer = function(initiationObject){
                 currentVideoObject.videoFormat = 'dash';
 
                 //Lets set our streamBaseUrl based on the mpdUrl
-                streamBaseUrl = mpdParserModule.returnStreamBaseUrlFromMpdUrl(mpdUrl);
+                var streamBaseUrl = mpdParserModule.returnStreamBaseUrlFromMpdUrl(mpdUrl);
 
                 console.log('The stream base url is..' + streamBaseUrl);
 
@@ -368,7 +367,7 @@ var freeVideoPlayer = function(initiationObject){
             }
         });
     };
-    
+
 
     //  ################################
     //  #### SUBTITLE METHODS / DOM ####
@@ -1055,9 +1054,9 @@ var freeVideoPlayer = function(initiationObject){
         };
     };
 
-    //  ################################
-    //  #### PLAYER CONTROL METHODS ####
-    //  ################################
+    //  ####################################
+    //  #### PLAYER API CONTROL METHODS ####
+    //  ####################################
     /**
      * @description This method interacts with the player video element and pauses the stream/media
      * @public
@@ -1315,52 +1314,52 @@ var freeVideoPlayer = function(initiationObject){
     //  ############################
     //  #### INITIATION METHODS ####
     //  ############################
-    //Lets initiate the mediaSource objects and elements
-    /**
-     * @description This method initiates the media source extension and creates a video element aswell.
-     * @private
-     */
-    var _initiateMediaSource = function(){
-        //Add the mediaSource to the class scoped storage
-        that._mediaSource = new MediaSource();
-        //Lets get our video wrapper and work with it from here
-        that._videoWrapper = document.querySelector('.' + videoWrapperClassName);
-
-        //Lets create the video element which we will be using to add buffers to
-        //and other good stuff
-        var videoElement = document.createElement('video');
-        //Lets save our video element within the class so we can use it to add buffers
-        //and more
-        that._videoElement = videoElement;
-        that._videoWrapper.appendChild(videoElement);
-    };
-
-    /**
-     * @description This method creates the media source stream
-     * @private
-     * @param baseUrl
-     */
-    var _createMediaSourceStream = function(baseUrl){
-        console.log('## LOADING VIDEO WITH URL ' + baseUrl);
-        //Lets try loading it
-        streamBaseUrl = baseUrl || streamBaseUrl;
-        that._videoElement.src = window.URL.createObjectURL(that._mediaSource);
-        that._videoElement.poster = settingsObject.videoSplashImageUrl;
-    };
-
-    /**
-     * @description This method adds eventlisteners to the media source object
-     * @private
-     */
-    var _addEventListenersToMediaSource = function(){
-        //  ### EVENT LISTENERS ###
-        that._mediaSource.addEventListener('sourceopen', _videoready, false);
-        that._mediaSource.addEventListener('webkitsourceopen', _videoready, false);
-
-        that._mediaSource.addEventListener('webkitsourceended', function(e) {
-            console.log('mediaSource readyState: ' + this.readyState);
-        }, false);
-    };
+    ////Lets initiate the mediaSource objects and elements
+    ///**
+    // * @description This method initiates the media source extension and creates a video element aswell.
+    // * @private
+    // */
+    //var _initiateMediaSource = function(){
+    //    //Add the mediaSource to the class scoped storage
+    //    that._mediaSource = new MediaSource();
+    //    //Lets get our video wrapper and work with it from here
+    //    that._videoWrapper = document.querySelector('.' + videoWrapperClassName);
+    //
+    //    //Lets create the video element which we will be using to add buffers to
+    //    //and other good stuff
+    //    var videoElement = document.createElement('video');
+    //    //Lets save our video element within the class so we can use it to add buffers
+    //    //and more
+    //    that._videoElement = videoElement;
+    //    that._videoWrapper.appendChild(videoElement);
+    //};
+    //
+    ///**
+    // * @description This method creates the media source stream
+    // * @private
+    // * @param baseUrl
+    // */
+    //var _createMediaSourceStream = function(baseUrl){
+    //    console.log('## LOADING VIDEO WITH URL ' + baseUrl);
+    //    //Lets try loading it
+    //    currentVideoStreamObject.streamBaseUrl = baseUrl;
+    //    that._videoElement.src = window.URL.createObjectURL(that._mediaSource);
+    //    that._videoElement.poster = settingsObject.videoSplashImageUrl;
+    //};
+    //
+    ///**
+    // * @description This method adds eventlisteners to the media source object
+    // * @private
+    // */
+    //var _addEventListenersToMediaSource = function(){
+    //    //  ### EVENT LISTENERS ###
+    //    that._mediaSource.addEventListener('sourceopen', _videoready, false);
+    //    that._mediaSource.addEventListener('webkitsourceopen', _videoready, false);
+    //
+    //    that._mediaSource.addEventListener('webkitsourceended', function(e) {
+    //        console.log('mediaSource readyState: ' + this.readyState);
+    //    }, false);
+    //};
 
     //  #############################
     //  #### MAKE METHODS PUBLIC ####

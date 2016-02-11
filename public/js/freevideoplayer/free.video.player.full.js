@@ -53,9 +53,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             currentVideoBitrateIndex:0,
             sourceBuffers: [],
             mpdObject: {},
-            hlsObject: {}
+            hlsObject: {},
+            adaptiveStreamBitrateObjectMap: new Map(),
+            //used for the adaptive bitrate algo, should probably be refactored later
+            currentVideoBaseUrl:'auto'
         };
-
 
     //Import dependencies and modules
     var mpdParserModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser(),
@@ -392,9 +394,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 console.log('Setting the highest index to' + baseUrlObjectsArrayHighestIndex);
                 console.log('The stream we have is..' + typeOfStream);
 
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
             } else {
-                currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex', 0);
+                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex', 0);
             }
 
             if(!isSubtitleTrack){
@@ -440,7 +442,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     }
 
                     //Lets add the baseUrlObjectArray to the specific sourceBuffer (stream type).
-                    currentVideoObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectArray);
+                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectArray);
 
                     //Lets switch baseUrl here..
                     //We first evaulate if we want to bitrate switch from user settings or from adaptive algorithm
@@ -2158,7 +2160,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     //  ############################
     //  #### MPD OBJECT METHODS ####
     //  ############################
-
     /**
      * @description This method returns the asset type, static or dynamic, meaning LIVE or VOD
      * @public
@@ -2180,6 +2181,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 messageObject.message = 'Could not retrieve media type from the MPD';
                 messageObject.methodName = 'returnMediaTypeFromMpdObject';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mediaType;
@@ -2213,7 +2215,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 messageObject.message = 'Could not generate a max segment duration string from the MPD';
                 messageObject.methodName = 'returnMaxSegmentDurationFromMpdObject';
                 messageObject.moduleName = moduleName;
-            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+                messageObject.moduleVersion = moduleVersion;
+                messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return segmentDuration;
     };
@@ -2259,6 +2262,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 messageObject.message = 'Could not get media duration string from the MPD';
                 messageObject.methodName = 'returnMediaDurationInSecondsFromMpdObject';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mediaDurationInSeconds;
@@ -2892,8 +2896,7 @@ var freeVideoPlayer = function(initiationObject){
             createControls:true
         },
         settingsObject = Object.assign({}, defaultSettingsObject, initiationObject),
-        videoWrapperClassName = settingsObject.videoWrapperClassName,
-        streamBaseUrl = settingsObject.streamBaseUrl;
+        videoWrapperClassName = settingsObject.videoWrapperClassName;
 
 
     //    adaptiveBitrateAlgorithmValue = new Map();
@@ -3130,7 +3133,7 @@ var freeVideoPlayer = function(initiationObject){
                 currentVideoObject.videoFormat = 'dash';
 
                 //Lets set our streamBaseUrl based on the mpdUrl
-                streamBaseUrl = mpdParserModule.returnStreamBaseUrlFromMpdUrl(mpdUrl);
+                var streamBaseUrl = mpdParserModule.returnStreamBaseUrlFromMpdUrl(mpdUrl);
 
                 console.log('The stream base url is..' + streamBaseUrl);
 
@@ -3174,8 +3177,6 @@ var freeVideoPlayer = function(initiationObject){
             }
         });
     };
-
-
 
 
     //  ################################
@@ -3863,9 +3864,9 @@ var freeVideoPlayer = function(initiationObject){
         };
     };
 
-    //  ################################
-    //  #### PLAYER CONTROL METHODS ####
-    //  ################################
+    //  ####################################
+    //  #### PLAYER API CONTROL METHODS ####
+    //  ####################################
     /**
      * @description This method interacts with the player video element and pauses the stream/media
      * @public
@@ -4123,52 +4124,52 @@ var freeVideoPlayer = function(initiationObject){
     //  ############################
     //  #### INITIATION METHODS ####
     //  ############################
-    //Lets initiate the mediaSource objects and elements
-    /**
-     * @description This method initiates the media source extension and creates a video element aswell.
-     * @private
-     */
-    var _initiateMediaSource = function(){
-        //Add the mediaSource to the class scoped storage
-        that._mediaSource = new MediaSource();
-        //Lets get our video wrapper and work with it from here
-        that._videoWrapper = document.querySelector('.' + videoWrapperClassName);
-
-        //Lets create the video element which we will be using to add buffers to
-        //and other good stuff
-        var videoElement = document.createElement('video');
-        //Lets save our video element within the class so we can use it to add buffers
-        //and more
-        that._videoElement = videoElement;
-        that._videoWrapper.appendChild(videoElement);
-    };
-
-    /**
-     * @description This method creates the media source stream
-     * @private
-     * @param baseUrl
-     */
-    var _createMediaSourceStream = function(baseUrl){
-        console.log('## LOADING VIDEO WITH URL ' + baseUrl);
-        //Lets try loading it
-        streamBaseUrl = baseUrl || streamBaseUrl;
-        that._videoElement.src = window.URL.createObjectURL(that._mediaSource);
-        that._videoElement.poster = settingsObject.videoSplashImageUrl;
-    };
-
-    /**
-     * @description This method adds eventlisteners to the media source object
-     * @private
-     */
-    var _addEventListenersToMediaSource = function(){
-        //  ### EVENT LISTENERS ###
-        that._mediaSource.addEventListener('sourceopen', _videoready, false);
-        that._mediaSource.addEventListener('webkitsourceopen', _videoready, false);
-
-        that._mediaSource.addEventListener('webkitsourceended', function(e) {
-            console.log('mediaSource readyState: ' + this.readyState);
-        }, false);
-    };
+    ////Lets initiate the mediaSource objects and elements
+    ///**
+    // * @description This method initiates the media source extension and creates a video element aswell.
+    // * @private
+    // */
+    //var _initiateMediaSource = function(){
+    //    //Add the mediaSource to the class scoped storage
+    //    that._mediaSource = new MediaSource();
+    //    //Lets get our video wrapper and work with it from here
+    //    that._videoWrapper = document.querySelector('.' + videoWrapperClassName);
+    //
+    //    //Lets create the video element which we will be using to add buffers to
+    //    //and other good stuff
+    //    var videoElement = document.createElement('video');
+    //    //Lets save our video element within the class so we can use it to add buffers
+    //    //and more
+    //    that._videoElement = videoElement;
+    //    that._videoWrapper.appendChild(videoElement);
+    //};
+    //
+    ///**
+    // * @description This method creates the media source stream
+    // * @private
+    // * @param baseUrl
+    // */
+    //var _createMediaSourceStream = function(baseUrl){
+    //    console.log('## LOADING VIDEO WITH URL ' + baseUrl);
+    //    //Lets try loading it
+    //    currentVideoStreamObject.streamBaseUrl = baseUrl;
+    //    that._videoElement.src = window.URL.createObjectURL(that._mediaSource);
+    //    that._videoElement.poster = settingsObject.videoSplashImageUrl;
+    //};
+    //
+    ///**
+    // * @description This method adds eventlisteners to the media source object
+    // * @private
+    // */
+    //var _addEventListenersToMediaSource = function(){
+    //    //  ### EVENT LISTENERS ###
+    //    that._mediaSource.addEventListener('sourceopen', _videoready, false);
+    //    that._mediaSource.addEventListener('webkitsourceopen', _videoready, false);
+    //
+    //    that._mediaSource.addEventListener('webkitsourceended', function(e) {
+    //        console.log('mediaSource readyState: ' + this.readyState);
+    //    }, false);
+    //};
 
     //  #############################
     //  #### MAKE METHODS PUBLIC ####

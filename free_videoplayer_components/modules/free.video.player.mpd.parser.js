@@ -34,7 +34,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     //  ############################
     //  #### MPD OBJECT METHODS ####
     //  ############################
-
     /**
      * @description This method returns the asset type, static or dynamic, meaning LIVE or VOD
      * @public
@@ -56,6 +55,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 messageObject.message = 'Could not retrieve media type from the MPD';
                 messageObject.methodName = 'returnMediaTypeFromMpdObject';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mediaType;
@@ -89,7 +89,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 messageObject.message = 'Could not generate a max segment duration string from the MPD';
                 messageObject.methodName = 'returnMaxSegmentDurationFromMpdObject';
                 messageObject.moduleName = moduleName;
-            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+                messageObject.moduleVersion = moduleVersion;
+                messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return segmentDuration;
     };
@@ -135,6 +136,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 messageObject.message = 'Could not get media duration string from the MPD';
                 messageObject.methodName = 'returnMediaDurationInSecondsFromMpdObject';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mediaDurationInSeconds;
