@@ -593,8 +593,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return !!(document.fullScreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement);
     }
 
-
-
     //  ###############################
     //  #### VIDEO OVERLAY METHODS ####
     //  ###############################

@@ -114,6 +114,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
             }
 
             if(mediaDurationFullString.split('T').length > 1){
+                console.log('YYT');
                 mediaDurationTemporaryFullString = mediaDurationFullString.split('T')[1];
             }
 
@@ -126,8 +127,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 hoursInSeconds = hours * 3600,
                 minutesInSeconds = minutes * 60;
 
-            //Lets add our result to the returning mediaDurationInSeconds we
-            //will return
+            ////Lets add our result to the returning mediaDurationInSeconds we
+            ////will return
             mediaDurationInSeconds = hoursInSeconds + minutesInSeconds + seconds;
 
         } catch(e){

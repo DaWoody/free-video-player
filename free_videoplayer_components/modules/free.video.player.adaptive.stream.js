@@ -255,6 +255,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
                 segmentPrefix = mediaObject.segmentPrefix,
                 segmentEnding = mediaObject.segmentEnding,
+                averageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject(currentVideoStreamObject.mpdObject),
                 codecs = '',
                 baseUrl = '',
                 baseUrlObjectArray = [],
@@ -401,14 +402,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                         console.log(mimeType + ' buffer timerange start=' + sourceBuffer.buffered.start(0) + ' / end=' + sourceBuffer.buffered.end(0));
                     sourceCount++;
 
-                    var amountOfSegments = Math.round(streamDurationInSeconds/currentVideoObject.averageSegmentDuration);
+                    var amountOfSegments = Math.round(streamDurationInSeconds/averageSegmentDuration);
 
                     console.log('The amount of segments should be around.. ' + amountOfSegments);
 
                     if( sourceCount > amountOfSegments
                         && MediaSource.readyState == 'open') {
                         //Lets end stream when we have reached the end of our stream count
-                        console.log('Calling the method endOfStream()');
                         that._mediaSource.endOfStream();
                         return;
                     }
@@ -436,7 +436,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 });
 
                 console.log('source buffer ' + index + ' mode: ' + sourceBuffer.mode );
-                _appendData(sourceBuffer, currentVideoObject.streamBaseUrl + baseUrl + initializationFile, mimeType);
+                _appendData(sourceBuffer, currentVideoStreamObject.streamBaseUrl + baseUrl + initializationFile, mimeType);
 
                 //Lets push this sourceBuffer to the arrays of source buffers so we can use this
                 //with our interval method and set media source duration
@@ -596,37 +596,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         return that;
     };
 
-    //  ######################################
-    //  #### CURRENT VIDEO OBJECT METHODS ####
-    //  ######################################
-    /**
-     * @description Adds the current video object as a part of the class scoped variable
-     * @param currentVideoObject
-     * @public
-     */
-    function addCurrentVideoObject(currentVideoObject){
-        that.currentVideoObject = currentVideoObject;
-    };
-
-    /**
-     * @description Removes the current video object from the class scoped variable
-     * @public
-     */
-    function removeCurrentVideoObject(){
-        that.currentVideoObject = null;
-    };
-
+    //  #############################################
+    //  #### CURRENT VIDEO STREAM OBJECT METHODS ####
+    //  #############################################
     /**
      * @description This method clears the current video object properties that need to be cleared between plays
      * @private
      */
     function clearCurrentVideoStreamObject(){
-        ////Add more stuff that needs clearing here
-        //that.currentVideoStreamObject.subtitleTracksArray = [];
-        ////Lets clear all timestamps for the next stream
-        //that.currentVideoStreamObject.adaptiveStreamBitrateObjectMap.clear();
-        //that.currentVideoStreamObject.currentVideoBaseUrl = 'auto';
-
         currentVideoStreamObject = _returnClearCurrentVideoStreamObject();
     };
 
@@ -642,10 +619,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             currentVideoBaseUrl:'auto',
             streamBaseUrl:''
         };
-
         return returnObject;
     }
-
 
     //  #########################
     //  #### BITRATE METHODS ####
@@ -688,7 +663,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             secondLowestValue = adaptiveBitrateAlgorithmValue.get('secondLowest'),
             middleValue = adaptiveBitrateAlgorithmValue.get('middle'),
             highestValue = adaptiveBitrateAlgorithmValue.get('highest'),
-            baseUrlObjectsArray = currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray');
+            baseUrlObjectsArray = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray');
 
         //When we start we should start at lowest
         //Then we should try going up as fast as we can -> so if first segment took a bit of time
@@ -701,7 +676,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
             }
 
-            timeDifferenceFromLastAppendedSegment = currentTime - currentVideoObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime');
+            timeDifferenceFromLastAppendedSegment = currentTime - currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime');
 
             // Lets add a swtich block here
             if(timeDifferenceFromLastAppendedSegment == 0){
@@ -806,8 +781,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
     //currentVideoObject methods
     that.addStreamBaseUrl = addStreamBaseUrl;
-    that.addCurrentVideoObject = addCurrentVideoObject;
-    that.removeCurrentVideoObject = removeCurrentVideoObject;
     that.clearCurrentVideoStreamObject = clearCurrentVideoStreamObject;
 
     //Media Source Extension methods
@@ -820,10 +793,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //General Methods
     that.getModuleName = getModuleName;
     that.getModuleVersion = getModuleVersion;
-
-    //DOM Methods
-    //that.addEventListenersToMediaSource = addEventListenersToMediaSource;
-    //that.createVideoElementAndAppendToWrapper = createVideoElementAndAppendToWrapper;
 
     //Indicate that the returned object is a module
     that._isModule = true;
