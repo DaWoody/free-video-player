@@ -9,7 +9,7 @@
  * @param initiationObject {object} - An initiation object used to define settings for the mpdParserModule
  */
 //Lets add the mpdParser to the global namespace
-freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationObject){
+freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationObject, messagesModule){
 
     'use strict';
 
@@ -22,40 +22,40 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
      */
     var currentVideoObject = {},
         that = {},
-        mpdParserVersion = '0.9.0',
+        moduleVersion = '0.9.0',
         moduleName = 'MPD PARSER',
         defaultObject = {
             debugMode:true
         },
         settingsObject = Object.assign({}, defaultObject, initiationObject),
-        messagesModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, mpdParserVersion);
-
-    //Indicate that the returned object is a module
-    that._isModule = true;
+        messagesModule = messagesModule || freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion);
 
 
     //  ############################
     //  #### MPD OBJECT METHODS ####
     //  ############################
-
-
     /**
      * @description This method returns the asset type, static or dynamic, meaning LIVE or VOD
      * @public
      * @returns {string}
      */
-    function returnMediaTypeFromMpdObject(){
+    function returnMediaTypeFromMpdObject(mpdObject){
         var mediaType = 'static';
         //First lets set that the segment length should not be more than one minute
         //then we should parse the information we get
         try {
-            mediaType = currentVideoObject.mpdObject._type || 'static';
+            if(mpdObject){
+                mediaType = mpdObject._type || 'static';
+            } else {
+                mediaType = currentVideoObject.mpdObject._type || 'static';
+            }
         } catch(e){
 
             var messageObject = {};
                 messageObject.message = 'Could not retrieve media type from the MPD';
                 messageObject.methodName = 'returnMediaTypeFromMpdObject';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mediaType;
@@ -65,23 +65,32 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     /**
      * @description Returns the max segment duration from the MPD object
      * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
      * @returns {number}
      */
-    function returnMaxSegmentDurationFromMpdObject(){
-        var segmentDuration = 0;
+    function returnMaxSegmentDurationFromMpdObject(mpdObject){
+        var segmentDuration = 0,
+            segmentDurationFull = null;
         //First lets set that the segment length should not be more than one minute
         //then we should parse the information we get
         try {
-            var segmentDurationFull = currentVideoObject.mpdObject._maxSegmentDuration || 'M10.000S',
+
+            if(mpdObject){
+                segmentDurationFull = mpdObject._maxSegmentDuration || 'M10.000S';
+            } else {
+                segmentDurationFull = currentVideoObject.mpdObject._maxSegmentDuration || 'M10.000S';
+            }
                 segmentDuration = segmentDurationFull.split('M')[1],
                 segmentDuration = segmentDuration.split('S')[0];
+
         } catch(e){
 
             var messageObject = {};
                 messageObject.message = 'Could not generate a max segment duration string from the MPD';
                 messageObject.methodName = 'returnMaxSegmentDurationFromMpdObject';
                 messageObject.moduleName = moduleName;
-            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+                messageObject.moduleVersion = moduleVersion;
+                messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return segmentDuration;
     };
@@ -89,15 +98,23 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     /**
      * @description Returns the media duration in seconds from the MPD object
      * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
      * @returns {number}
      */
-    function returnMediaDurationInSecondsFromMpdObject(){
-        var mediaDurationInSeconds = 0;
+    function returnMediaDurationInSecondsFromMpdObject(mpdObject){
+        var mediaDurationInSeconds = 0,
+            mediaDurationFullString = '',
+            mediaDurationTemporaryFullString = '';
         try {
-            var mediaDurationFullString = currentVideoObject.mpdObject._mediaPresentationDuration,
-                mediaDurationTemporaryFullString = '';
+
+            if(mpdObject){
+                mediaDurationFullString = mpdObject._mediaPresentationDuration;
+            } else {
+                mediaDurationFullString = currentVideoObject.mpdObject._mediaPresentationDuration;
+            }
 
             if(mediaDurationFullString.split('T').length > 1){
+                console.log('YYT');
                 mediaDurationTemporaryFullString = mediaDurationFullString.split('T')[1];
             }
 
@@ -110,8 +127,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 hoursInSeconds = hours * 3600,
                 minutesInSeconds = minutes * 60;
 
-            //Lets add our result to the returning mediaDurationInSeconds we
-            //will return
+            ////Lets add our result to the returning mediaDurationInSeconds we
+            ////will return
             mediaDurationInSeconds = hoursInSeconds + minutesInSeconds + seconds;
 
         } catch(e){
@@ -120,6 +137,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
                 messageObject.message = 'Could not get media duration string from the MPD';
                 messageObject.methodName = 'returnMediaDurationInSecondsFromMpdObject';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mediaDurationInSeconds;
@@ -128,16 +146,24 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     /**
      * @description Returns the average segment duration from the mpd object
      * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
      * @returns {number}
      */
-    function returnAverageSegmentDurationFromMpdObject(){
-        var segmentDuration = 0;
+    function returnAverageSegmentDurationFromMpdObject(mpdObject){
+        var segmentDuration = 0,
+            segmentDurationFull = '';
         //First lets set that the segment length should not be more than one minute
         //then we should parse the information we get
         try {
-            var segmentDurationFull = currentVideoObject.mpdObject._maxSegmentDuration || 'M10S',
-                segmentDuration = segmentDurationFull.split('M')[1],
-                segmentDuration = segmentDuration.split('S')[0];
+
+            if(mpdObject){
+                segmentDurationFull = mpdObject._maxSegmentDuration || 'M10S';
+            } else {
+                segmentDurationFull = currentVideoObject.mpdObject._maxSegmentDuration || 'M10S';
+            }
+
+            segmentDuration = segmentDurationFull.split('M')[1];
+            segmentDuration = segmentDuration.split('S')[0];
             segmentDuration = parseInt(segmentDuration, 10);
 
         } catch(e){
@@ -156,15 +182,15 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     /**
      * @description Returns an array of adaptionSets from the MPD object
      * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
      * @returns {Array}
      */
-    function returnArrayOfAdaptionSetsFromMpdObject(){
+    function returnArrayOfAdaptionSetsFromMpdObject(mpdObject){
         var returnArray = [],
-            adaptionSetTemporary = [],
-            mpdObject;
+            adaptionSetTemporary = [];
 
         try {
-            mpdObject = currentVideoObject.mpdObject;
+            mpdObject = mpdObject || currentVideoObject.mpdObject;
             adaptionSetTemporary = mpdObject.Period.AdaptationSet;
             if(Object.prototype.toString.call( adaptionSetTemporary) === '[object Array]' ){
                 returnArray = adaptionSetTemporary
@@ -186,13 +212,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     /**
      * @description Returns an array of subtitles from the MPD object
      * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
      * @returns {Array}
      */
-    function returnArrayOfSubtitlesFromMpdObject(){
+    function returnArrayOfSubtitlesFromMpdObject(mpdObject){
         //Should utilize low level methods to parse through and get the
         //subtitles that we need
 
-        var arrayOfAdaptionSets = returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.mpdObject),
+        var arrayOfAdaptionSets = returnArrayOfAdaptionSetsFromMpdObject(mpdObject),
             returnArrayOfSubtitles = [],
             firstRepresentation = {},
             mimeType = '',
@@ -482,6 +509,29 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     //  #### GENERAL METHODS ####
     //  #########################
 
+
+    /**
+     * @description This method makes the XMLHttp request and fetches the actual mpd manifest file
+     * @private
+     * @param url
+     * @param callback
+     */
+    function getMpd(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.send();
+
+        xhr.onload = function(e) {
+            if (xhr.status != 200) {
+                alert("Unexpected status code " + xhr.status + " for " + url);
+                return false;
+            }
+            callback(xhr.response);
+        };
+    };
+
+
+
     function returnTypeFromMimeTypeAndCodecString(mimeType, codecString){
         var returnType = 'audio',
             tempCodecArray = [],
@@ -578,18 +628,24 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
         return returnBoolean;
     };
 
-    function getVersion(){
-        return mpdParserVersion;
+    function getModuleVersion(){
+        return moduleVersion;
     };
 
+    function getModuleName(){
+        return moduleName;
+    };
 
     //  #############################
     //  #### MAKE METHODS PUBLIC ####
     //  #############################
     //General
+    that.getMpd = getMpd;
     that.getMpdObject = getMpdObject;
     that.setMpdObject = setMpdObject;
-    that.getVersion = getVersion;
+    that.getModuleVersion = getModuleVersion;
+    that.getModuleName = getModuleName;
+
     that.checkIfAdapationSetContainSingleRepresentation = checkIfAdapationSetContainSingleRepresentation;
     that.returnStreamBaseUrlFromMpdUrl = returnStreamBaseUrlFromMpdUrl;
     that.returnTypeFromMimeTypeAndCodecString = returnTypeFromMimeTypeAndCodecString;
@@ -620,6 +676,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
     that.returnStartNumberFromRepresentation = returnStartNumberFromRepresentation;
     that.returnMimeTypeFromRepresentation = returnMimeTypeFromRepresentation;
     that.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations = returnArrayOfBaseUrlObjectsFromArrayOfRepresentations;
+
+    //Indicate that the returned object is a module
+    that._isModule = true;
 
     //Lets return our object
     return that;

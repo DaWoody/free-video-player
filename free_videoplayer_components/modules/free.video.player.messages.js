@@ -18,10 +18,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
      * @type {{}}
      */
     var that = {},
-        moduleName = 'Messages',
+        moduleName = 'MESSAGES',
         moduleVersion = moduleVersion,
-        freeVideoPlayerWebUrl = 'http://freevideoplayer.org',
-        version = '0.9.0';
+        freeVideoPlayerWebUrl = 'http://www.freevideoplayer.org';
+
 
     //Indicate that the returned object is a module
     that._isModule = true;
@@ -39,7 +39,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
         var consoleMessage = '',
             message = messageObject.message,
             methodName = messageObject.methodName,
-            moduleName = messageObject.moduleName;
+            moduleName = messageObject.moduleName,
+            moduleVersion = messageObject.moduleVersion;
 
         consoleMessage += '====================================================' + '\n';
         consoleMessage += 'Free Video Player Library - ERROR' + '\n';
@@ -65,7 +66,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
         var consoleMessage = '',
             message = messageObject.message,
             methodName = messageObject.methodName,
-            moduleName = messageObject.moduleName;
+            moduleName = messageObject.moduleName,
+            moduleVersion = messageObject.moduleVersion;
 
         consoleMessage += '====================================================' + '\n';
         consoleMessage += 'Free Video Player Library - MESSAGE' + '\n';
@@ -81,11 +83,33 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
         }
     };
 
-    //Make methods public
+    //  #########################
+    //  #### GENERAL METHODS ####
+    //  #########################
+
+    function getModuleVersion(){
+        return moduleVersion;
+    };
+
+    function getModuleName(){
+        return moduleName;
+    };
+
+
+    //  #############################
+    //  #### MAKE METHODS PUBLIC ####
+    //  #############################
+
+    //Messages
     that.printOutErrorMessageToConsole  = printOutErrorMessageToConsole;
     that.printOutMessageToConsole = printOutMessageToConsole;
-    that.moduleName = moduleName;
-    that.version = version;
+
+    //General
+    that.getModuleVersion = getModuleVersion;
+    that.getModuleName = getModuleName;
+
+    //Indicate that the returned object is a module
+    that._isModule = true;
 
     //Return our class/function object
     return that;

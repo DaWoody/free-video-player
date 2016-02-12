@@ -10,7 +10,7 @@
  * @param videoPlayerNameCss {string} - Used as name string for the messagesModule that the videoControlsModule utilizes
  */
 //Add the video controls to the namespace
-freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObject, videoPlayerNameCss){
+freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObject, videoPlayerNameCss, messagesModule){
     'use strict';
 
     /**
@@ -19,16 +19,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     var that = {},
         settingsObject = settingsObject,
-        version = '0.9.0',
+        moduleVersion = '0.9.0',
         moduleName = 'VIDEO CONTROLS',
         animationDelayObject = {
           videoOverlayFadeOutDelay:100
         },
         videoPlayerNameCss = videoPlayerNameCss,
-        messagesModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, version);
-
-    //Indicate that the returned object is a module
-    that._isModule = true;
+        messagesModule = messagesModule || freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion);
 
     /**
      * @description This methods manipulates the DOM and creates object like subtitle tracks within the DOM
@@ -596,8 +593,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return !!(document.fullScreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement);
     }
 
-
-
     //  ###############################
     //  #### VIDEO OVERLAY METHODS ####
     //  ###############################
@@ -661,6 +656,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 messageObject.message = 'Could not add css class to element and return after small delay';
                 messageObject.methodName = '_addCssClassToElementAndReturn';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutMessageToConsole(messageObject);
         }
     };
@@ -749,6 +745,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 messageObject.message = 'Could not remove play/pause spacebar or esc eventlistener';
                 messageObject.methodName = '_removePlayPauseSpaceBarListener';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutMessageToConsole(messageObject);
         }
     };
@@ -828,6 +825,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                     messageObject.message = 'Could not parse and return hours, minutes, seconds string from seconds';
                     messageObject.methodName = 'returnHoursMinutesSecondsFromSeconds';
                     messageObject.moduleName = moduleName;
+                    messageObject.moduleVersion = moduleVersion;
                 messagesModule.printOutErrorMessageToConsole(messageObject, e);
             }
         return returnHourMinutesSeconds;
@@ -883,6 +881,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             messageObject.message = 'Could not create a bitrate menu and return the menu';
             messageObject.methodName = '_createBitrateMenuAndReturnMenu';
             messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return bitrateMenu;
@@ -945,6 +944,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 messageObject.message = 'Could not create a subtitles menu and return the menu';
                 messageObject.methodName = '_createSubtitlesMenuAndReturnMenu';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return subtitlesMenu;
@@ -1004,6 +1004,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                         messageObject.message = 'Could not activate subtitle with language';
                         messageObject.methodName = '_createSubtitlesMenuItem';
                         messageObject.moduleName = moduleName;
+                        messageObject.moduleVersion = moduleVersion;
                     messagesModule.printOutErrorMessageToConsole(messageObject, e);
                 }
             });
@@ -1011,13 +1012,149 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return button;
     };
 
-    //Make methods public
+
+    /**
+     * @description Adds subtitles tracks to the DOM and the video player instance within the video element
+     * @public
+     * @param {array} subtitleTracksArray
+     */
+    function _addSubtitlesTracksToDom(subtitleTracksArray , videoElement){
+        subtitleTracksArray.forEach(function(currentSubtitleTrack, index, subtitleTracksArray){
+            //Lets create a track object and append it to the video element
+            var trackElement = document.createElement('track'),
+                subtitleLabel = '';
+
+            trackElement.src = currentSubtitleTrack.subtitleUrl;
+            trackElement.srclang = currentSubtitleTrack.subtitleLanguage;
+            trackElement.setAttribute('kind', 'subtitles');
+
+            subtitleLabel = _returnFirstWordFromSubtitleLabel(currentSubtitleTrack.subtitleLabel);
+            subtitleLabel = _returnSubtitleLabelCapitalized(subtitleLabel);
+
+            trackElement.setAttribute('label', subtitleLabel);
+            trackElement.setAttribute('data-video-player-subtitle-index', index+1);
+            videoElement.appendChild(trackElement);
+        });
+    };
+
+
+    /**
+     * @description Helper method that returns the first word from the subtitle label in case the subtitle label
+     * contains multiple words
+     * @private
+     * @param {string} subtitleLabel
+     * @returns {*}
+     */
+    function _returnFirstWordFromSubtitleLabel(subtitleLabel){
+        var modifiedSubtitleLabel = subtitleLabel;
+        try {
+            modifiedSubtitleLabel = modifiedSubtitleLabel.split(',')[0];
+        } catch (e){
+            var messageObject = {};
+                messageObject.message = 'Could not parse through the subtitle label and return the first word';
+                messageObject.methodName = '_returnFirstWordFromSubtitleLabel';
+                messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return modifiedSubtitleLabel;
+    };
+
+    /**
+     * @description Returns the subtitle label capitalized, like for instance Label instead of label.
+     * @private
+     * @param {string} subtitleLabel
+     * @returns {*}
+     */
+    function _returnSubtitleLabelCapitalized(subtitleLabel){
+        var modifiedSubtitleLabel = subtitleLabel;
+        try {
+            modifiedSubtitleLabel.trim();
+            modifiedSubtitleLabel = modifiedSubtitleLabel.charAt(0).toUpperCase() + modifiedSubtitleLabel.slice(1);
+        } catch (e){
+            var messageObject = {};
+            messageObject.message = 'Could not parse and Capitalize the subtitle label';
+            messageObject.methodName = '_returnSubtitleLabelCapitalized';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return modifiedSubtitleLabel;
+    };
+
+    /**
+     * @description This method returns a modified array of subtitle objects with labels,
+     * so the subtitle objects can be used to populate the DOM structure and such.
+     * @private
+     * @param {array} arrayOfSubtitles
+     * @param {array} arrayOfLanguageObjects
+     * @returns {*}
+     */
+    function _returnModifiedArrayOfSubtitlesWithLabel(arrayOfSubtitles, arrayOfLanguageObjects){
+
+        try {
+            // Lets do some magic here. We will match the language within the arrayOfSubtitles with the
+            // language within the arrayOfLanguageObjects and then copy the label from arrayOfLanguageObjects
+            // to the arrayOfSubtitles
+            var currentSubtitleLanguage = '';
+
+            for(var i = 0, arrayOfSubtitlesLength = arrayOfSubtitles.length; i < arrayOfSubtitlesLength; i++){
+                currentSubtitleLanguage = arrayOfSubtitles[i].subtitleLanguage;
+                for(var j = 0, arrayOfLanguageObjectsLength = arrayOfLanguageObjects.length; j < arrayOfLanguageObjectsLength; j++){
+                    if(currentSubtitleLanguage == arrayOfLanguageObjects[j].language){
+                        arrayOfSubtitles[i].subtitleLabel = arrayOfLanguageObjects[j].label;
+                    }
+                }
+            }
+        } catch(e){
+
+            var messageObject = {};
+            messageObject.message = 'Could not modify the array of subtitles with labels, check access to subtitles array and the language object array';
+            messageObject.methodName = '_returnModifiedArrayOfSubtitlesWithLabel';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return arrayOfSubtitles;
+    };
+
+    //  #########################
+    //  #### GENERAL METHODS ####
+    //  #########################
+
+    function getModuleVersion(){
+        return moduleVersion;
+    };
+
+    function getModuleName(){
+        return moduleName;
+    };
+
+    //  #############################
+    //  #### MAKE METHODS PUBLIC ####
+    //  #############################
+
+    //Controls
     that.createVideoControls = _createVideoControls;
+
+    //Subtitle methods
+    that.addSubtitlesTracksToDom = _addSubtitlesTracksToDom;
+    that.returnModifiedArrayOfSubtitlesWithLabel = _returnModifiedArrayOfSubtitlesWithLabel;
+
     //Spinner methods
     that.addSpinnerIconToVideoOverlay = _addSpinnerIconToVideoOverlay;
     that.removeSpinnerIconFromVideoOverlay = _removeSpinnerIconFromVideoOverlay;
+
     //Bitrate method, used by adaptive streaming module/player
     that.addBitrateMenuToSettingsIcon = _addBitrateMenuToSettingsIcon;
+
+    //General methods
+    that.getModuleName = getModuleName;
+    that.getModuleVersion = getModuleVersion;
+
+    //Indicate that the returned object is a module
+    that._isModule = true;
+
     //Return our object
     return that;
 };

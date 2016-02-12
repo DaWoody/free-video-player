@@ -197,6 +197,9 @@ player.setVolume(volumeInNumberFrom0to100);
 //get volume
 player.getVolume();
 
+//get free video player version
+player.getVersion();
+
 //get subtitles array (if you want to elaborate with your own controls
 player.getArrayOfSubtitleObjects();
 
