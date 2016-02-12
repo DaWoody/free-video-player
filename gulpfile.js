@@ -4,7 +4,6 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     mocha = require('gulp-mocha'),
-    jsdoc = require('gulp-jsdoc3'),
     del = require('del');
 
 var requireDir = require('require-dir');
@@ -21,8 +20,8 @@ gulp.task('build', [
     'build_free_video_player_readme',
     'build_free_video_player_license',
     'build_free_video_player_stylesheet',
-    'run_jsdoc_free_video_player_production',
-    'run_jsdoc_free_video_player_sample_page'
+    'run_jsdoc_free_video_player_sample_page',
+    'run_jsdoc_free_video_player_production'
 ]);
 
 gulp.task('build_free_video_player_stylesheet', [

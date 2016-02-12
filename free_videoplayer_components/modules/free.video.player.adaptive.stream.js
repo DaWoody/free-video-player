@@ -1,12 +1,14 @@
 /**
- * @title FREE VIDEO PLAYER - ADAPTIVE STREAM MODULE
- * @authors Johan Wedfelt
- * @license GPLv3, see http://www.gnu.org/licenses/gpl-3.0.en.html
- * @description A video controls module to use with the FREE VIDEO PLAYER library.
- * @version 0.9.0
- * @web http://www.freevideoplayer.org
+ * @name FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE
+ * @namespace FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE
+ * @author Johan Wedfelt
+ * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
+ * @description A cool FREE VIDEO PLAYER library to use when want to play DASHed content, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
+ * @description An adaptive streaming module to use with for example FREE VIDEO PLAYER library.
+ * @param settingsObject {object} - The settingsObject provided when the Free Video Player was instantiated
+ * @param moduleVersion {string} - The videoControlsModule that the Free Video Player uses
+ * @returns {{}}
  */
-//Add the video controls to the namespace
 freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(settingsObject, videoControlsModule){
     //Add stuff here and refactor so we gather adaptive streaming stuff in one module
 
@@ -42,6 +44,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  ############################
     //  #### INITIATION METHODS ####
     //  ############################
+    /**
+     * A startup method to show startup messages when the module is started
+     * @public
+     */
     function printOutOnStartup(){
         if(browserSupportsMediaSource()){
             var messageObject = {};
@@ -61,7 +67,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     //Initiation method
-    function initiate(){
+    /**
+     * The initiation method starts up the module with other methods
+     * @private
+     */
+    function _initiate(){
         printOutOnStartup();
     };
 
@@ -69,7 +79,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### SOURCE BUFFER METHODS ####
     //  ###############################
     /**
-     * @description This method abort the source buffers, can be used when reloading/loading an asset.
+     * This method abort the source buffers, can be used when reloading/loading an asset.
      * @private
      */
     function abortSourceBuffers(currentVideoStreamObject){
@@ -98,7 +108,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### BITRATE METHODS ####
     //  #########################
     /**
-     * @description Returns the baseUrl that the users stored from the video controls menu
+     * Returns the baseUrl that the users stored from the video controls menu
      * @returns {string}
      * @private
      */
@@ -108,7 +118,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * @description Checks if the bitrate is set to auto, this can be used as a flag to determine if the user wants
+     * Checks if the bitrate is set to auto, this can be used as a flag to determine if the user wants
      * to overwrite the automagic bitrate algorithm
      * @returns {boolean}
      * @private
@@ -125,7 +135,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### MEDIA SOURCE EXTENSION METHODS ####
     //  ########################################
     /**
-     * @description Checks if the browser supports this media source
+     * Checks if the browser supports this media source
      * @returns {boolean}
      */
     function browserSupportsMediaSource(){
@@ -138,6 +148,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         return browserSupportsMediaSourceExtension;
     };
 
+    /**
+     * A method that utilizes sub-methods to start the DASHed resource, through using the Media Source Extension object found within the browser
+     * @param adaptiveVideoObject
+     */
     function loadDashMediaWithMediaSourceExtension(adaptiveVideoObject){
 
         var videoWrapperClassName = adaptiveVideoObject.videoWrapperClassName,
@@ -158,7 +172,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * @description This method initiates the media source extension and creates a video element aswell.
+     * This method initiates the media source extension and creates a video element aswell.
      * @private
      */
     function _initiateMediaSource(){
@@ -167,7 +181,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * @description This method creates the media source stream
+     * This method creates the media source stream
      * @private
      * @param baseUrl
      */
@@ -186,7 +200,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * @description Creates a video element
+     * Creates a video element
      * @param that
      * @param videoWrapperClassName
      * @returns {*}
@@ -210,16 +224,25 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #######################
 
 
+    /**
+     * Adds the streamBaseUrl to the class/module scoped variable streamBaseUrl.
+     * @param streamBaseUrl
+     */
     function addStreamBaseUrl(streamBaseUrl){
         currentVideoStreamObject.streamBaseUrl = streamBaseUrl;
     };
 
+    /**
+     * Gets the streamBaseUrl from the class/module scoped variable
+     * @returns {*}
+     * @private
+     */
     function _getStreamBaseUrl(){
       return currentVideoStreamObject.streamBaseUrl;
     };
 
     /**
-     * @description This is the main media method for adpative bitrate content when the video and mediasource object are ready,
+     * This is the main media method for adpative bitrate content when the video and mediasource object are ready,
      * this is currently used in conjunction with the mpdParserModule and the DASH format for streaming content.
      * @private
      * @param e
@@ -455,12 +478,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         //}, 2000);
     };
 
-
     //  ########################
     //  #### BUFFER METHODS ####
     //  ########################
     /**
-     * @description This method checks the buffers
+     * This method checks the buffers
      * @private
      */
     function _checkBuffers() {
@@ -493,7 +515,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * @description This methods sets the media source duration for the media source extension and the source buffer
+     * This methods sets the media source duration for the media source extension and the source buffer
      * @private
      * @param arrayOfSourceBuffers
      */
@@ -517,11 +539,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     }
 
     /**
-     * @description This methods does the actual appending of the data for the source buffers
+     * This methods does the actual appending of the data for the source buffers
      * @private
-     * @param buffer
-     * @param file
-     * @param type
+     * @param buffer {buffer}
+     * @param file {file}
+     * @param type {string}
      */
     function _appendData(buffer, file, type) {
         console.log('Appending '+type+' data');
@@ -542,10 +564,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### REQUEST METHODS ####
     //  #########################
     /**
-     * @description This methods gets the array buffer which is actually the streams that will be used by the media source extension object.
+     * This methods gets the array buffer which is actually the streams that will be used by the media source extension object.
      * @private
-     * @param url
-     * @param callback
+     * @param url {string}
+     * @param callback {function}
      */
     function _getArrayBuffer(url, callback) {
         var xhr = new XMLHttpRequest();
@@ -563,7 +585,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * @description This method adds eventlisteners to the media source object
+     * This method adds eventlisteners to the media source object
      * @private
      */
     function _addEventListenersToMediaSource(){
@@ -578,7 +600,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * @description This method clears the current media source
+     * This method clears the current media source
      * @private
      */
     function clearMediaSource(){
@@ -600,13 +622,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### CURRENT VIDEO STREAM OBJECT METHODS ####
     //  #############################################
     /**
-     * @description This method clears the current video object properties that need to be cleared between plays
+     * This method clears the current video object properties that need to be cleared between plays
      * @private
      */
     function clearCurrentVideoStreamObject(){
         currentVideoStreamObject = _returnClearCurrentVideoStreamObject();
     };
 
+    /**
+     * A method to return a resetd currentVideoStreamObject, new parameters, cleared and such
+     * @returns {{bitrateSwitchTimerSegmentAppendTime: number, currentVideoBitrateIndex: number, sourceBuffers: Array, mpdObject: {}, hlsObject: {}, adaptiveStreamBitrateObjectMap: Map, currentVideoBaseUrl: string, streamBaseUrl: string}}
+     * @private
+     */
     function _returnClearCurrentVideoStreamObject(){
         var returnObject = {
             bitrateSwitchTimerSegmentAppendTime:0,
@@ -626,7 +653,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### BITRATE METHODS ####
     //  #########################
     /**
-     * @description A method that first verifies that the videoControlsModule is in use, then tries to contact
+     * A method that first verifies that the videoControlsModule is in use, then tries to contact
      * the module by accessing a public method that generates
      * @param bitrateSettingsObject
      * @private
@@ -646,9 +673,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
 
     /**
-     * @description This method takes the baseUrlObjectsArray and then parses through that to find
+     * This method takes the baseUrlObjectsArray and then parses through that to find
      * out which bitrate should be used
-     * @private
      * @param baseUrlObjectsArray
      * @returns {string}
      * @private
@@ -767,10 +793,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### GENERAL METHODS ####
     //  #########################
 
+    /**
+     * Returns the moduleVersion
+     * @returns {string}
+     */
     function getModuleVersion(){
         return moduleVersion;
     };
 
+    /**
+     * Returns the moduleName
+     * @returns {string}
+     */
     function getModuleName(){
         return moduleName;
     };
@@ -798,7 +832,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     that._isModule = true;
 
     //Lets run this method on startup
-    initiate();
+    _initiate();
 
     //Lets return our object
     return that;

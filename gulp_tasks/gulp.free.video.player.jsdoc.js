@@ -24,14 +24,27 @@ gulp.task('clean_jsdoc_files_free_video_player_sample_page', ['build_free_video_
 });
 
 //Build JSDOC
-gulp.task('run_jsdoc_free_video_player_production' ,['clean_jsdoc_files_free_video_player_production', 'clean_jsdoc_files_free_video_player_sample_page'], function(cb){
-    return gulp.src('./production/freevideoplayer/free.video.player.full.js')
-        .pipe(jsdoc('./production/documentation/freevideoplayer/'));
-    cb(err);
+gulp.task('run_jsdoc_free_video_player_production' ,['clean_jsdoc_files_free_video_player_production'], function(cb){
+
+    var productionConfig = {
+        "opts": {
+            "destination": "./production/freevideoplayer/documentation"
+        }
+    };
+
+    gulp.src('./production/freevideoplayer/free.video.player.full.js', {read:false})
+        .pipe(jsdoc(productionConfig, cb));
+
 });
 
-gulp.task('run_jsdoc_free_video_player_sample_page' ,['run_jsdoc_free_video_player_production'], function(cb){
-    return gulp.src('./production/freevideoplayer/free.video.player.full.js')
-        .pipe(jsdoc('./public/documentation/freevideoplayer/'));
-    cb(err);
+gulp.task('run_jsdoc_free_video_player_sample_page' ,['clean_jsdoc_files_free_video_player_sample_page'], function(cb){
+
+    var publicConfig = {
+        "opts": {
+            "destination": "./public/documentation"
+        }
+    };
+
+    gulp.src('./production/freevideoplayer/free.video.player.full.js', {read:false})
+        .pipe(jsdoc(publicConfig, cb));
 });

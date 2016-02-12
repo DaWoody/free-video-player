@@ -1,11 +1,11 @@
 /**
  * @name FREE VIDEO PLAYER
  * @author Johan Wedfelt
- * @license GPLv3, see http://www.gnu.org/licenses/gpl-3.0.en.html
- * @classdesc A cool FREE VIDEO PLAYER library to use when want to play DASHed content, Requires the xml2json library to work
+ * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
+ * @description A cool FREE VIDEO PLAYER library to use when want to play DASHed content, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
  * @version 0.9.0
- * http://www.freevideoplayer.org
- * @param initiationObject
+ * @namespace FREE VIDEO PLAYER
+ * @param initiationObject {object}
  */
 var freeVideoPlayer = function(initiationObject){
 
@@ -124,10 +124,14 @@ var freeVideoPlayer = function(initiationObject){
     //  #### LOAD METHODS ####
     //  ######################
     /**
+     * @function
+     * @memberof FREE VIDEO PLAYER
      * @description This is the main load method, this method parses the video url and based on that decides which
      * format the video is. If its an adaptive bitrate stream or a regular stream like mp4 for instance.
+     * @name load
+     * @param {string} videoUrl - The video url, ending with things like .mp4, .webm or .mpd
+     * @param {object} optionalConfigurationObject - An optional configuration object
      * @public
-     * @param {string} videoUrl
      */
     var load = function(videoUrl, optionalConfigurationObject){
         //This method will understand
@@ -177,7 +181,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description This is the method that loads a non adaptive bitrate stream, like for instance mp4 into the player
+     * This is the method that loads a non adaptive bitrate stream, like for instance mp4 into the player
      * @private
      * @param {string} videoUrl
      * @param {string} typeOfVideo
@@ -242,7 +246,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description This method loads the mpd and then utilizes a set of methods to parse through the MPD, adding data to
+     * This method loads the mpd and then utilizes a set of methods to parse through the MPD, adding data to
      * a scoped variable called currentVideoObject and then also firing away and starts the video
      * @private
      * @param {string} mpdUrl
@@ -320,7 +324,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description A return method that could be public to return the current video's subtitle infor in
+     * A return method that could be public to return the current video's subtitle infor in
      * an array of subtitleObjects containing values such as label, language, id.
      * @public
      * @returns {Array}
@@ -334,7 +338,7 @@ var freeVideoPlayer = function(initiationObject){
     //  #### REQUEST METHODS ####
     //  #########################
     /**
-     * @description This method retrieves the language list in ISO-639-1 format that is used to syncronize the two letter language combination
+     * This method retrieves the language list in ISO-639-1 format that is used to syncronize the two letter language combination
      * with the actual language spoken name which in turn is used for the label used within the subtitles tracks, menu and within the DOM structure.
      * @private
      * @param callback
@@ -360,7 +364,7 @@ var freeVideoPlayer = function(initiationObject){
     //  #### PLAYER API CONTROL METHODS ####
     //  ####################################
     /**
-     * @description This method interacts with the player video element and pauses the stream/media
+     * This method interacts with the player video element and pauses the stream/media
      * @public
      */
     var pause = function(){
@@ -368,7 +372,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description This method interacts with the player video element and starts to play the stream/media
+     * This method interacts with the player video element and starts to play the stream/media
      * @public
      */
     var play = function(){
@@ -391,7 +395,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description a fullscreen check method for the public API
+     * A fullscreen check method for the public API
      * @returns {boolean}
      * @private
      */
@@ -400,7 +404,7 @@ var freeVideoPlayer = function(initiationObject){
     }
 
     /**
-     * @description This method interacts with the player video element and seeks within the stream/media
+     * This method interacts with the player video element and seeks within the stream/media
      * @public
      * @param positionInSeconds
      */
@@ -417,7 +421,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description This method interacts with the player video element and sets the volume within the stream/media
+     * This method interacts with the player video element and sets the volume within the stream/media
      * @public
      * @param numberFromZeroToOne
      */
@@ -434,7 +438,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description This method returns the video element volume as a number between 0 and 1.
+     * This method returns the video element volume as a number between 0 and 1.
      * @public
      * @returns {*|Number}
      */
@@ -447,7 +451,7 @@ var freeVideoPlayer = function(initiationObject){
     //  #### GENERAL METHODS ####
     //  #########################
     /**
-     * @description This is a helper method to get the current version of the player library
+     * This is a helper method to get the current version of the player library
      * @public
      * @returns {string}
      */
@@ -462,7 +466,7 @@ var freeVideoPlayer = function(initiationObject){
 
 
     /**
-     * @description This method parses through the videoUrl and returns the type of stream based on the ending of the videoUrl
+     * This method parses through the videoUrl and returns the type of stream based on the ending of the videoUrl
      * @private
      * @param videoUrl
      * @returns {string}
@@ -513,7 +517,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description This method clears the current video container, to make room for a new video instance
+     * This method clears the current video container, to make room for a new video instance
      * @private
      */
     var _clearVideoContainer = function(){
@@ -536,7 +540,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description This method clears the current video object properties that need to be cleared between plays
+     * This method clears the current video object properties that need to be cleared between plays
      * @private
      */
     var _clearCurrentVideoObjectProperties = function(){
@@ -548,7 +552,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description This methods clears previous video containers, buffers and such. An aggregated top layer function for clearing previous video instances and such.
+     * This methods clears previous video containers, buffers and such. An aggregated top layer function for clearing previous video instances and such.
      * @private
      */
     var _clearVideo = function(){
@@ -565,7 +569,7 @@ var freeVideoPlayer = function(initiationObject){
     //  #### INITIATION METHODS ####
     //  ############################
     /**
-     * @description This method loads the general subtitle info
+     * This method loads the general subtitle info
      * @private
      */
     var _loadGeneralSubtitleInfo = function(){
@@ -580,7 +584,7 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * @description This method is just a helper method that prints a message on the console when the video player is instantiated
+     * This method is just a helper method that prints a message on the console when the video player is instantiated
      * @private
      */
     var _printStartMessageToConsole = function(){

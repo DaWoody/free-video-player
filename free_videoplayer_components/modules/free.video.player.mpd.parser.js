@@ -1,15 +1,15 @@
 /**
- * @title FREE VIDEO PLAYER - MPD PARSER MODULE
- * @authors Johan Wedfelt
- * @license GPLv3, see http://www.gnu.org/licenses/gpl-3.0.en.html
- * @dependencies Requires the xml2json library to work
- * @description A cool MPD PARSER MODULE to use with the FREE VIDEO PLAYER library.
- * @version 0.9.0
- * @web http://www.freevideoplayer.org
- * @param initiationObject {object} - An initiation object used to define settings for the mpdParserModule
+ * @name FREE VIDEO PLAYER - MPD PARSER MODULE
+ * @namespace FREE VIDEO PLAYER - MPD PARSER MODULE
+ * @author Johan Wedfelt
+ * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
+ * @description A cool FREE VIDEO PLAYER library to use when want to play DASHed content, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
+ * @description A  module to use with for example FREE VIDEO PLAYER library.
+ * @param settingsObject {object} - The settingsObject provided when the Free Video Player was instantiated
+ * @param moduleVersion {string} - The messageModule if it got instantited before
+ * @returns {{}}
  */
-//Lets add the mpdParser to the global namespace
-freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationObject, messagesModule){
+freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObject, messagesModule){
 
     'use strict';
 
@@ -27,7 +27,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(initiationOb
         defaultObject = {
             debugMode:true
         },
-        settingsObject = Object.assign({}, defaultObject, initiationObject),
+        settingsObject = Object.assign({}, defaultObject, settingsObject),
         messagesModule = messagesModule || freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion);
 
 

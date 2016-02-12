@@ -1,21 +1,19 @@
 /**
- * @title FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
- * @authors Johan Wedfelt
- * @license GPLv3, see http://www.gnu.org/licenses/gpl-3.0.en.html
- * @description A video controls module to use with the FREE VIDEO PLAYER library.
- * @version 0.9.0
- * @web http://www.freevideoplayer.org
- * @param settingsObject {object} - Contains the settings the videoControlsModule needs to utilize
- * certain methods on the instantiated Free Video Player object
- * @param videoPlayerNameCss {string} - Used as name string for the messagesModule that the videoControlsModule utilizes
+ * @name FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+ * @namespace FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+ * @author Johan Wedfelt
+ * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
+ * @description A  Video Controls Module to use with for example {@link FREE%2520VIDEO%2520PLAYER.html | FREE VIDEO PLAYER} library.
+ * @param settingsObject {object} - The settingsObject provided when the Free Video Player was instantiated
+ * @param videoPlayerNameCss {string} - The css name for the Free Video Player as it got instantiated,
+ * @param messageModule {object} - The instantiated messages module
+ * @returns {{}}
  */
-//Add the video controls to the namespace
 freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObject, videoPlayerNameCss, messagesModule){
     'use strict';
 
     /**
-     * @description Lets instantiate the different variables we will be needing when we start up this controls module
-     * @type {{}}
+     * Lets instantiate the different variables we will be needing when we start up this controls module
      */
     var that = {},
         settingsObject = settingsObject,
@@ -28,6 +26,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         messagesModule = messagesModule || freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion);
 
     /**
+     * @function
+     * @name createVideoControls
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description This methods manipulates the DOM and creates object like subtitle tracks within the DOM
      * aswell as the rest of the control structure, like play/pause button, progress-slider, mute button, volume slider,
      * subtitle selector with sub-menu and fullscreen button
@@ -269,6 +270,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
 
     /**
+     * @function
+     * @name _addAndReturnVideoFormatName
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A helper method to add the videoFormatName to the videoFormatContainer
      * @param videoFormatContainer
      * @returns {*}
@@ -286,11 +290,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     }
 
     /**
+     * @function
+     * @name addBitrateMenuToSettingsIcon
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A method that in turn will modify the settingsMenu on videoControls to correspond
      * to different choices the user has to decide which quality the video should be streamed at.
      * @param typeOfStream
      * @param bitrateObjectsArray
-     * @private
+     * @public
      */
     function _addBitrateMenuToSettingsIcon(typeOfStream, bitrateObjectsArray){
 
@@ -335,6 +342,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
+    /**
+     * @function
+     * @name _changeVideoBitrate
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+     * @description A method that both updates the DOM in the Video Controls section with attributes to the selected and non selcted bitrates (so it can be used for styling) and also setting a class scoped variable that can be used when switching bitrate
+     * @private
+     */
     function _changeVideoBitrate(){
 
         var elementTagName = this.nodeName,
@@ -361,6 +375,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### CONTROL METHODS ####
     //  ##########################
     /**
+     * @function
+     * @name _playPauseMethod
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description This method makes the video play or pause depending on its current state,
      * will also paint out different states in the DOM both for the controls and the videoOverlay
      * @private
@@ -381,6 +398,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
+     * @function
+     * @name _addPlayIconToControls
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description Adds a play icon to the controls
      * @private
      */
@@ -389,7 +409,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description Adds a pause icon to the controls
+     * @function
+     * @name _addPauseIconToControls
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+     * Adds a pause icon to the controls
      * @private
      */
     function _addPauseIconToControls(){
@@ -397,6 +420,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
+     * @function
+     * @name _addSpinnerIconToVideoOverlay
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description Adds a spinner icon to the video overlay
      * @private
      */
@@ -405,6 +431,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
+     * @function
+     * @name _removeSpinnerIconFromVideoOverlay
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description Removes the spinner icon from the video overlay
      * @private
      */
@@ -413,6 +442,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
+     * @function
+     * @name _playMethodFromSlider
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A method called when the progress slider is moved, if the current state of the videoElement
      * is playing then the video should continue playing, otherwise the state should be stopped/paused.
      * @private
@@ -429,6 +461,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
+     * @function
+     * @name _pauseMethodFromSlider
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A method to pause the videoElement, utilized as a sub-method when the slider is moved
      * @private
      */
@@ -439,7 +474,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @desciption A method to shift the volume up and down
+     * @function
+     * @name _volumeShiftMethod
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+     * @description A method to shift the volume up and down
      * @private
      */
     function _volumeShiftMethod(){
@@ -462,6 +500,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
+     * @function
+     * @name _volumeMuteUnmuteMethod
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A method to mute and unmute the volume for the videoElement aswell as modifying the position of the
      * volume slider. Also if the volume is muted the last known volume value will be saved so the volume slider will
      * return to this value once unmuted.
@@ -496,6 +537,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
+     * @function
+     * @name _progressShiftMethod
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A method to shift to a new position within the videoElement, basically seeking to a new position and
      * also updating the controls as we do this
      * @private
@@ -514,7 +558,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method that can be called continuasly to update the progress bar of the current video position.
+     * A method that can be called continuasly to update the progress bar of the current video position.
      * @private
      */
     function _progressUpdateMethod(){
@@ -527,7 +571,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method that can be called to print the total media duration of an asset
+     * A method that can be called to print the total media duration of an asset
      * @private
      */
     function _printMediaTotalDuration(){
@@ -536,7 +580,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method will make the volume slider visible
+     * A method will make the volume slider visible
      * @private
      */
     function _showVolumeSlider(){
@@ -544,7 +588,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method that will make the volume slider not visible
+     * A method that will make the volume slider not visible
      * @private
      */
     function _hideVolumeSlider(){
@@ -552,7 +596,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method that will make changes to the settings easy :).
+     * A method that will make changes to the settings easy :).
      * @private
      */
     function _changeSettings(){
@@ -564,7 +608,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method that will enable full screen mode on the Free Video Player, or disable it
+     * A method that will enable full screen mode on the Free Video Player, or disable it
      * @private
      */
     function _fullScreenMethod(){
@@ -585,7 +629,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @decription Checks if the browsers is in full-screen mode
+     * Checks if the browsers is in full-screen mode
      * @returns {boolean}
      * @private
      */
@@ -597,8 +641,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### VIDEO OVERLAY METHODS ####
     //  ###############################
     /**
-     * @description A method that adds a play icon to the video overlay
-     * @private
+     * A method that adds a play icon to the video overlay
+     * @public
      */
     function _addPlayIconToVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
@@ -607,8 +651,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method that adds a pause icon to the video overlay
-     * @private
+     * A method that adds a pause icon to the video overlay
+     * @public
      */
     function _addPauseIconToVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
@@ -616,9 +660,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         _addCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
     };
 
+
     /**
+     * @function
+     * @name addSpinnerIconToVideoOverlay
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A method that adds a spinner icon to the video overlay
-     * @private
+     * @public
      */
     function _addSpinnerIconToVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
@@ -626,8 +674,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method that removes the spinner icon from the video overlay
-     * @private
+     * @function
+     * @name removeSpinnerIconFromVideoOverlay
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+     * @description A method that removes a spinner icon from the video overlay
+     * @public
      */
     function _removeSpinnerIconFromVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
@@ -639,7 +690,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### CSS METHODS ####
     //  #####################
     /**
-     * @description A method that adds a css class to an an element
+     * A method that adds a css class to an an element
      * @param element
      * @param className
      * @private
@@ -662,7 +713,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method that removes a css class from an an element
+     * A method that removes a css class from an an element
      * @param element
      * @param className
      * @private
@@ -682,7 +733,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A utility method meant to be able to filter.
+     * A utility method meant to be able to filter between css classes, and if an element has the class
      * @param element
      * @param className
      * @returns {boolean}
@@ -707,7 +758,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### KEYBOARD EVENTS ####
     //  #########################
     /**
-     * @description A method that aggregates the methods that will add keyboard eventListeners to the Free Video Player
+     * A method that aggregates the methods that will add keyboard eventListeners to the Free Video Player
      * @private
      */
     function _createKeyboardListeners(){
@@ -716,7 +767,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description An overall method to remove eventListeners connected to the keyboard, if say a previous asset was loaded and
+     * An overall method to remove eventListeners connected to the keyboard, if say a previous asset was loaded and
      * a new one is loaded.
      * @private
      */
@@ -726,7 +777,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description A method that enables to play/pause from the keyboard spacebar.
+     * A method that enables to play/pause from the keyboard spacebar.
      * @private
      */
     function _createPlayPauseSpaceBarListener(){
@@ -734,7 +785,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description The method that removes the play/pause button from the spacebar.
+     * The method that removes the play/pause button from the spacebar.
      * @private
      */
     function _removePlayPauseSpaceBarAndEscFullscreenListener(){
@@ -752,7 +803,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
 
     /**
-     * @description The actual method that catches the event from the spacebar button
+     * The actual method that catches the event from the spacebar button
      * @param event
      * @private
      */
@@ -782,13 +833,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
-
-
     //  ################################
     //  #### CALCULATE TIME METHODS ####
     //  ################################
     /**
-     * @description A method that calculates and returns a Hours Minutes and Seconds string from Seconds
+     * A method that calculates and returns a Hours Minutes and Seconds string from Seconds
      * @param seconds
      * @returns {string}
      * @private
@@ -836,7 +885,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### BITRATE METHODS / DOM ####
     //  ################################
     /**
-     * @description Creates a bitrate menu and returns that menu
+     * Creates a bitrate menu and returns that menu
      * @private
      * @param bitrateObject
      * @returns {*}
@@ -893,7 +942,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### SUBTITLE METHODS / DOM ####
     //  ################################
     /**
-     * @description Creates a subtitle menu and returns that menu
+     * Creates a subtitle menu and returns that menu
      * @private
      * @param videoElement
      * @returns {*}
@@ -951,7 +1000,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description Creates a subtitle menu item. This will be added to the subtitle menu
+     * Creates a subtitle menu item. This will be added to the subtitle menu
      * @param configObject
      * @returns {Node}
      */
@@ -1014,9 +1063,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
 
     /**
+     * @function
+     * @name addSubtitlesTracksToDom
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description Adds subtitles tracks to the DOM and the video player instance within the video element
+     * @param {array} subtitleTracksArray - An array of subtitles
+     * @param {element} videoElement - The video element <video></video>
      * @public
-     * @param {array} subtitleTracksArray
      */
     function _addSubtitlesTracksToDom(subtitleTracksArray , videoElement){
         subtitleTracksArray.forEach(function(currentSubtitleTrack, index, subtitleTracksArray){
@@ -1039,7 +1092,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
 
     /**
-     * @description Helper method that returns the first word from the subtitle label in case the subtitle label
+     * Helper method that returns the first word from the subtitle label in case the subtitle label
      * contains multiple words
      * @private
      * @param {string} subtitleLabel
@@ -1061,7 +1114,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * @description Returns the subtitle label capitalized, like for instance Label instead of label.
+     * Returns the subtitle label capitalized, like for instance Label instead of label.
      * @private
      * @param {string} subtitleLabel
      * @returns {*}
@@ -1083,12 +1136,15 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
+     * @function
+     * @name returnModifiedArrayOfSubtitlesWithLabel
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description This method returns a modified array of subtitle objects with labels,
      * so the subtitle objects can be used to populate the DOM structure and such.
-     * @private
-     * @param {array} arrayOfSubtitles
-     * @param {array} arrayOfLanguageObjects
-     * @returns {*}
+     * @public
+     * @param {array} arrayOfSubtitles - An array of subitles
+     * @param {array} arrayOfLanguageObjects - An array of language objects
+     * @returns {array} - An array of subtitle objects including labels within the objects
      */
     function _returnModifiedArrayOfSubtitlesWithLabel(arrayOfSubtitles, arrayOfLanguageObjects){
 
@@ -1122,10 +1178,26 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### GENERAL METHODS ####
     //  #########################
 
+    /**
+     * @function
+     * @name getModuleVersion
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+     * @description This method gets the module version
+     * @returns {string} - the module version as a string
+     * @public
+     */
     function getModuleVersion(){
         return moduleVersion;
     };
 
+    /**
+     * @function
+     * @name getModuleName
+     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+     * @description This method gets the module name
+     * @returns {string} - the module name as a string
+     * @public
+     */
     function getModuleName(){
         return moduleName;
     };
