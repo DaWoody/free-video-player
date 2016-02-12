@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     mocha = require('gulp-mocha'),
-    jsdoc = require('gulp-jsdoc'),
+    jsdoc = require('gulp-jsdoc3'),
     del = require('del');
 
 //  *******************
