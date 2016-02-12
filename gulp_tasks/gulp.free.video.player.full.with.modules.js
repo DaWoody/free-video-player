@@ -16,7 +16,7 @@ gulp.task('build_free_video_player_full_with_modules', ['build_free_video_player
     // place code for your default task here
     return gulp.src([
             './free_videoplayer_components/temporary_build/free.video.player.modules.js',
-            './free_videoplayer_components/free.video.player.js'])
+            './free_videoplayer_components/free_video_player/free.video.player.js'])
         .pipe(concat('free.video.player.full.js'))
         .pipe(gulp.dest('./production/freevideoplayer/'))
         .pipe(gulp.dest('./public/js/freevideoplayer/'));

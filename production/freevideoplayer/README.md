@@ -50,6 +50,7 @@ then you can run either ```npm start``` to run the local web-server instance wit
 or you can run the production build with the command ```gulp build```,  which will generate new Free Video Player files within both the *production* folder and the actual
 *public* folder (used to display the sample application discussed earlier, which is also shown @ http://www.freevideoplayer.org.
 If you just want to build the stylesheet, work on the */free_video_player_components/stylesheet/scss/free.video.player.style.scss* and then run ```gulp watch``` this will generate a sass watcher on your project.
+The code base and files that generates the file ```free.video.player.full.js```, can be found within the folder ```free_videoplayer_components/free_video_player/```  where you will find the actual free-video-player, and then its corresponding modules (that gets imported through a common namespace) within the folder ```free_videoplayer_components/modules/```.
 
 ##Installation
 ***
