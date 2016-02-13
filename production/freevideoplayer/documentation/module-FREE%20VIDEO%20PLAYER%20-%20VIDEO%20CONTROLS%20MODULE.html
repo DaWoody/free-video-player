@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Global</title>
+	<title>Documentation Module: FREE VIDEO PLAYER - VIDEO CONTROLS MODULE</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -77,15 +77,10 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Global</h1>
+	<h1 class="page-title">Module: FREE VIDEO PLAYER - VIDEO CONTROLS MODULE</h1>
 <section>
 
 <header>
-    
-        <h2>
-        
-        </h2>
-        
     
 </header>
 
@@ -94,92 +89,13 @@
     <div class="container-overview">
     
         
+            <div class="description">A  module handling creation and updating of video controls for the Free Video Player, to use with the FREE VIDEO PLAYER library. Check out more @ <a href="http://www.freevideoplayer.org"> FreeVideoPlayer.org</a></div>
+        
 
         
 <dl class="details">
     
 
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        <dl>
-            
-<hr>
-<dt class="name" id="FREEVIDEOPLAYER">
-    <h4><span class="type-signature"></span>FREE VIDEO PLAYER<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        A cool open source html5 video library to use when want to play both regular HTML5 content such as mp4, webm but also for adaptive streaming formats such as DASH for instance, Requires the xml2json library to work. Check out more @ <a href="http://www.freevideoplayer.org"> FreeVideoPlayer.org</a>
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-	
-	<dt class="tag-version method-doc-label method-doc-details-label">Version:</dt>
-	<dd class="tag-version">
-		<ul class="dummy">
-			<li>0.9.0</li>
-		</ul>
-	</dd>
 	
 
 	
@@ -230,10 +146,20 @@
 </dl>
 
 
+        
     
-</dd>
+    </div>
 
-        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+
     
 
     
@@ -243,7 +169,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="fullscreen"><span class="type-signature"></span>fullscreen()</h4>
+    <h4 class="name" id="~addBitrateMenuToSettingsIcon"><span class="type-signature">&lt;inner> </span>addBitrateMenuToSettingsIcon(typeOfStream, bitrateObjectsArray)</h4>
     
     
 </dt>
@@ -251,7 +177,160 @@
 
     
     <div class="description">
-        This method interacts with the player video element generates or exists a fullscreen mode
+        A method that in turn will modify the settingsMenu on videoControls to correspond
+to different choices the user has to decide which quality the video should be streamed at.
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>typeOfStream</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The type of stream, like dash, hls, mp4 and more</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bitrateObjectsArray</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An array of bitrate objects</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="~addSpinnerIconToVideoOverlay"><span class="type-signature">&lt;inner> </span>addSpinnerIconToVideoOverlay()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        A method that adds a spinner icon to the video overlay
     </div>
     
 
@@ -321,7 +400,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="getArrayOfSubtitleObjects"><span class="type-signature"></span>getArrayOfSubtitleObjects()</h4>
+    <h4 class="name" id="~addSubtitlesTracksToDom"><span class="type-signature">&lt;inner> </span>addSubtitlesTracksToDom(subtitleTracksArray, videoElement)</h4>
     
     
 </dt>
@@ -329,8 +408,313 @@
 
     
     <div class="description">
-        A return method that could be public to return the current video's subtitle infor in
-an array of subtitleObjects containing values such as label, language, id.
+        Adds subtitles tracks to the DOM and the video player instance within the video element
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>subtitleTracksArray</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An array of subtitles</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>videoElement</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">element</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The video element <video></video></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="~createVideoControls"><span class="type-signature">&lt;inner> </span>createVideoControls(videoWrapper, currentVideoObject)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        This methods manipulates the DOM and creates object like subtitle tracks within the DOM
+aswell as the rest of the control structure, like play/pause button, progress-slider, mute button, volume slider,
+subtitle selector with sub-menu and fullscreen button
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>videoWrapper</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">element</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The DOM element for the videoWrapper</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>currentVideoObject</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">element</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The DOM video element</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="~getName"><span class="type-signature">&lt;inner> </span>getName()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        This method gets the module name
     </div>
     
 
@@ -396,7 +780,7 @@ an array of subtitleObjects containing values such as label, language, id.
     
             
 <div class="param-desc">
-    - The subtitle tracks array
+    - the module name as a string
 </div>
 
 
@@ -407,7 +791,7 @@ an array of subtitleObjects containing values such as label, language, id.
     </dt>
     <dd>
         
-<span class="param-type">array</span>
+<span class="param-type">string</span>
 
 
 
@@ -424,7 +808,7 @@ an array of subtitleObjects containing values such as label, language, id.
             
 <hr>
 <dt>
-    <h4 class="name" id="getName"><span class="type-signature"></span>getName()</h4>
+    <h4 class="name" id="~getVersion"><span class="type-signature">&lt;inner> </span>getVersion()</h4>
     
     
 </dt>
@@ -432,7 +816,7 @@ an array of subtitleObjects containing values such as label, language, id.
 
     
     <div class="description">
-        This is a helper method to get the current name of the player library
+        This method gets the module version
     </div>
     
 
@@ -497,6 +881,10 @@ an array of subtitleObjects containing values such as label, language, id.
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    - the module version as a string
+</div>
+
 
 
 <dl>
@@ -522,206 +910,7 @@ an array of subtitleObjects containing values such as label, language, id.
             
 <hr>
 <dt>
-    <h4 class="name" id="getVersion"><span class="type-signature"></span>getVersion()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        This is a helper method to get the current version of the player library
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="getVolume"><span class="type-signature"></span>getVolume()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        This method returns the video element volume as a number between 0 and 1.
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">*</span>
-|
-
-<span class="param-type">Number</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="isModule"><span class="type-signature"></span>isModule()</h4>
+    <h4 class="name" id="~isModule"><span class="type-signature">&lt;inner> </span>isModule()</h4>
     
     
 </dt>
@@ -819,7 +1008,7 @@ an array of subtitleObjects containing values such as label, language, id.
             
 <hr>
 <dt>
-    <h4 class="name" id="load"><span class="type-signature"></span>load(videoUrl, optionalConfigurationObject)</h4>
+    <h4 class="name" id="~removeSpinnerIconFromVideoOverlay"><span class="type-signature">&lt;inner> </span>removeSpinnerIconFromVideoOverlay()</h4>
     
     
 </dt>
@@ -827,8 +1016,86 @@ an array of subtitleObjects containing values such as label, language, id.
 
     
     <div class="description">
-        This is the main load method, this method parses the video url and based on that decides which
-format the video is. If its an adaptive bitrate stream or a regular stream like mp4 for instance.
+        A method that removes a spinner icon from the video overlay
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="~returnModifiedArrayOfSubtitlesWithLabel"><span class="type-signature">&lt;inner> </span>returnModifiedArrayOfSubtitlesWithLabel(arrayOfSubtitles, arrayOfLanguageObjects)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        This method returns a modified array of subtitle objects with labels,
+so the subtitle objects can be used to populate the DOM structure and such.
     </div>
     
 
@@ -863,13 +1130,13 @@ format the video is. If its an adaptive bitrate stream or a regular stream like 
 
         <tr>
             
-                <td class="name"><code>videoUrl</code></td>
+                <td class="name"><code>arrayOfSubtitles</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">array</span>
 
 
 
@@ -880,20 +1147,20 @@ format the video is. If its an adaptive bitrate stream or a regular stream like 
 
             
 
-            <td class="description last">The video url, ending with things like .mp4, .webm or .mpd</td>
+            <td class="description last">An array of subitles</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>optionalConfigurationObject</code></td>
+                <td class="name"><code>arrayOfLanguageObjects</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">array</span>
 
 
 
@@ -904,7 +1171,7 @@ format the video is. If its an adaptive bitrate stream or a regular stream like 
 
             
 
-            <td class="description last">An optional configuration object containing information such as videoSplashImage and more</td>
+            <td class="description last">An array of language objects</td>
         </tr>
 
     
@@ -964,424 +1231,30 @@ format the video is. If its an adaptive bitrate stream or a regular stream like 
     
 
     
-
+    <h5>Returns:</h5>
     
-</dd>
-
-        
             
-<hr>
-<dt>
-    <h4 class="name" id="pause"><span class="type-signature"></span>pause()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        This method interacts with the player video element and pauses the stream/media
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
+<div class="param-desc">
+    - An array of subtitle objects including labels within the objects
+</div>
 
 
 
-	
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array</span>
 
-	
 
-	
 
-	
+    </dd>
 </dl>
 
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
         
-            
-<hr>
-<dt>
-    <h4 class="name" id="play"><span class="type-signature"></span>play()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        This method interacts with the player video element and starts to play the stream/media
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="seek"><span class="type-signature"></span>seek(positionInSeconds)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        This method interacts with the player video element and seeks within the stream/media
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>positionInSeconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-|
-
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The position since start, we want the player to skip to, should be an integer from 0 and up.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="setVolume"><span class="type-signature"></span>setVolume(numberFromZeroToOne)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        This method interacts with the player video element and sets the volume within the stream/media
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>numberFromZeroToOne</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-|
-
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">A decimal number from 0 to 1, like 0.5 for instance</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
 </dd>

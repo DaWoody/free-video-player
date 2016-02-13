@@ -1,9 +1,9 @@
 /**
  * @name FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
- * @namespace FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+ * @module FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
  * @author Johan Wedfelt
  * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
- * @description A  Video Controls Module to use with for example {@link FREE%2520VIDEO%2520PLAYER.html | FREE VIDEO PLAYER} library.
+ * @description A  module handling creation and updating of video controls for the Free Video Player, to use with the FREE VIDEO PLAYER library. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
  * @param settingsObject {object} - The settingsObject provided when the Free Video Player was instantiated
  * @param videoPlayerNameCss {string} - The css name for the Free Video Player as it got instantiated,
  * @param messageModule {object} - The instantiated messages module
@@ -17,6 +17,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     var that = {},
         settingsObject = settingsObject,
+        isModuleValue = true,
         moduleVersion = '0.9.0',
         moduleName = 'VIDEO CONTROLS',
         animationDelayObject = {
@@ -28,7 +29,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     /**
      * @function
      * @name createVideoControls
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description This methods manipulates the DOM and creates object like subtitle tracks within the DOM
      * aswell as the rest of the control structure, like play/pause button, progress-slider, mute button, volume slider,
      * subtitle selector with sub-menu and fullscreen button
@@ -36,7 +36,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @param {element} currentVideoObject - The DOM video element
      * @public
      */
-    function _createVideoControls(videoWrapper, currentVideoObject){
+    function createVideoControls(videoWrapper, currentVideoObject){
 
         var videoWrapper = videoWrapper,
             currentControls = videoWrapper.getElementsByTagName('div')[0] || null,
@@ -272,7 +272,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     /**
      * @function
      * @name _addAndReturnVideoFormatName
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A helper method to add the videoFormatName to the videoFormatContainer
      * @param videoFormatContainer
      * @returns {*}
@@ -292,14 +291,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     /**
      * @function
      * @name addBitrateMenuToSettingsIcon
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A method that in turn will modify the settingsMenu on videoControls to correspond
      * to different choices the user has to decide which quality the video should be streamed at.
-     * @param typeOfStream
-     * @param bitrateObjectsArray
+     * @param {string} typeOfStream - The type of stream, like dash, hls, mp4 and more
+     * @param {array} bitrateObjectsArray - An array of bitrate objects
      * @public
      */
-    function _addBitrateMenuToSettingsIcon(typeOfStream, bitrateObjectsArray){
+    function addBitrateMenuToSettingsIcon(typeOfStream, bitrateObjectsArray){
 
         console.log('_addBitrateMenuToSettingsIcon - The stream is..' + typeOfStream);
         if(typeOfStream !== 'audio'){
@@ -419,27 +417,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoControlsObject.playButton.innerHTML = settingsObject.videoControlsInnerHtml.pauseIconInnerHtml;
     };
 
-    /**
-     * @function
-     * @name _addSpinnerIconToVideoOverlay
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
-     * @description Adds a spinner icon to the video overlay
-     * @private
-     */
-    function _addSpinnerIconToVideoOverlay(){
-        that.currentVideoControlsObject.videoOverlaySpinnerIcon.innerHTML = settingsObject.videoControlsInnerHtml.spinnerIconInnerHtml;
-    };
-
-    /**
-     * @function
-     * @name _removeSpinnerIconFromVideoOverlay
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
-     * @description Removes the spinner icon from the video overlay
-     * @private
-     */
-    function _removeSpinnerIconFromVideoOverlay(){
-        that.currentVideoControlsObject.videoOverlaySpinnerIcon.innerHTML = '';
-    };
 
     /**
      * @function
@@ -664,11 +641,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     /**
      * @function
      * @name addSpinnerIconToVideoOverlay
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A method that adds a spinner icon to the video overlay
      * @public
      */
-    function _addSpinnerIconToVideoOverlay(){
+    function addSpinnerIconToVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
         that.currentVideoControlsObject.videoOverlayPlayPauseIcon.innerHTML = settingsObject.videoControlsInnerHtml.spinnerIconInnerHtml;
     };
@@ -676,11 +652,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     /**
      * @function
      * @name removeSpinnerIconFromVideoOverlay
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description A method that removes a spinner icon from the video overlay
      * @public
      */
-    function _removeSpinnerIconFromVideoOverlay(){
+    function removeSpinnerIconFromVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
         that.currentVideoControlsObject.videoOverlayPlayPauseIcon.innerHTML = settingsObject.videoControlsInnerHtml.spinnerIconInnerHtml;
         _addCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
@@ -1065,13 +1040,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     /**
      * @function
      * @name addSubtitlesTracksToDom
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description Adds subtitles tracks to the DOM and the video player instance within the video element
      * @param {array} subtitleTracksArray - An array of subtitles
      * @param {element} videoElement - The video element <video></video>
      * @public
      */
-    function _addSubtitlesTracksToDom(subtitleTracksArray , videoElement){
+    function addSubtitlesTracksToDom(subtitleTracksArray , videoElement){
         subtitleTracksArray.forEach(function(currentSubtitleTrack, index, subtitleTracksArray){
             //Lets create a track object and append it to the video element
             var trackElement = document.createElement('track'),
@@ -1138,7 +1112,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     /**
      * @function
      * @name returnModifiedArrayOfSubtitlesWithLabel
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
      * @description This method returns a modified array of subtitle objects with labels,
      * so the subtitle objects can be used to populate the DOM structure and such.
      * @public
@@ -1146,7 +1119,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @param {array} arrayOfLanguageObjects - An array of language objects
      * @returns {array} - An array of subtitle objects including labels within the objects
      */
-    function _returnModifiedArrayOfSubtitlesWithLabel(arrayOfSubtitles, arrayOfLanguageObjects){
+    function returnModifiedArrayOfSubtitlesWithLabel(arrayOfSubtitles, arrayOfLanguageObjects){
 
         try {
             // Lets do some magic here. We will match the language within the arrayOfSubtitles with the
@@ -1180,52 +1153,63 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
     /**
      * @function
-     * @name getModuleVersion
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+     * @name getVersion
      * @description This method gets the module version
      * @returns {string} - the module version as a string
      * @public
      */
-    function getModuleVersion(){
+    function getVersion(){
         return moduleVersion;
     };
 
     /**
      * @function
-     * @name getModuleName
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
+     * @name getName
      * @description This method gets the module name
      * @returns {string} - the module name as a string
      * @public
      */
-    function getModuleName(){
+    function getName(){
         return moduleName;
     };
+
+
+
+    /**
+     * @function
+     * @name isModule
+     * @description This method returns a boolean with true if the object/calling it is a module to Free Video Player or not
+     * @returns {boolean}
+     * @public
+     */
+    function isModule(){
+        return isModuleValue;
+    };
+
+
 
     //  #############################
     //  #### MAKE METHODS PUBLIC ####
     //  #############################
 
     //Controls
-    that.createVideoControls = _createVideoControls;
+    that.createVideoControls = createVideoControls;
 
     //Subtitle methods
-    that.addSubtitlesTracksToDom = _addSubtitlesTracksToDom;
-    that.returnModifiedArrayOfSubtitlesWithLabel = _returnModifiedArrayOfSubtitlesWithLabel;
+    that.addSubtitlesTracksToDom = addSubtitlesTracksToDom;
+    that.returnModifiedArrayOfSubtitlesWithLabel = returnModifiedArrayOfSubtitlesWithLabel;
 
     //Spinner methods
-    that.addSpinnerIconToVideoOverlay = _addSpinnerIconToVideoOverlay;
-    that.removeSpinnerIconFromVideoOverlay = _removeSpinnerIconFromVideoOverlay;
+    that.addSpinnerIconToVideoOverlay = addSpinnerIconToVideoOverlay;
+    that.removeSpinnerIconFromVideoOverlay = removeSpinnerIconFromVideoOverlay;
 
     //Bitrate method, used by adaptive streaming module/player
-    that.addBitrateMenuToSettingsIcon = _addBitrateMenuToSettingsIcon;
+    that.addBitrateMenuToSettingsIcon = addBitrateMenuToSettingsIcon;
 
     //General methods
-    that.getModuleName = getModuleName;
-    that.getModuleVersion = getModuleVersion;
-
-    //Indicate that the returned object is a module
-    that._isModule = true;
+    that.getName = getName;
+    that.getVersion = getVersion;
+    that.isModule = isModule;
 
     //Return our object
     return that;

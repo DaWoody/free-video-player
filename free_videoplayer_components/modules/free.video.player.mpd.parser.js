@@ -1,10 +1,9 @@
 /**
  * @name FREE VIDEO PLAYER - MPD PARSER MODULE
- * @namespace FREE VIDEO PLAYER - MPD PARSER MODULE
+ * @module FREE VIDEO PLAYER - MPD PARSER MODULE
  * @author Johan Wedfelt
  * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
- * @description A cool FREE VIDEO PLAYER library to use when want to play DASHed content, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
- * @description A  module to use with for example FREE VIDEO PLAYER library.
+ * @description A  module that handles the parsing and data gathering from mpd manifest files (used for the streaming format DASH) to use with the FREE VIDEO PLAYER library. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
  * @param settingsObject {object} - The settingsObject provided when the Free Video Player was instantiated
  * @param moduleVersion {string} - The messageModule if it got instantited before
  * @returns {{}}
@@ -23,6 +22,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     var currentVideoObject = {},
         that = {},
         moduleVersion = '0.9.0',
+        isModuleValue = true,
         moduleName = 'MPD PARSER',
         defaultObject = {
             debugMode:true
@@ -628,13 +628,40 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return returnBoolean;
     };
 
-    function getModuleVersion(){
+    /**
+     * @function
+     * @name getVersion
+     * @description This method gets the module version
+     * @returns {string} - the module version as a string
+     * @public
+     */
+    function getVersion(){
         return moduleVersion;
     };
 
-    function getModuleName(){
+    /**
+     * @function
+     * @name getName
+     * @description This method gets the module name
+     * @returns {string} - the module name as a string
+     * @public
+     */
+    function getName(){
         return moduleName;
     };
+
+
+    /**
+     * @function
+     * @name isModule
+     * @description This method returns a boolean with true if the object/calling it is a module to Free Video Player or not
+     * @returns {boolean}
+     * @public
+     */
+    function isModule(){
+        return isModuleValue;
+    };
+
 
     //  #############################
     //  #### MAKE METHODS PUBLIC ####
@@ -643,8 +670,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.getMpd = getMpd;
     that.getMpdObject = getMpdObject;
     that.setMpdObject = setMpdObject;
-    that.getModuleVersion = getModuleVersion;
-    that.getModuleName = getModuleName;
+    that.getVersion = getVersion;
+    that.getName = getName;
+    that.isModule = isModule;
 
     that.checkIfAdapationSetContainSingleRepresentation = checkIfAdapationSetContainSingleRepresentation;
     that.returnStreamBaseUrlFromMpdUrl = returnStreamBaseUrlFromMpdUrl;
@@ -677,8 +705,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.returnMimeTypeFromRepresentation = returnMimeTypeFromRepresentation;
     that.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations = returnArrayOfBaseUrlObjectsFromArrayOfRepresentations;
 
-    //Indicate that the returned object is a module
-    that._isModule = true;
 
     //Lets return our object
     return that;

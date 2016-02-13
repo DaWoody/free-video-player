@@ -1,10 +1,9 @@
 /**
  * @name FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE
- * @namespace FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE
+ * @module FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE
  * @author Johan Wedfelt
  * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
- * @description A cool FREE VIDEO PLAYER library to use when want to play DASHed content, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
- * @description An adaptive streaming module to use with for example FREE VIDEO PLAYER library.
+ * @description A  module that handles the actual methods for using the Media Source Extension and playing streaming formats, to use with the FREE VIDEO PLAYER library. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
  * @param settingsObject {object} - The settingsObject provided when the Free Video Player was instantiated
  * @param moduleVersion {string} - The videoControlsModule that the Free Video Player uses
  * @returns {{}}
@@ -18,6 +17,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
     var that = {},
         settingsObject = settingsObject,
+        isModuleValue = true,
         moduleName = 'ADAPTIVE STREAMING',
         moduleVersion = '0.9.0',
         currentVideoObject = {},
@@ -149,8 +149,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * A method that utilizes sub-methods to start the DASHed resource, through using the Media Source Extension object found within the browser
-     * @param adaptiveVideoObject
+     * @function
+     * @name loadDashMediaWithMediaSourceExtension
+     * @description A method that utilizes sub-methods to start the DASHed resource, through using the Media Source Extension object found within the browser, this method actually fires up the video streaming methods and activates source buffers and more.
+     * @param {object} adaptiveVideoObject - A javascript object containing configuration such as videoWrapperClassName, optionalConfigurationObject, mpdObject, hlsObject
+     * @public
      */
     function loadDashMediaWithMediaSourceExtension(adaptiveVideoObject){
 
@@ -225,15 +228,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
 
     /**
-     * Adds the streamBaseUrl to the class/module scoped variable streamBaseUrl.
-     * @param streamBaseUrl
+     * @function
+     * @name addStreamBaseUrl
+     * @description Adds the streamBaseUrl to the class/module scoped variable streamBaseUrl.
+     * @param {string} streamBaseUrl - The stream baseUrl we want to add to the currentVideoStreamObject
+     * @public
      */
     function addStreamBaseUrl(streamBaseUrl){
         currentVideoStreamObject.streamBaseUrl = streamBaseUrl;
     };
 
     /**
-     * Gets the streamBaseUrl from the class/module scoped variable
+     * @function
+     * @name _getStreamBaseUrl
+     * @description Gets the streamBaseUrl from the class/module scoped variable
      * @returns {*}
      * @private
      */
@@ -600,8 +608,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * This method clears the current media source
-     * @private
+     * @function
+     * @name clearMediaSource
+     * @description This method clears the current media source that has been appended to the inner variable currentVideoStreamObject
+     * @public
      */
     function clearMediaSource(){
         try {
@@ -622,8 +632,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### CURRENT VIDEO STREAM OBJECT METHODS ####
     //  #############################################
     /**
-     * This method clears the current video object properties that need to be cleared between plays
-     * @private
+     * @function
+     * @name clearCurrentVideoStreamObject
+     * @description This method clears the current video object properties that need to be cleared between plays
+     * @public
      */
     function clearCurrentVideoStreamObject(){
         currentVideoStreamObject = _returnClearCurrentVideoStreamObject();
@@ -794,20 +806,39 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #########################
 
     /**
-     * Returns the moduleVersion
-     * @returns {string}
+     * @function
+     * @name getVersion
+     * @description This method gets the module version
+     * @returns {string} - the module version as a string
+     * @public
      */
-    function getModuleVersion(){
+    function getVersion(){
         return moduleVersion;
     };
 
     /**
-     * Returns the moduleName
-     * @returns {string}
+     * @function
+     * @name getName
+     * @description This method gets the module name
+     * @returns {string} - the module name as a string
+     * @public
      */
-    function getModuleName(){
+    function getName(){
         return moduleName;
     };
+
+
+    /**
+     * @function
+     * @name isModule
+     * @description This method returns a boolean with true if the object/calling it is a module to Free Video Player or not
+     * @returns {boolean}
+     * @public
+     */
+    function isModule(){
+        return isModuleValue;
+    };
+
 
     //  #############################
     //  #### MAKE METHODS PUBLIC ####
@@ -825,11 +856,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     that.clearMediaSource = clearMediaSource;
 
     //General Methods
-    that.getModuleName = getModuleName;
-    that.getModuleVersion = getModuleVersion;
-
-    //Indicate that the returned object is a module
-    that._isModule = true;
+    that.getName = getName;
+    that.getVersion = getVersion;
+    that.isModule = isModule;
 
     //Lets run this method on startup
     _initiate();

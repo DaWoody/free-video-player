@@ -2,10 +2,9 @@
  * @name FREE VIDEO PLAYER
  * @author Johan Wedfelt
  * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
- * @description A cool FREE VIDEO PLAYER library to use when want to play DASHed content, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
+ * @description A cool open source html5 video library to use when want to play both regular HTML5 content such as mp4, webm but also for adaptive streaming formats such as DASH for instance, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
  * @version 0.9.0
- * @namespace FREE VIDEO PLAYER
- * @param initiationObject {object}
+ * @param {object} initiationObject - The initiation object containing information about how to configure the Free Video Player
  */
 var freeVideoPlayer = function(initiationObject){
 
@@ -16,6 +15,7 @@ var freeVideoPlayer = function(initiationObject){
     //  ################################
     var that = {},
         moduleName = 'Free Video Player',
+        isModuleValue = false,
         moduleVersion = '0.9.0',
         videoPlayerNameCss = 'free-video-player',
         base64encodedImage = freeVideoPlayerModulesNamespace.freeVideoPlayerDefaultSplashImage,
@@ -125,12 +125,11 @@ var freeVideoPlayer = function(initiationObject){
     //  ######################
     /**
      * @function
-     * @memberof FREE VIDEO PLAYER
      * @description This is the main load method, this method parses the video url and based on that decides which
      * format the video is. If its an adaptive bitrate stream or a regular stream like mp4 for instance.
      * @name load
      * @param {string} videoUrl - The video url, ending with things like .mp4, .webm or .mpd
-     * @param {object} optionalConfigurationObject - An optional configuration object
+     * @param {object} optionalConfigurationObject - An optional configuration object containing information such as videoSplashImage and more
      * @public
      */
     var load = function(videoUrl, optionalConfigurationObject){
@@ -180,11 +179,18 @@ var freeVideoPlayer = function(initiationObject){
         }
     };
 
+
+
+
     /**
-     * This is the method that loads a non adaptive bitrate stream, like for instance mp4 into the player
+     * @function
+     * @description This is the main load method, this method parses the video url and based on that decides which
+     * format the video is. If its an adaptive bitrate stream or a regular stream like mp4 for instance.
+     * @name _loadNonAdaptiveVideo
+     * @param {string} videoUrl - The video url, ending with things like .mp4, .webm or .mpd
+     * @param {string} typeOfVideo - The type of video, a string with values such as mp4, webm etc.
+     * @param {object} optionalConfigurationObject - An optional configuration object
      * @private
-     * @param {string} videoUrl
-     * @param {string} typeOfVideo
      */
     var _loadNonAdaptiveVideo = function(videoUrl, typeOfVideo, optionalConfigurationObject){
         //Load the video as a non adaptive video here
@@ -323,11 +329,16 @@ var freeVideoPlayer = function(initiationObject){
         });
     };
 
+
+
+
     /**
-     * A return method that could be public to return the current video's subtitle infor in
+     * @function
+     * @description A return method that could be public to return the current video's subtitle infor in
      * an array of subtitleObjects containing values such as label, language, id.
+     * @name getArrayOfSubtitleObjects
      * @public
-     * @returns {Array}
+     * @returns {array} - The subtitle tracks array
      */
     var getArrayOfSubtitleObjects = function(){
         return currentVideoObject.subtitleTracksArray;
@@ -364,7 +375,9 @@ var freeVideoPlayer = function(initiationObject){
     //  #### PLAYER API CONTROL METHODS ####
     //  ####################################
     /**
-     * This method interacts with the player video element and pauses the stream/media
+     * @function
+     * @name pause
+     * @description This method interacts with the player video element and pauses the stream/media
      * @public
      */
     var pause = function(){
@@ -372,13 +385,21 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * This method interacts with the player video element and starts to play the stream/media
+     * @function
+     * @name play
+     * @description This method interacts with the player video element and starts to play the stream/media
      * @public
      */
     var play = function(){
         that._videoElement.play();
     };
 
+    /**
+     * @function
+     * @name fullscreen
+     * @description This method interacts with the player video element generates or exists a fullscreen mode
+     * @public
+     */
     var fullscreen = function(){
         if (_isFullScreen()) {
             if (document.exitFullscreen) document.exitFullscreen();
@@ -404,9 +425,11 @@ var freeVideoPlayer = function(initiationObject){
     }
 
     /**
-     * This method interacts with the player video element and seeks within the stream/media
+     * @function
+     * @name seek
+     * @description This method interacts with the player video element and seeks within the stream/media
      * @public
-     * @param positionInSeconds
+     * @param {number | string} positionInSeconds - The position since start, we want the player to skip to, should be an integer from 0 and up.
      */
     var seek = function(positionInSeconds){
         try {
@@ -421,9 +444,11 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * This method interacts with the player video element and sets the volume within the stream/media
+     * @function
+     * @name setVolume
+     * @description This method interacts with the player video element and sets the volume within the stream/media
      * @public
-     * @param numberFromZeroToOne
+     * @param {number | string} numberFromZeroToOne - A decimal number from 0 to 1, like 0.5 for instance
      */
     var setVolume = function(numberFromZeroToOne){
         try {
@@ -438,7 +463,9 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * This method returns the video element volume as a number between 0 and 1.
+     * @function
+     * @name getVolume
+     * @description This method returns the video element volume as a number between 0 and 1.
      * @public
      * @returns {*|Number}
      */
@@ -451,16 +478,37 @@ var freeVideoPlayer = function(initiationObject){
     //  #### GENERAL METHODS ####
     //  #########################
     /**
-     * This is a helper method to get the current version of the player library
+     * @function
+     * @name getVersion
+     * @description This is a helper method to get the current version of the player library
      * @public
      * @returns {string}
      */
-    var getModuleVersion = function(){
+    var getVersion = function(){
         return moduleVersion;
     };
 
-    var getModuleName = function(){
+    /**
+     * @function
+     * @name getName
+     * @description This is a helper method to get the current name of the player library
+     * @public
+     * @returns {string}
+     */
+    var getName = function(){
         return moduleName;
+    };
+
+
+    /**
+     * @function
+     * @name isModule
+     * @description This method returns a boolean with true if the object/calling it is a module to Free Video Player or not
+     * @returns {boolean}
+     * @public
+     */
+    var isModule = function(){
+        return isModuleValue;
     };
 
 
@@ -612,14 +660,12 @@ var freeVideoPlayer = function(initiationObject){
     that.fullscreen = fullscreen;
 
     //General Methods
-    that.getName = getModuleName;
-    that.getVersion = getModuleVersion;
+    that.getName = getName;
+    that.getVersion = getVersion;
+    that.isModule = isModule;
 
     //Other sdk methods
     that.getArrayOfSubtitleObjects = getArrayOfSubtitleObjects;
-
-    //Indicate that the returned object is a module
-    that._isModule = false;
 
     //  ###############
     //  #### START ####

@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Namespace: FREE VIDEO PLAYER - VIDEO CONTROLS MODULE</title>
+	<title>Documentation Module: FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -33,7 +33,21 @@
 			<li class="dropdown">
 				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="FREE%2520VIDEO%2520PLAYER.html">FREE VIDEO PLAYER</a></li><li><a href="FREE%2520VIDEO%2520PLAYER%2520-%2520ADAPTIVE%2520STREAMING%2520MODULE.html">FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE</a></li><li><a href="FREE%2520VIDEO%2520PLAYER%2520-%2520MESSAGES%2520MODULE.html">FREE VIDEO PLAYER - MESSAGES MODULE</a></li><li><a href="FREE%2520VIDEO%2520PLAYER%2520-%2520MPD%2520PARSER%2520MODULE.html">FREE VIDEO PLAYER - MPD PARSER MODULE</a></li><li><a href="FREE%2520VIDEO%2520PLAYER%2520-%2520VIDEO%2520CONTROLS%2520MODULE.html">FREE VIDEO PLAYER - VIDEO CONTROLS MODULE</a></li><li><a href="Free%2520Video%2520Player%2520Module%2520Namespace.html">Free Video Player Module Namespace</a></li>
+					<li><a href="freeVideoPlayerModulesNamespace.html">freeVideoPlayerModulesNamespace</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="module-FREE%2520VIDEO%2520PLAYER%2520-%2520ADAPTIVE%2520STREAMING%2520MODULE.html">FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE</a></li><li><a href="module-FREE%2520VIDEO%2520PLAYER%2520-%2520MESSAGES%2520MODULE.html">FREE VIDEO PLAYER - MESSAGES MODULE</a></li><li><a href="module-FREE%2520VIDEO%2520PLAYER%2520-%2520MPD%2520PARSER%2520MODULE.html">FREE VIDEO PLAYER - MPD PARSER MODULE</a></li><li><a href="module-FREE%2520VIDEO%2520PLAYER%2520-%2520VIDEO%2520CONTROLS%2520MODULE.html">FREE VIDEO PLAYER - VIDEO CONTROLS MODULE</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#FREEVIDEOPLAYER">FREE VIDEO PLAYER</a></li><li><a href="global.html#fullscreen">fullscreen</a></li><li><a href="global.html#getArrayOfSubtitleObjects">getArrayOfSubtitleObjects</a></li><li><a href="global.html#getName">getName</a></li><li><a href="global.html#getVersion">getVersion</a></li><li><a href="global.html#getVolume">getVolume</a></li><li><a href="global.html#isModule">isModule</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#pause">pause</a></li><li><a href="global.html#play">play</a></li><li><a href="global.html#seek">seek</a></li><li><a href="global.html#setVolume">setVolume</a></li>
 				</ul>
 			</li>
 			
@@ -63,15 +77,10 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Namespace: FREE VIDEO PLAYER - VIDEO CONTROLS MODULE</h1>
+	<h1 class="page-title">Module: FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE</h1>
 <section>
 
 <header>
-    
-        <h2>
-        FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
-        </h2>
-        
     
 </header>
 
@@ -80,7 +89,7 @@
     <div class="container-overview">
     
         
-            <div class="description">A  Video Controls Module to use with for example  FREE VIDEO PLAYER library.</div>
+            <div class="description">A  module that handles the actual methods for using the Media Source Extension and playing streaming formats, to use with the FREE VIDEO PLAYER library. Check out more @ <a href="http://www.freevideoplayer.org"> FreeVideoPlayer.org</a></div>
         
 
         
@@ -160,7 +169,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".addBitrateMenuToSettingsIcon"><span class="type-signature">&lt;static> </span>addBitrateMenuToSettingsIcon(typeOfStream, bitrateObjectsArray)</h4>
+    <h4 class="name" id="~addStreamBaseUrl"><span class="type-signature">&lt;inner> </span>addStreamBaseUrl(streamBaseUrl)</h4>
     
     
 </dt>
@@ -168,8 +177,7 @@
 
     
     <div class="description">
-        A method that in turn will modify the settingsMenu on videoControls to correspond
-to different choices the user has to decide which quality the video should be streamed at.
+        Adds the streamBaseUrl to the class/module scoped variable streamBaseUrl.
     </div>
     
 
@@ -204,10 +212,16 @@ to different choices the user has to decide which quality the video should be st
 
         <tr>
             
-                <td class="name"><code>typeOfStream</code></td>
+                <td class="name"><code>streamBaseUrl</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
             
             </td>
 
@@ -215,25 +229,7 @@ to different choices the user has to decide which quality the video should be st
 
             
 
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>bitrateObjectsArray</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
+            <td class="description last">The stream baseUrl we want to add to the currentVideoStreamObject</td>
         </tr>
 
     
@@ -301,7 +297,7 @@ to different choices the user has to decide which quality the video should be st
             
 <hr>
 <dt>
-    <h4 class="name" id=".addSpinnerIconToVideoOverlay"><span class="type-signature">&lt;static> </span>addSpinnerIconToVideoOverlay()</h4>
+    <h4 class="name" id="~clearCurrentVideoStreamObject"><span class="type-signature">&lt;inner> </span>clearCurrentVideoStreamObject()</h4>
     
     
 </dt>
@@ -309,7 +305,7 @@ to different choices the user has to decide which quality the video should be st
 
     
     <div class="description">
-        A method that adds a spinner icon to the video overlay
+        This method clears the current video object properties that need to be cleared between plays
     </div>
     
 
@@ -379,7 +375,7 @@ to different choices the user has to decide which quality the video should be st
             
 <hr>
 <dt>
-    <h4 class="name" id=".addSubtitlesTracksToDom"><span class="type-signature">&lt;static> </span>addSubtitlesTracksToDom(subtitleTracksArray, videoElement)</h4>
+    <h4 class="name" id="~clearMediaSource"><span class="type-signature">&lt;inner> </span>clearMediaSource()</h4>
     
     
 </dt>
@@ -387,7 +383,7 @@ to different choices the user has to decide which quality the video should be st
 
     
     <div class="description">
-        Adds subtitles tracks to the DOM and the video player instance within the video element
+        This method clears the current media source that has been appended to the inner variable currentVideoStreamObject
     </div>
     
 
@@ -396,80 +392,6 @@ to different choices the user has to decide which quality the video should be st
     
 
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>subtitleTracksArray</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">An array of subtitles</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>videoElement</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">element</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The video element <video></video></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
     
 
     
@@ -531,161 +453,7 @@ to different choices the user has to decide which quality the video should be st
             
 <hr>
 <dt>
-    <h4 class="name" id=".createVideoControls"><span class="type-signature">&lt;static> </span>createVideoControls(videoWrapper, currentVideoObject)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        This methods manipulates the DOM and creates object like subtitle tracks within the DOM
-aswell as the rest of the control structure, like play/pause button, progress-slider, mute button, volume slider,
-subtitle selector with sub-menu and fullscreen button
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>videoWrapper</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">element</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The DOM element for the videoWrapper</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>currentVideoObject</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">element</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The DOM video element</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".getModuleName"><span class="type-signature">&lt;static> </span>getModuleName()</h4>
+    <h4 class="name" id="~getName"><span class="type-signature">&lt;inner> </span>getName()</h4>
     
     
 </dt>
@@ -787,7 +555,7 @@ subtitle selector with sub-menu and fullscreen button
             
 <hr>
 <dt>
-    <h4 class="name" id=".getModuleVersion"><span class="type-signature">&lt;static> </span>getModuleVersion()</h4>
+    <h4 class="name" id="~getVersion"><span class="type-signature">&lt;inner> </span>getVersion()</h4>
     
     
 </dt>
@@ -889,7 +657,7 @@ subtitle selector with sub-menu and fullscreen button
             
 <hr>
 <dt>
-    <h4 class="name" id=".removeSpinnerIconFromVideoOverlay"><span class="type-signature">&lt;static> </span>removeSpinnerIconFromVideoOverlay()</h4>
+    <h4 class="name" id="~isModule"><span class="type-signature">&lt;inner> </span>isModule()</h4>
     
     
 </dt>
@@ -897,7 +665,7 @@ subtitle selector with sub-menu and fullscreen button
 
     
     <div class="description">
-        A method that removes a spinner icon from the video overlay
+        This method returns a boolean with true if the object/calling it is a module to Free Video Player or not
     </div>
     
 
@@ -959,6 +727,26 @@ subtitle selector with sub-menu and fullscreen button
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
@@ -967,7 +755,7 @@ subtitle selector with sub-menu and fullscreen button
             
 <hr>
 <dt>
-    <h4 class="name" id=".returnModifiedArrayOfSubtitlesWithLabel"><span class="type-signature">&lt;static> </span>returnModifiedArrayOfSubtitlesWithLabel(arrayOfSubtitles, arrayOfLanguageObjects)</h4>
+    <h4 class="name" id="~loadDashMediaWithMediaSourceExtension"><span class="type-signature">&lt;inner> </span>loadDashMediaWithMediaSourceExtension(adaptiveVideoObject)</h4>
     
     
 </dt>
@@ -975,8 +763,7 @@ subtitle selector with sub-menu and fullscreen button
 
     
     <div class="description">
-        This method returns a modified array of subtitle objects with labels,
-so the subtitle objects can be used to populate the DOM structure and such.
+        A method that utilizes sub-methods to start the DASHed resource, through using the Media Source Extension object found within the browser, this method actually fires up the video streaming methods and activates source buffers and more.
     </div>
     
 
@@ -1011,13 +798,13 @@ so the subtitle objects can be used to populate the DOM structure and such.
 
         <tr>
             
-                <td class="name"><code>arrayOfSubtitles</code></td>
+                <td class="name"><code>adaptiveVideoObject</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">array</span>
+<span class="param-type">object</span>
 
 
 
@@ -1028,31 +815,7 @@ so the subtitle objects can be used to populate the DOM structure and such.
 
             
 
-            <td class="description last">An array of subitles</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>arrayOfLanguageObjects</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">An array of language objects</td>
+            <td class="description last">A javascript object containing configuration such as videoWrapperClassName, optionalConfigurationObject, mpdObject, hlsObject</td>
         </tr>
 
     
@@ -1112,30 +875,6 @@ so the subtitle objects can be used to populate the DOM structure and such.
     
 
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    - An array of subtitle objects including labels within the objects
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">array</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
 
     
 </dd>
@@ -1188,7 +927,7 @@ so the subtitle objects can be used to populate the DOM structure and such.
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 	
-		on 2016-02-12T18:54:23+01:00
+		on 2016-02-13T14:17:10+01:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

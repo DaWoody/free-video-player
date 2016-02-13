@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Namespace: FREE VIDEO PLAYER</title>
+	<title>Documentation Module: FREE VIDEO PLAYER - MESSAGES MODULE</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -33,7 +33,21 @@
 			<li class="dropdown">
 				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="FREE%2520VIDEO%2520PLAYER.html">FREE VIDEO PLAYER</a></li><li><a href="FREE%2520VIDEO%2520PLAYER%2520-%2520ADAPTIVE%2520STREAMING%2520MODULE.html">FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE</a></li><li><a href="FREE%2520VIDEO%2520PLAYER%2520-%2520MESSAGES%2520MODULE.html">FREE VIDEO PLAYER - MESSAGES MODULE</a></li><li><a href="FREE%2520VIDEO%2520PLAYER%2520-%2520MPD%2520PARSER%2520MODULE.html">FREE VIDEO PLAYER - MPD PARSER MODULE</a></li><li><a href="FREE%2520VIDEO%2520PLAYER%2520-%2520VIDEO%2520CONTROLS%2520MODULE.html">FREE VIDEO PLAYER - VIDEO CONTROLS MODULE</a></li><li><a href="Free%2520Video%2520Player%2520Module%2520Namespace.html">Free Video Player Module Namespace</a></li>
+					<li><a href="freeVideoPlayerModulesNamespace.html">freeVideoPlayerModulesNamespace</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="module-FREE%2520VIDEO%2520PLAYER%2520-%2520ADAPTIVE%2520STREAMING%2520MODULE.html">FREE VIDEO PLAYER - ADAPTIVE STREAMING MODULE</a></li><li><a href="module-FREE%2520VIDEO%2520PLAYER%2520-%2520MESSAGES%2520MODULE.html">FREE VIDEO PLAYER - MESSAGES MODULE</a></li><li><a href="module-FREE%2520VIDEO%2520PLAYER%2520-%2520MPD%2520PARSER%2520MODULE.html">FREE VIDEO PLAYER - MPD PARSER MODULE</a></li><li><a href="module-FREE%2520VIDEO%2520PLAYER%2520-%2520VIDEO%2520CONTROLS%2520MODULE.html">FREE VIDEO PLAYER - VIDEO CONTROLS MODULE</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#FREEVIDEOPLAYER">FREE VIDEO PLAYER</a></li><li><a href="global.html#fullscreen">fullscreen</a></li><li><a href="global.html#getArrayOfSubtitleObjects">getArrayOfSubtitleObjects</a></li><li><a href="global.html#getName">getName</a></li><li><a href="global.html#getVersion">getVersion</a></li><li><a href="global.html#getVolume">getVolume</a></li><li><a href="global.html#isModule">isModule</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#pause">pause</a></li><li><a href="global.html#play">play</a></li><li><a href="global.html#seek">seek</a></li><li><a href="global.html#setVolume">setVolume</a></li>
 				</ul>
 			</li>
 			
@@ -63,15 +77,10 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Namespace: FREE VIDEO PLAYER</h1>
+	<h1 class="page-title">Module: FREE VIDEO PLAYER - MESSAGES MODULE</h1>
 <section>
 
 <header>
-    
-        <h2>
-        FREE VIDEO PLAYER
-        </h2>
-        
     
 </header>
 
@@ -80,20 +89,13 @@
     <div class="container-overview">
     
         
-            <div class="description">A cool FREE VIDEO PLAYER library to use when want to play DASHed content, Requires the xml2json library to work. Check out more @ <a href="http://www.freevideoplayer.org"> FreeVideoPlayer.org</a></div>
+            <div class="description">A module containing methods to handle messages being sent to the console, to use with the FREE VIDEO PLAYER library. Check out more @ <a href="http://www.freevideoplayer.org"> FreeVideoPlayer.org</a></div>
         
 
         
 <dl class="details">
     
 
-	
-	<dt class="tag-version method-doc-label method-doc-details-label">Version:</dt>
-	<dd class="tag-version">
-		<ul class="dummy">
-			<li>0.9.0</li>
-		</ul>
-	</dd>
 	
 
 	
@@ -167,7 +169,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".load"><span class="type-signature">&lt;static> </span>load(videoUrl, optionalConfigurationObject)</h4>
+    <h4 class="name" id="~getName"><span class="type-signature">&lt;inner> </span>getName()</h4>
     
     
 </dt>
@@ -175,8 +177,309 @@
 
     
     <div class="description">
-        This is the main load method, this method parses the video url and based on that decides which
-format the video is. If its an adaptive bitrate stream or a regular stream like mp4 for instance.
+        This method gets the module name
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    - the module name as a string
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="~getVersion"><span class="type-signature">&lt;inner> </span>getVersion()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        This method gets the module version
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    - the module version as a string
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="~isModule"><span class="type-signature">&lt;inner> </span>isModule()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        This method returns a boolean with true if the object/calling it is a module to Free Video Player or not
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="~printOutErrorMessageToConsole"><span class="type-signature">&lt;inner> </span>printOutErrorMessageToConsole(messageObject, error)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        A method that generates an error message on the console
     </div>
     
 
@@ -211,16 +514,10 @@ format the video is. If its an adaptive bitrate stream or a regular stream like 
 
         <tr>
             
-                <td class="name"><code>videoUrl</code></td>
+                <td class="name"><code>messageObject</code></td>
             
 
             <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
             
             </td>
 
@@ -228,23 +525,17 @@ format the video is. If its an adaptive bitrate stream or a regular stream like 
 
             
 
-            <td class="description last">The video url, ending with things like .mp4, .webm or .mpd</td>
+            <td class="description last"></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>optionalConfigurationObject</code></td>
+                <td class="name"><code>error</code></td>
             
 
             <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
             
             </td>
 
@@ -252,7 +543,129 @@ format the video is. If its an adaptive bitrate stream or a regular stream like 
 
             
 
-            <td class="description last">An optional configuration object</td>
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="~printOutMessageToConsole"><span class="type-signature">&lt;inner> </span>printOutMessageToConsole(messageObject)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        A method that generates a message on the console
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>messageObject</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
         </tr>
 
     
@@ -364,7 +777,7 @@ format the video is. If its an adaptive bitrate stream or a regular stream like 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 	
-		on 2016-02-12T18:54:23+01:00
+		on 2016-02-13T14:17:10+01:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

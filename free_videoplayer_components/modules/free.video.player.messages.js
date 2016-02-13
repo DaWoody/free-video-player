@@ -1,10 +1,9 @@
 /**
  * @name FREE VIDEO PLAYER - MESSAGES MODULE
- * @namespace FREE VIDEO PLAYER - MESSAGES MODULE
+ * @module FREE VIDEO PLAYER - MESSAGES MODULE
  * @author Johan Wedfelt
  * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
- * @description A cool FREE VIDEO PLAYER library to use when want to play DASHed content, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
- * @description A messages module to use with for example FREE VIDEO PLAYER library.
+ * @description A module containing methods to handle messages being sent to the console, to use with the FREE VIDEO PLAYER library. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
  * @param settingsObject {object} - The settingsObject provided when the Free Video Player was instantiated
  * @param moduleVersion {string} - The moduleVersion that Free Video Player uses
  * @returns {{}}
@@ -15,11 +14,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
 
     var that = {},
         moduleName = 'MESSAGES',
+        isModuleValue = true,
         moduleVersion = moduleVersion,
         freeVideoPlayerWebUrl = 'http://www.freevideoplayer.org';
-
-    //Indicate that the returned object is a module
-    that._isModule = true;
 
     //  #########################
     //  #### MESSAGE METHODS ####
@@ -27,7 +24,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     /**
      * @function
      * @name  printOutErrorMessageToConsole
-     * @memberof FREE VIDEO PLAYER - MESSAGES MODULE
      * @description A method that generates an error message on the console
      * @param messageObject
      * @param error
@@ -59,7 +55,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     /**
      * @function
      * @name  printOutMessageToConsole
-     * @memberof FREE VIDEO PLAYER - MESSAGES MODULE
      * @description A method that generates a message on the console
      * @param messageObject
      * @public
@@ -91,25 +86,38 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     //  #########################
     /**
      * @function
-     * @name  getModuleVersion
-     * @memberof FREE VIDEO PLAYER - MESSAGES MODULE
-     * @description A method that gets the module version
+     * @name getVersion
+     * @description This method gets the module version
+     * @returns {string} - the module version as a string
      * @public
      */
-    function getModuleVersion(){
+    function getVersion(){
         return moduleVersion;
     };
 
     /**
      * @function
-     * @name  getModuleVersion
-     * @memberof FREE VIDEO PLAYER - MESSAGES MODULE
-     * @description A method that gets the module name
+     * @name getName
+     * @description This method gets the module name
+     * @returns {string} - the module name as a string
      * @public
      */
-    function getModuleName(){
+    function getName(){
         return moduleName;
     };
+
+
+    /**
+     * @function
+     * @name isModule
+     * @description This method returns a boolean with true if the object/calling it is a module to Free Video Player or not
+     * @returns {boolean}
+     * @public
+     */
+    function isModule(){
+        return isModuleValue;
+    };
+
 
     //  #############################
     //  #### MAKE METHODS PUBLIC ####
@@ -119,11 +127,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     that.printOutMessageToConsole = printOutMessageToConsole;
 
     //General
-    that.getModuleVersion = getModuleVersion;
-    that.getModuleName = getModuleName;
-
-    //Indicate that the returned object is a module
-    that._isModule = true;
+    that.getVersion = getVersion;
+    that.getName = getName;
+    that.isModule = isModule;
 
     //Return our class/function object
     return that;
