@@ -2242,7 +2242,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
  * @module FREE VIDEO PLAYER - MPD PARSER MODULE
  * @author Johan Wedfelt
  * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
- * @description A  module that handles the parsing and data gathering from mpd manifest files (used for the streaming format DASH) to use with the FREE VIDEO PLAYER library. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
+ * @description A  module that handles the parsing and data gathering from mpd manifest files (used for the streaming format DASH) to use with the FREE VIDEO PLAYER library. Most of the modules methods are public, and its meant to be a help tool for other modules when working with the DASH format and reading the manifest (or mpd) file.Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
  * @param settingsObject {object} - The settingsObject provided when the Free Video Player was instantiated
  * @param moduleVersion {string} - The messageModule if it got instantited before
  * @returns {{}}
@@ -2274,9 +2274,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     //  #### MPD OBJECT METHODS ####
     //  ############################
     /**
+     * @function
+     * @name returnMediaTypeFromMpdObject
      * @description This method returns the asset type, static or dynamic, meaning LIVE or VOD
      * @public
-     * @returns {string}
+     * @returns {string} - The media type as a string, could be dynamic (for LIVE) or static (for VOD)
      */
     function returnMediaTypeFromMpdObject(mpdObject){
         var mediaType = 'static';
@@ -2302,10 +2304,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
 
 
     /**
+     * @function
+     * @name returnMaxSegmentDurationFromMpdObject
      * @description Returns the max segment duration from the MPD object
      * @public
      * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
-     * @returns {number}
+     * @returns {number} - Returns the segment duration, usually measured in seconds, so if a segment is more than 60 seconds this method will probably error out
      */
     function returnMaxSegmentDurationFromMpdObject(mpdObject){
         var segmentDuration = 0,
@@ -2335,10 +2339,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     };
 
     /**
+     * @function
+     * @name returnMediaDurationInSecondsFromMpdObject
      * @description Returns the media duration in seconds from the MPD object
      * @public
      * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
-     * @returns {number}
+     * @returns {number} - The media duration in seconds
      */
     function returnMediaDurationInSecondsFromMpdObject(mpdObject){
         var mediaDurationInSeconds = 0,
@@ -2383,10 +2389,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     };
 
     /**
-     * @description Returns the average segment duration from the mpd object
+     * @function
+     * @name returnAverageSegmentDurationFromMpdObject
+     * @description Returns the average segment duration from the mpd object, measured in seconds
      * @public
      * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
-     * @returns {number}
+     * @returns {number} - The average segment duration, measured in seconds
      */
     function returnAverageSegmentDurationFromMpdObject(mpdObject){
         var segmentDuration = 0,
@@ -2419,10 +2427,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     };
 
     /**
+     * @function
+     * @name returnArrayOfAdaptionSetsFromMpdObject
      * @description Returns an array of adaptionSets from the MPD object
      * @public
      * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
-     * @returns {Array}
+     * @returns {Array} - And array of adaptionsets from the MPD object
      */
     function returnArrayOfAdaptionSetsFromMpdObject(mpdObject){
         var returnArray = [],
@@ -2449,10 +2459,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     };
 
     /**
+     * @function
+     * @name returnArrayOfSubtitlesFromMpdObject
      * @description Returns an array of subtitles from the MPD object
      * @public
      * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
-     * @returns {Array}
+     * @returns {Array} - An array of subtitle objects packed into an array.
      */
     function returnArrayOfSubtitlesFromMpdObject(mpdObject){
         //Should utilize low level methods to parse through and get the
@@ -2498,10 +2510,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     //  #### ADAPTIONSET METHODS ####
     //  #############################
     /**
+     * @function
+     * @name returnSegmentTemplateFromAdapationSet
      * @description Returns the segment template from the adaptionset
      * @public
      * @param AdapationSet
-     * @returns {{}}
+     * @returns {{}} - Returns the segmentTemplate as a javascript object from the adaptionSet
      */
     function returnSegmentTemplateFromAdapationSet(AdapationSet){
         var segmentTemplate = {};
@@ -2518,10 +2532,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     };
 
     /**
+     * @function
+     * @name returnMimeTypeFromAdaptionSet
      * @description Returns the mimeType from the adaptionSet
      * @public
      * @param AdaptationSet
-     * @returns {*}
+     * @returns {string} - Returns the mimeType as a string, video/mp4 etc
      */
     function returnMimeTypeFromAdaptionSet(AdaptationSet){
         var mimeType = null;
@@ -2538,10 +2554,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     };
 
     /**
+     * @function
+     * @name returnSubtitleLanguageFromAdaptionSet
      * @description Returns subtitle language from adaptionSet
      * @public
      * @param AdaptionSet
-     * @returns {string}
+     * @returns {string} - Returns the subtitle language from the adaptionSet
      */
     function returnSubtitleLanguageFromAdaptionSet(AdaptionSet){
         var subtitleLanguage = '';
@@ -2558,10 +2576,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     };
 
     /**
+     * @function
+     * @name returnArrayOfRepresentationSetsFromAdapationSet
      * @description Return array of representations from AdaptionSet
      * @public
      * @param AdaptionSet
-     * @returns {Array}
+     * @returns {Array} - Returns an array of representationSets from the adaptionSet
      */
     function returnArrayOfRepresentationSetsFromAdapationSet(AdaptionSet){
         var returnArray = [],
@@ -2586,6 +2606,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return returnArray;
     };
 
+    /**
+     * @function
+     * @name returnArrayOfContentComponentsFromAdaptionSet
+     * @description Return array of content components from an AdaptionSet
+     * @public
+     * @param AdaptionSet
+     * @returns {Array} - Returns an array of content components from an adaptionSet
+     */
     function returnArrayOfContentComponentsFromAdaptionSet(AdaptionSet){
         var returnArray = [],
             arrayOfContentComponents = [];
@@ -2613,6 +2641,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     //  ################################
     //  #### REPRESENTATION METHODS ####
     //  ################################
+    /**
+     * @function
+     * @name returnBaseUrlFromRepresentation
+     * @description Returns the base url from the supplied representation object (a javascript object)
+     * @param Representation
+     * @returns {string} - Returns the base url
+     */
     function returnBaseUrlFromRepresentation(Representation){
         var baseUrl = '';
         try {
@@ -2627,6 +2662,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return baseUrl;
     };
 
+    /**
+     * @function
+     * @name returnMimeTypeFromRepresentation
+     * @description Returns the mimeType from the representation object
+     * @param Representation
+     * @returns {string} - Returns the mimeType (video/mp4 etc) from the representation object
+     */
     function returnMimeTypeFromRepresentation(Representation){
         var mimeType = '';
         try {
@@ -2641,6 +2683,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return mimeType;
     };
 
+    /**
+     * @function
+     * @name returnCodecsFromRepresentation
+     * @description Returns the codecs from the representation object
+     * @param Representation
+     * @returns {string} - Returns the codec from the representation
+     */
     function returnCodecsFromRepresentation(Representation){
         var codecs = '';
         try {
@@ -2655,6 +2704,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return codecs;
     };
 
+    /**
+     * @function
+     * @name returnStartNumberFromRepresentation
+     * @description Returns the start number from a supplied representation object
+     * @param Representation
+     * @returns {number} - Returns the start number from a supplied representation object
+     */
     function returnStartNumberFromRepresentation(Representation){
         var startNumber = 0;
         try {
@@ -2669,6 +2725,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return startNumber;
     };
 
+    /**
+     * @function
+     * @name returnArrayOfBaseUrlObjectsFromArrayOfRepresentations
+     * @description Returns an array of baseUrlObjects from an array containing representation objects
+     * @param arrayOfRepresentations
+     * @returns {Array} - An array of baseUrlObjects
+     */
     function returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentations){
         var arrayOfBaseUrlObjects = [];
         try {
@@ -2698,6 +2761,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     //  ##################################
     //  #### SEGMENT TEMPLATE METHODS ####
     //  ##################################
+    /**
+     * @function
+     * @name returnDurationFromSegmentTemplate
+     * @description Returns the duration from a segment template
+     * @param SegmentTemplate
+     * @returns {number}
+     */
     function returnDurationFromSegmentTemplate(SegmentTemplate) {
         var duration = 0;
         try {
@@ -2712,6 +2782,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return duration;
     };
 
+    /**
+     * @function
+     * @name returnInitializationFromSegmentTemplate
+     * @description Returns the initialization file location from the segment template
+     * @param SegmentTemplate
+     * @returns {string} - initialization file location
+     */
     function returnInitializationFromSegmentTemplate(SegmentTemplate){
         var initializationFile = '';
         try {
@@ -2726,6 +2803,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return initializationFile;
     };
 
+    /**
+     * @function
+     * @name returnMediaStructureAsObjectFromSegmentTemplate
+     * @description Returns the media structure as an object from the segment template, containing segmentPrefix and segmentSuffic etc as object properties
+     * @param SegmentTemplate
+     * @returns {object} - mediaStructureObject
+     */
     function returnMediaStructureAsObjectFromSegmentTemplate(SegmentTemplate){
         var returnObject = {};
         try {
@@ -2750,8 +2834,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
 
 
     /**
+     * @function
+     * @name getMpd
      * @description This method makes the XMLHttp request and fetches the actual mpd manifest file
-     * @private
+     * @public
      * @param url
      * @param callback
      */
@@ -2769,8 +2855,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         };
     };
 
-
-
+    /**
+     * @function
+     * @name returnTypeFromMimeTypeAndCodecString
+     * @description Returns the type based on mimeType and codec, like video if mimeType=video/mp4 and codec=h264
+     * @param mimeType
+     * @param codecString
+     * @returns {string} - Type (like video or audio)
+     */
     function returnTypeFromMimeTypeAndCodecString(mimeType, codecString){
         var returnType = 'audio',
             tempCodecArray = [],
@@ -2802,15 +2894,33 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return returnType;
     };
 
-
+    /**
+     * @function
+     * @name setMpdObject
+     * @description Sets the mpdObject as a class scoped variable
+     * @param mpdObject
+     */
     function setMpdObject(mpdObject){
         currentVideoObject.mpdObject = mpdObject;
     };
 
+    /**
+     * @function
+     * @name getMpdObject
+     * @description gets the mpdObject from a class scoped variable
+     * @returns {object} - mpdObject
+     */
     function getMpdObject(){
         return currentVideoObject.mpdObject;
     };
 
+    /**
+     * @function
+     * @name returnStreamBaseUrlFromMpdUrl
+     * @description Returns the stream base url from the mpdUrl
+     * @param mpdUrl
+     * @returns {string} - streamBaseUrl
+     */
     function returnStreamBaseUrlFromMpdUrl(mpdUrl){
         var returnBaseUrl = '',
             temporaryUrl = '',
@@ -2831,6 +2941,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return returnBaseUrl;
     };
 
+    /**
+     * @function
+     * @name checkIfMultipleAdaptionSets
+     * @description Checks if we have multiple adaptions sets. This method has not been completed yet.
+     * @returns {boolean}
+     */
     function checkIfMultipleAdaptionSets(){
         var multipleAdaptionSetsBoolean = false,
             adaptionSets = {};
@@ -2848,6 +2964,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return multipleAdaptionSetsBoolean;
     };
 
+    /**
+     * @function
+     * @name checkIfAdapationSetContainSingleRepresentation
+     * @description Checks to see if the provided adaptionSet contains a single representation set, returns true or false
+     * @param AdaptionSet
+     * @returns {boolean}
+     */
     function checkIfAdapationSetContainSingleRepresentation(AdaptionSet){
         var returnBoolean = true,
             representationAsArray = [];
