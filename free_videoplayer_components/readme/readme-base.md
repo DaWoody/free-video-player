@@ -201,6 +201,12 @@ player.getVolume();
 //get free video player version
 player.getVersion();
 
+//Get name of free video player instance, should return Free Video Player ;)
+player.getName();
+
+//Sets the player to fullscreen mode if not enabled or exits it if fullscreen mode is already activated.
+player.fullscreen()
+
 //get subtitles array (if you want to elaborate with your own controls
 player.getArrayOfSubtitleObjects();
 
