@@ -331,12 +331,17 @@ video::-webkit-media-controls-panel {
     display:none;
   }
 
+  //Progress timer
   .free-video-player-controls-progress-timer{
     right: 100px;
     top:25px;
     position: absolute;
     text-align: center;
     margin-right: 0;
+    font-size:1em;
+    &:hover {
+      cursor: default;
+    }
   }
 
   .free-video-player-controls-volume-icon{
@@ -440,15 +445,6 @@ video::-webkit-media-controls-panel {
 
   .free-video-player-controls-volume-container {
 
-  }
-
-   //Progress timer
-  .free-video-player-controls-progress-timer {
-    font-size:1em;
-    &:hover {
-      color: $player-controls-color;
-      cursor: default;
-    }
   }
 
   //Styles for the volume slider

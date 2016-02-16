@@ -230,7 +230,10 @@ video::-webkit-media-controls-panel {
     top: 25px;
     position: absolute;
     text-align: center;
-    margin-right: 0; }
+    margin-right: 0;
+    font-size: 1em; }
+    .free-video-player-controls .free-video-player-controls-progress-timer:hover {
+      cursor: default; }
   .free-video-player-controls .free-video-player-controls-volume-icon {
     position: relative; }
   .free-video-player-controls .free-video-player-controls-progress {
@@ -302,11 +305,6 @@ video::-webkit-media-controls-panel {
       background: #3071a9; }
     .free-video-player-controls .free-video-player-controls-progress:focus::-ms-fill-upper {
       background: #367ebd; }
-  .free-video-player-controls .free-video-player-controls-progress-timer {
-    font-size: 1em; }
-    .free-video-player-controls .free-video-player-controls-progress-timer:hover {
-      color: rgba(75, 96, 108, 0.7);
-      cursor: default; }
   .free-video-player-controls .free-video-player-controls-volume {
     height: 15px;
     width: 110px;

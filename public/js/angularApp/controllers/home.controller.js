@@ -29,8 +29,6 @@ angular.module('freeVideoPlayerApp')
 
         for(var i = 0; i < listItemsList.length; i++){
             listItemsList[i].addEventListener('click', function(){
-                //var inputField = document.getElementById('add-test-input');
-                //inputField.value =  this.innerText;
                 var image = this.querySelector('img'),
                     mediaUrl = image.getAttribute('data-video-url');
                 videoPlayer.load(mediaUrl);
