@@ -21,8 +21,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         moduleName = 'ADAPTIVE STREAMING',
         moduleVersion = '0.9.0',
         currentVideoObject = {},
-        adaptiveBitrateAlgorithmValue = new Map(),
-        currentVideoStreamObject = _returnClearCurrentVideoStreamObject();
+        adaptiveBitrateAlgorithmValue = new Map();
+        currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
 
     //Import dependencies and modules
     var mpdParserModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser(),
@@ -82,16 +82,16 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * This method abort the source buffers, can be used when reloading/loading an asset.
      * @private
      */
-    function abortSourceBuffers(currentVideoStreamObject){
+    function abortSourceBuffers(currentVideoObject){
         try {
             console.log('Reached abort source buffers');
-            var sourceBuffers = currentVideoStreamObject.sourceBuffers;
+            var sourceBuffers = currentVideoObject.streamObject.sourceBuffers;
             for(var i = 0, sourceBuffersLength = sourceBuffers.length; i < sourceBuffersLength; i++){
                 //Source buffer
                 console.log('Trying to abort source buffer stream index ' + i);
                 sourceBuffers[i].abort();
             }
-            currentVideoStreamObject.sourceBuffers = [];
+            currentVideoObject.streamObject.sourceBuffers = [];
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not abort source buffers, check accessibility';
@@ -113,7 +113,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @private
      */
     var _returnBaseUrlBasedOnStoredUserSettings = function(){
-        var returnBaseUrl = currentVideoStreamObject.currentVideoBaseUrl;
+        console.log('Base URL set by user!');
+        var returnBaseUrl = currentVideoObject.streamObject.currentVideoBaseUrl;
         return returnBaseUrl;
     };
 
@@ -125,7 +126,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     var _isBitrateAuto = function(){
         var bitrateIsAudio = false;
-        if(currentVideoStreamObject.currentVideoBaseUrl === 'auto'){
+        console.log('The currentVideoStreamObject current VideBaseUrl is ..' + currentVideoObject.streamObject.currentVideoBaseUrl);
+        if(currentVideoObject.streamObject.currentVideoBaseUrl === 'auto'){
             bitrateIsAudio = true;
         }
         return bitrateIsAudio;
@@ -162,15 +164,19 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             mpdObject = adaptiveVideoObject.mpdObject,
             hlsObject = adaptiveVideoObject.hlsObject;
 
-        currentVideoStreamObject.streamBaseUrl = adaptiveVideoObject.streamBaseUrl;
+        //Lets set our class scoped currentVideoObject to the stuff we get in when the load dash method is called.
+        currentVideoObject = adaptiveVideoObject.currentVideoObject,
+        currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
+
+        currentVideoObject.streamObject.streamBaseUrl = adaptiveVideoObject.streamBaseUrl;
 
         //Lets add the mpdObject to our currentVideoStreamObject
-        mpdObject ?  currentVideoStreamObject.mpdObject = mpdObject : adaptiveVideoObject.mpdObject = {};
-        hlsObject ?  currentVideoStreamObject.hlsObject = hlsObject : adaptiveVideoObject.hlsObject = {};
+        mpdObject ?  currentVideoObject.streamObject.mpdObject = mpdObject : adaptiveVideoObject.mpdObject = {};
+        hlsObject ?  currentVideoObject.streamObject.hlsObject = hlsObject : adaptiveVideoObject.hlsObject = {};
 
         _initiateMediaSource();
         _createVideoElementAndAppendToWrapper(videoWrapperClassName);
-        _createMediaSourceStream(currentVideoStreamObject.streamBaseUrl, optionalConfigurationObject);
+        _createMediaSourceStream(currentVideoObject.streamObject.streamBaseUrl, optionalConfigurationObject);
         _addEventListenersToMediaSource();
     };
 
@@ -191,7 +197,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     function _createMediaSourceStream(baseUrl, optionalConfigurationObject){
         console.log('## LOADING VIDEO WITH URL ' + baseUrl);
         //Lets try loading it
-        currentVideoStreamObject.streamBaseUrl = baseUrl;
+        currentVideoObject.streamObject.streamBaseUrl = baseUrl;
 
         that._videoElement.src = window.URL.createObjectURL(that._mediaSource);
 
@@ -235,7 +241,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @public
      */
     function addStreamBaseUrl(streamBaseUrl){
-        currentVideoStreamObject.streamBaseUrl = streamBaseUrl;
+        currentVideoObject.streamObject.streamBaseUrl = streamBaseUrl;
     };
 
     /**
@@ -246,7 +252,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @private
      */
     function _getStreamBaseUrl(){
-      return currentVideoStreamObject.streamBaseUrl;
+      return currentVideoObject.streamObject.streamBaseUrl;
     };
 
     /**
@@ -259,7 +265,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
         console.log('Reached _videoReady function');
 
-        var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoStreamObject.mpdObject),
+        var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
             representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
             videoBufferAdded = false,
             audioBufferAdded = false,
@@ -282,11 +288,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
                 initializationFile = null,
                 mediaObject = mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate),
-                streamDurationInSeconds =  mpdParserModule.returnMediaDurationInSecondsFromMpdObject(),
+                streamDurationInSeconds =  mpdParserModule.returnMediaDurationInSecondsFromMpdObject(currentVideoObject.streamObject.mpdObject),
                 startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
                 segmentPrefix = mediaObject.segmentPrefix,
                 segmentEnding = mediaObject.segmentEnding,
-                averageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject(currentVideoStreamObject.mpdObject),
+                averageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject(currentVideoObject.streamObject.mpdObject),
                 codecs = '',
                 baseUrl = '',
                 baseUrlObjectArray = [],
@@ -353,7 +359,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 && !isSubtitleTrack){
                 sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
                 //Lets save our sourceBuffer to temporary storage
-                currentVideoStreamObject.sourceBuffers.push(sourceBuffer);
+                currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
                 console.log('Adding a video stream!');
                 //Do more stuff here and add markers for the video Stream, where should we save?
                 videoBufferAdded = true;
@@ -366,7 +372,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 && !isSubtitleTrack){
                 sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
                 //Lets save our sourceBuffer to temporary storage
-                currentVideoStreamObject.sourceBuffers.push(sourceBuffer);
+                currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
                 console.log('Adding a audio stream!');
                 //Do more stuff here and add markers for the audio Stream, where should we save?
                 audioBufferAdded = true;
@@ -379,7 +385,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 && !isSubtitleTrack){
                 sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
                 //Lets save our sourceBuffer to temporary storage
-                currentVideoStreamObject.sourceBuffers.push(sourceBuffer);
+                currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
                 console.log('Adding a video and audio stream!');
                 //Do more stuff here and add markers for the video & audio Stream, where should we save?
                 videoBufferAdded = true;
@@ -398,9 +404,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 console.log('Setting the highest index to' + baseUrlObjectsArrayHighestIndex);
                 console.log('The stream we have is..' + typeOfStream);
 
-                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
+                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
             } else {
-                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex', 0);
+                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex', 0);
             }
 
             if(!isSubtitleTrack){
@@ -433,6 +439,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                         console.log(mimeType + ' buffer timerange start=' + sourceBuffer.buffered.start(0) + ' / end=' + sourceBuffer.buffered.end(0));
                     sourceCount++;
 
+
+                    console.log('The stream duration is.. ' + streamDurationInSeconds);
+                    console.log('The average segment length is ' + averageSegmentDuration);
                     var amountOfSegments = Math.round(streamDurationInSeconds/averageSegmentDuration);
 
                     console.log('The amount of segments should be around.. ' + amountOfSegments);
@@ -445,19 +454,25 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     }
 
                     //Lets add the baseUrlObjectArray to the specific sourceBuffer (stream type).
-                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectArray);
+                    currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectArray);
 
                     //Lets switch baseUrl here..
                     //We first evaulate if we want to bitrate switch from user settings or from adaptive algorithm
-                    if(_isBitrateAuto()){
-                        baseUrl = _returnBaseUrlBasedOnBitrateTimeSwitch(typeOfStream);
-                    } else {
+
+                    //FIX SO THIS ONLY WORKS FOR VIDEO AND NOT AUDIO
+                    if(!_isBitrateAuto()
+                        && typeOfStream !== 'audio'){
                         baseUrl = _returnBaseUrlBasedOnStoredUserSettings();
+                        console.log('User set bitrate! :)');
+                        console.log('THE BASE URL WE TRY TO SET IS THIS.. ' + baseUrl + ' .. with type ' + typeOfStream);
+                    } else {
+                        baseUrl = _returnBaseUrlBasedOnBitrateTimeSwitch(typeOfStream);
+                        console.log('THE BASE URL SET BY THE ALGORITHM IS THIS..' + baseUrl + ' .. with type ' + typeOfStream);
                     }
 
                     setTimeout(function(){
                         _appendData(sourceBuffer,
-                            currentVideoStreamObject.streamBaseUrl +
+                            currentVideoObject.streamObject.streamBaseUrl +
                             baseUrl +
                             segmentPrefix +
                             sourceCount +
@@ -467,7 +482,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 });
 
                 console.log('source buffer ' + index + ' mode: ' + sourceBuffer.mode );
-                _appendData(sourceBuffer, currentVideoStreamObject.streamBaseUrl + baseUrl + initializationFile, mimeType);
+                _appendData(sourceBuffer, currentVideoObject.streamObject.streamBaseUrl + baseUrl + initializationFile, mimeType);
 
                 //Lets push this sourceBuffer to the arrays of source buffers so we can use this
                 //with our interval method and set media source duration
@@ -638,7 +653,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @public
      */
     function clearCurrentVideoStreamObject(){
-        currentVideoStreamObject = _returnClearCurrentVideoStreamObject();
+        currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
     };
 
     /**
@@ -701,35 +716,35 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             secondLowestValue = adaptiveBitrateAlgorithmValue.get('secondLowest'),
             middleValue = adaptiveBitrateAlgorithmValue.get('middle'),
             highestValue = adaptiveBitrateAlgorithmValue.get('highest'),
-            baseUrlObjectsArray = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray');
+            baseUrlObjectsArray = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray');
 
         //When we start we should start at lowest
         //Then we should try going up as fast as we can -> so if first segment took a bit of time
         try {
             currentTime = new Date().getTime();
 
-            if(!currentVideoStreamObject.adaptiveStreamBitrateObjectMap.has(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime')){
-                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime', currentTime);
-                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectsArray);
-                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
+            if(!currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.has(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime')){
+                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime', currentTime);
+                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectsArray);
+                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
             }
 
-            timeDifferenceFromLastAppendedSegment = currentTime - currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime');
+            timeDifferenceFromLastAppendedSegment = currentTime - currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime');
 
             // Lets add a swtich block here
             if(timeDifferenceFromLastAppendedSegment == 0){
-                var currentIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
-                baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
+                var currentIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
+                baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
                 // Lets set our index to the lowest value then make it higher as soon as we start
-                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
+                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
             }
 
             if(timeDifferenceFromLastAppendedSegment < lowestValue){
                 // Lets go high directly since latency is low
                 console.log('Switching to highest bitrate - dl time less than ' + lowestValue);
-                var highestIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlHighestIndex');
-                baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[highestIndex].baseUrl;
-                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', highestIndex);
+                var highestIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlHighestIndex');
+                baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[highestIndex].baseUrl;
+                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', highestIndex);
             }
 
             if(timeDifferenceFromLastAppendedSegment >= lowestValue
@@ -737,15 +752,15 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 // We still don't have to low latency in this so lets go up a notch at a time
                 // lets take it from here, now we are checking if the latency took
                 console.log('Switching to higher bitrate - dl time less than 2500, higher than ' + lowestValue);
-                var currentIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex'),
-                    highestIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlHighestIndex');
+                var currentIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex'),
+                    highestIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlHighestIndex');
 
                 if(currentIndex < highestIndex){
-                    baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex + 1].baseUrl;
-                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex + 1);
+                    baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex + 1].baseUrl;
+                    currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex + 1);
                 } else {
-                    baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
-                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
+                    baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
+                    currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
                 }
             }
 
@@ -754,10 +769,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 // We still don't have to low latency in this so lets go up a notch at a time
                 // lets take it from here, now we are checking if the latency took
                 console.log('Staying at this bitrate - dl time more than ' + secondLowestValue + ', less than ' + middleValue);
-                var currentIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
+                var currentIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
 
-                baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
-                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
+                baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
+                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
             }
 
             if(timeDifferenceFromLastAppendedSegment >= middleValue
@@ -766,25 +781,25 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 //  but the dl time was not more than 6000 ms so we should try going down just one notch
                 //  Awesomeness lets see how this works
                 console.log('Switching to lower bitrate - dl time higher than ' +  middleValue + ' but lower than ' + highestValue);
-                var currentIndex = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
+                var currentIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
 
                 if(currentIndex > 0){
-                    baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex - 1].baseUrl;
-                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex - 1);
+                    baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex - 1].baseUrl;
+                    currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex - 1);
                 } else {
-                    baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
-                    currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
+                    baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
+                    currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', currentIndex);
                 }
             }
 
             if(timeDifferenceFromLastAppendedSegment >= highestValue){
                 // Lets go high directly since latency is low
                 console.log('Switching to lowest bitrate - dl time more than ' + highestValue);
-                baseUrl = currentVideoStreamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[0].baseUrl;
-                currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
+                baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[0].baseUrl;
+                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
             }
             //lets overwrite our current time to the time we had now
-            currentVideoStreamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime', currentTime)
+            currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_bitrateSwitchTimerSegmentAppendTime', currentTime)
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not parse base url from the baseUrlObjectsArray';

@@ -180,8 +180,6 @@ var freeVideoPlayer = function(initiationObject){
     };
 
 
-
-
     /**
      * @function
      * @description This is the main load method, this method parses the video url and based on that decides which
@@ -299,6 +297,7 @@ var freeVideoPlayer = function(initiationObject){
                 //Add a new Media Source object and methods to that.
                 var adaptiveVideoObject = {
                     streamBaseUrl: streamBaseUrl,
+                    currentVideoObject: currentVideoObject,
                     videoWrapperClassName: videoWrapperClassName,
                     mpdObject: mpdObject,
                     optionalConfigurationObject: optionalConfigurationObject

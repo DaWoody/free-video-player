@@ -361,12 +361,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Lets set this current item to be active
         this.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
 
-        console.log('Hey clicked videoBitrate..');
-        console.log('Consoling out the buttion?');
-        console.log(this);
-        console.log('The base url is...' + baseUrl);
         //Now lets also save the baseUrl we fetched from the DOM node
-        that.currentVideoObject.currentVideoBaseUrl = baseUrl;
+        that.currentVideoObject.streamObject.currentVideoBaseUrl = baseUrl;
     };
 
     //  ##########################

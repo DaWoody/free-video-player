@@ -122,7 +122,7 @@ $player-controls-button-width: 15px;
   }
 }
 
-//Chrome
+//Chrome - Fullscreen controls (Should not be displayed)
 video::-webkit-media-controls-enclosure {
   opacity: 0;
 }

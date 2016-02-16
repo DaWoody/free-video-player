@@ -120,7 +120,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
             }
 
             if(mediaDurationFullString.split('T').length > 1){
-                console.log('YYT');
                 mediaDurationTemporaryFullString = mediaDurationFullString.split('T')[1];
             }
 
