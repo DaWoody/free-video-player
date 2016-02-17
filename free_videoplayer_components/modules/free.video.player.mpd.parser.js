@@ -383,11 +383,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 //We have an array of contentComponents
                 returnArray = arrayOfContentComponents;
             }
-            // else {
-            //    //Its an object and then lets just push the object to
-            //    //the empty array and return that array
-            //    returnArray.push(arrayOfRepresentation);
-            //}
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not parse and return an array of ContentComponents from AdapationSet, check input';
@@ -507,6 +502,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 currentBaseUrlObject.index = i;
                 arrayOfBaseUrlObjects.push(currentBaseUrlObject);
             }
+
+            //Lets try reordering the array into bandwidth based, so we will reorder the array based on bandwidth
+            //and also add a property bandwidthIndex, which will start from the lowest bandwidth and then continue upward
+            arrayOfBaseUrlObjects = returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate(arrayOfBaseUrlObjects);
+
+            for(var j = 0, arrayOfBaseUrlObjectsFormattedLength = arrayOfBaseUrlObjects.length; j < arrayOfBaseUrlObjectsFormattedLength; j++){
+                arrayOfBaseUrlObjects[j].bandwidthIndex = j;
+            }
         } catch (e){
             var messageObject = {};
                 messageObject.message = 'Could not parse and extract the array of base urls from the array of representations, checkt input';
@@ -515,61 +518,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return arrayOfBaseUrlObjects;
-    };
-
-    /**
-     * @function
-     * @name returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate
-     * @description
-     * @param arrayOfBaseUrlObjects
-     * @public
-     * @returns {Array}
-     */
-    function returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate(arrayOfBaseUrlObjects){
-        var temporaryOldObjectsArray = arrayOfBaseUrlObjects,
-            temporaryNewObjectsArray = [],
-            currentBitrateValue = 0,
-            newArrayBitrateValue = 0;
-
-        try {
-            for(var i = 0, temporaryOldObjectsArrayLength = temporaryOldObjectsArray.length; i < temporaryOldObjectsArrayLength; i++){
-                //take object -> do what here. What am I doing? :) I am awesome cause I am
-                var bitrateValue = parseInt(temporaryOldObjectsArray[i].bitrate, 10);
-                if( bitrateValue > currentBitrateValue){
-                    currentBitrateValue = bitrateValue;
-
-
-                    //Lets see if we have any objects pushed to the new array
-                    if(temporaryNewObjectsArray.length > 0){
-
-                        // Lets loop through the new array and see if the new bitrateValue
-                        // we are adding to this will be sent in the front or the back of the array.
-                        for(var j = 0, temporaryNewObjectArrayLength = temporaryNewObjectsArray.length; j < temporaryNewObjectArrayLength; j++){
-                            newArrayBitrateValue = parseInt(temporaryNewObjectsArray[j].bitrate, 10);
-                            if(currentBitrateValue > newArrayBitrateValue){
-                                //The new bitrate value is larger than the old value
-                                //awesomeness lets add this.
-                                temporaryNewObjectsArray.push(temporaryOldObjectsArray[i]);
-                            } else {
-                                //its not larger we need to put this in the back
-                                temporaryNewObjectsArray.unshift(temporaryOldObjectsArray[i]);
-                            }
-                        }
-
-                    } else {
-                        //Lets just push this current object to the new array
-                        temporaryNewObjectsArray.push(temporaryOldObjectsArray[i]);
-                    }
-                }
-            }
-        } catch (e){
-            var messageObject = {};
-                messageObject.message = 'Could not parse and extract the array of base urls from the array of base urls, check input';
-                messageObject.methodName = 'returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate';
-                messageObject.moduleName = moduleName;
-            messagesModule.printOutErrorMessageToConsole(messageObject, e);
-        }
-        return temporaryNewObjectsArray;
     };
 
     //  ##################################
@@ -646,6 +594,47 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     //  #### GENERAL METHODS ####
     //  #########################
 
+    /**
+     * @function
+     * @name returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate
+     * @description This method reorders the base url objects array in order based on the higest bitrate value
+     * @param arrayOfBaseUrlObjects
+     * @public
+     * @returns {Array}
+     */
+    function returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate(arrayOfBaseUrlObjects){
+        var returnArray = arrayOfBaseUrlObjects;
+
+        try {
+            returnArray.sort(_sortObjectOnBandwidthProperty);
+        } catch (e){
+            var messageObject = {};
+                messageObject.message = 'Could not parse and extract the array of base urls from the array of base urls, check input';
+                messageObject.methodName = 'returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate';
+                messageObject.moduleName = moduleName;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return returnArray;
+    };
+
+    /**
+     * @function
+     * @name _sortObjectOnBandwidthProperty
+     * @description An internal compare function to
+     * @param a
+     * @param b
+     * @returns {number}
+     * @private
+     */
+    function _sortObjectOnBandwidthProperty(a, b){
+        if(a.bandwidth < b.bandwidth){
+            return -1;
+        } else if(a.bandwidth > b.bandwidth){
+            return 1;
+        } else {
+            return 0
+        }
+    }
 
     /**
      * @function
@@ -853,6 +842,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.checkIfAdapationSetContainSingleRepresentation = checkIfAdapationSetContainSingleRepresentation;
     that.returnStreamBaseUrlFromMpdUrl = returnStreamBaseUrlFromMpdUrl;
     that.returnTypeFromMimeTypeAndCodecString = returnTypeFromMimeTypeAndCodecString;
+    that.returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate = returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate;
 
     //AdapationSet methods
     that.returnMimeTypeFromAdaptionSet = returnMimeTypeFromAdaptionSet;

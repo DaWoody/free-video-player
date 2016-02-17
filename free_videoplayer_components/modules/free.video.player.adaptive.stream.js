@@ -397,6 +397,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             //adaptionset awesomeness :)
             if(arrayOfRepresentationSets.length > 0){
                 baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets);
+                
                 //Setting this value so it can be used within the bitrate switch calculations
                 var baseUrlObjectsArrayLength = baseUrlObjectArray.length,
                     baseUrlObjectsArrayHighestIndex = baseUrlObjectsArrayLength - 1;

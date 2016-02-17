@@ -414,6 +414,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             //adaptionset awesomeness :)
             if(arrayOfRepresentationSets.length > 0){
                 baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets);
+
+
+                console.log('The BaseUrl Objects Array before..');
+                console.log(baseUrlObjectArray);
+
+                var test = mpdParserModule.returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate(baseUrlObjectArray);
+
+                console.log('The BaseUrl Objects Array AFTER..');
+                console.log(test);
+
+
                 //Setting this value so it can be used within the bitrate switch calculations
                 var baseUrlObjectsArrayLength = baseUrlObjectArray.length,
                     baseUrlObjectsArrayHighestIndex = baseUrlObjectsArrayLength - 1;
@@ -2757,6 +2768,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 currentBaseUrlObject.index = i;
                 arrayOfBaseUrlObjects.push(currentBaseUrlObject);
             }
+
+            //Lets try reordering the array into bandwidth based, so we will reorder the array based on bandwidth
+            //and also add a property bandwidthIndex, which will start from the lowest bandwidth and then continue upward
+            arrayOfBaseUrlObjects = returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate(arrayOfBaseUrlObjects);
+
+            for(var j = 0, arrayOfBaseUrlObjectsFormattedLength = arrayOfBaseUrlObjects.length; j < arrayOfBaseUrlObjectsFormattedLength; j++){
+                arrayOfBaseUrlObjects[j].bandwidthIndex = j;
+            }
         } catch (e){
             var messageObject = {};
                 messageObject.message = 'Could not parse and extract the array of base urls from the array of representations, checkt input';
@@ -2765,8 +2784,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return arrayOfBaseUrlObjects;
-    }
-
+    };
 
     //  ##################################
     //  #### SEGMENT TEMPLATE METHODS ####
@@ -2842,6 +2860,47 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     //  #### GENERAL METHODS ####
     //  #########################
 
+    /**
+     * @function
+     * @name returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate
+     * @description This method reorders the base url objects array in order based on the higest bitrate value
+     * @param arrayOfBaseUrlObjects
+     * @public
+     * @returns {Array}
+     */
+    function returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate(arrayOfBaseUrlObjects){
+        var returnArray = arrayOfBaseUrlObjects;
+
+        try {
+            returnArray.sort(_sortObjectOnBandwidthProperty);
+        } catch (e){
+            var messageObject = {};
+                messageObject.message = 'Could not parse and extract the array of base urls from the array of base urls, check input';
+                messageObject.methodName = 'returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate';
+                messageObject.moduleName = moduleName;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return returnArray;
+    };
+
+    /**
+     * @function
+     * @name _sortObjectOnBandwidthProperty
+     * @description An internal compare function to
+     * @param a
+     * @param b
+     * @returns {number}
+     * @private
+     */
+    function _sortObjectOnBandwidthProperty(a, b){
+        if(a.bandwidth < b.bandwidth){
+            return -1;
+        } else if(a.bandwidth > b.bandwidth){
+            return 1;
+        } else {
+            return 0
+        }
+    }
 
     /**
      * @function
@@ -3049,6 +3108,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.checkIfAdapationSetContainSingleRepresentation = checkIfAdapationSetContainSingleRepresentation;
     that.returnStreamBaseUrlFromMpdUrl = returnStreamBaseUrlFromMpdUrl;
     that.returnTypeFromMimeTypeAndCodecString = returnTypeFromMimeTypeAndCodecString;
+    that.returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate = returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate;
 
     //AdapationSet methods
     that.returnMimeTypeFromAdaptionSet = returnMimeTypeFromAdaptionSet;
