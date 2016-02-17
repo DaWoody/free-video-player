@@ -699,7 +699,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         }
     };
 
-
     /**
      * This method takes the baseUrlObjectsArray and then parses through that to find
      * out which bitrate should be used

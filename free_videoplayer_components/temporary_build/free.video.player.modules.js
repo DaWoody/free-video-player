@@ -414,17 +414,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             //adaptionset awesomeness :)
             if(arrayOfRepresentationSets.length > 0){
                 baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets);
-
-
-                console.log('The BaseUrl Objects Array before..');
-                console.log(baseUrlObjectArray);
-
-                var test = mpdParserModule.returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate(baseUrlObjectArray);
-
-                console.log('The BaseUrl Objects Array AFTER..');
-                console.log(test);
-
-
+                
                 //Setting this value so it can be used within the bitrate switch calculations
                 var baseUrlObjectsArrayLength = baseUrlObjectArray.length,
                     baseUrlObjectsArrayHighestIndex = baseUrlObjectsArrayLength - 1;
@@ -725,7 +715,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             videoControlsModule.addBitrateMenuToSettingsIcon(typeOfStream, baseUrlObjectArray);
         }
     };
-
 
     /**
      * This method takes the baseUrlObjectsArray and then parses through that to find
@@ -1358,13 +1347,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             //Add classes and html to the actual bit
             bitrateMenuContainer.innerHTML = settingsObject.videoControlsInnerHtml.bitrateQualityMenuInnerHtml;
             bitrateMenuContainer.setAttribute('class', settingsObject.videoControlsCssClasses.bitrateQualityMenuContainerClass);
-            bitrateMenuContainer.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'quality')
+            bitrateMenuContainer.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'quality');
 
             bitrateMenu.setAttribute('class', settingsObject.videoControlsCssClasses.bitrateQualityMenuClass)
 
             for(var i = 0; i < bitrateObjectArrayLength; i++){
                 var bitrateItem = document.createElement('li');
-                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', bitrateObjectsArray[i].index);
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', bitrateObjectsArray[i].bandwidthIndex);
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', bitrateObjectsArray[i].baseUrl);
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
                 bitrateItem.innerHTML = bitrateObjectsArray[i].height + 'p';
@@ -2644,11 +2633,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 //We have an array of contentComponents
                 returnArray = arrayOfContentComponents;
             }
-            // else {
-            //    //Its an object and then lets just push the object to
-            //    //the empty array and return that array
-            //    returnArray.push(arrayOfRepresentation);
-            //}
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not parse and return an array of ContentComponents from AdapationSet, check input';

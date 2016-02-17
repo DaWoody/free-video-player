@@ -309,13 +309,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             //Add classes and html to the actual bit
             bitrateMenuContainer.innerHTML = settingsObject.videoControlsInnerHtml.bitrateQualityMenuInnerHtml;
             bitrateMenuContainer.setAttribute('class', settingsObject.videoControlsCssClasses.bitrateQualityMenuContainerClass);
-            bitrateMenuContainer.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'quality')
+            bitrateMenuContainer.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'quality');
 
             bitrateMenu.setAttribute('class', settingsObject.videoControlsCssClasses.bitrateQualityMenuClass)
 
             for(var i = 0; i < bitrateObjectArrayLength; i++){
                 var bitrateItem = document.createElement('li');
-                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', bitrateObjectsArray[i].index);
+                bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-index', bitrateObjectsArray[i].bandwidthIndex);
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', bitrateObjectsArray[i].baseUrl);
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
                 bitrateItem.innerHTML = bitrateObjectsArray[i].height + 'p';
