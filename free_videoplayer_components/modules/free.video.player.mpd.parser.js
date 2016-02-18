@@ -585,6 +585,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not return media structure from SegmentTemplate';
                 messageObject.methodName = 'returnMediaStructureAsObjectFromSegmentTemplate';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnObject;

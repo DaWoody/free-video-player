@@ -291,6 +291,9 @@ var freeVideoPlayer = function(initiationObject){
                 var subtitleTracksArray = mpdParserModule.returnArrayOfSubtitlesFromMpdObject(mpdObject);
                 currentVideoObject.subtitleTracksArray = videoControlsModule.returnModifiedArrayOfSubtitlesWithLabel(subtitleTracksArray, videoPlayerObject.subtitleLanguageObject);
 
+                console.log('THE SUBS ARE-...');
+                console.log(currentVideoObject.subtitleTracksArray);
+
                 //Lets create objects we need to perform the streaming
                 //Lets initiate the media source now if the stream is
                 //and adaptive bitstream
@@ -307,7 +310,7 @@ var freeVideoPlayer = function(initiationObject){
                 adaptiveStreamingModule.loadDashMediaWithMediaSourceExtension(adaptiveVideoObject);
 
                 //Lets add subtitles to DOM
-                videoControlsModule.addSubtitlesTracksToDom(currentVideoObject.subtitleTracksArray, that._videoElement);
+                videoControlsModule.addSubtitlesTracksToDom(currentVideoObject.subtitleTracksArray, that._videoWrapper);
 
                 //Just for testing printint out the object
                 console.log('Current Video Object');

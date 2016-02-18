@@ -1737,6 +1737,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             classString = classString[0].trim();
         } else {
             //Do nothing here
+
         }
         element.setAttribute('class', classString);
     };
@@ -2079,7 +2080,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @param {element} videoElement - The video element <video></video>
      * @public
      */
-    function addSubtitlesTracksToDom(subtitleTracksArray , videoElement){
+    function addSubtitlesTracksToDom(subtitleTracksArray , videoWrapper){
+        var videoElement = videoWrapper.getElementsByTagName('video')[0];
         subtitleTracksArray.forEach(function(currentSubtitleTrack, index, subtitleTracksArray){
             //Lets create a track object and append it to the video element
             var trackElement = document.createElement('track'),
@@ -2096,8 +2098,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             trackElement.setAttribute('data-video-player-subtitle-index', index+1);
             videoElement.appendChild(trackElement);
         });
-    };
 
+    };
 
     /**
      * Helper method that returns the first word from the subtitle label in case the subtitle label
@@ -2835,6 +2837,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not return media structure from SegmentTemplate';
                 messageObject.methodName = 'returnMediaStructureAsObjectFromSegmentTemplate';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnObject;
@@ -3418,6 +3421,9 @@ var freeVideoPlayer = function(initiationObject){
                 var subtitleTracksArray = mpdParserModule.returnArrayOfSubtitlesFromMpdObject(mpdObject);
                 currentVideoObject.subtitleTracksArray = videoControlsModule.returnModifiedArrayOfSubtitlesWithLabel(subtitleTracksArray, videoPlayerObject.subtitleLanguageObject);
 
+                console.log('THE SUBS ARE-...');
+                console.log(currentVideoObject.subtitleTracksArray);
+
                 //Lets create objects we need to perform the streaming
                 //Lets initiate the media source now if the stream is
                 //and adaptive bitstream
@@ -3434,7 +3440,7 @@ var freeVideoPlayer = function(initiationObject){
                 adaptiveStreamingModule.loadDashMediaWithMediaSourceExtension(adaptiveVideoObject);
 
                 //Lets add subtitles to DOM
-                videoControlsModule.addSubtitlesTracksToDom(currentVideoObject.subtitleTracksArray, that._videoElement);
+                videoControlsModule.addSubtitlesTracksToDom(currentVideoObject.subtitleTracksArray, that._videoWrapper);
 
                 //Just for testing printint out the object
                 console.log('Current Video Object');

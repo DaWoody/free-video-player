@@ -699,6 +699,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             classString = classString[0].trim();
         } else {
             //Do nothing here
+
         }
         element.setAttribute('class', classString);
     };
@@ -1041,7 +1042,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @param {element} videoElement - The video element <video></video>
      * @public
      */
-    function addSubtitlesTracksToDom(subtitleTracksArray , videoElement){
+    function addSubtitlesTracksToDom(subtitleTracksArray , videoWrapper){
+        var videoElement = videoWrapper.getElementsByTagName('video')[0];
         subtitleTracksArray.forEach(function(currentSubtitleTrack, index, subtitleTracksArray){
             //Lets create a track object and append it to the video element
             var trackElement = document.createElement('track'),
@@ -1058,8 +1060,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             trackElement.setAttribute('data-video-player-subtitle-index', index+1);
             videoElement.appendChild(trackElement);
         });
-    };
 
+    };
 
     /**
      * Helper method that returns the first word from the subtitle label in case the subtitle label
