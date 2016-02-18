@@ -63,7 +63,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return mediaType;
     };
 
-
     /**
      * @function
      * @name returnMaxSegmentDurationFromMpdObject
@@ -132,8 +131,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 hoursInSeconds = hours * 3600,
                 minutesInSeconds = minutes * 60;
 
-            ////Lets add our result to the returning mediaDurationInSeconds we
-            ////will return
+            // Lets add our result to the returning mediaDurationInSeconds we will return
             mediaDurationInSeconds = hoursInSeconds + minutesInSeconds + seconds;
 
         } catch(e){
@@ -220,13 +218,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
 
     /**
      * @function
-     * @name returnArrayOfSubtitlesFromMpdObject
-     * @description Returns an array of subtitles from the MPD object
+     * @name returnArrayOfSubtitlesFromMpdObjectAndBaseUrl
+     * @description Returns an array of subtitles from the MPD object and the baseurl
      * @public
      * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
+     * @param {string} baseUrl - The baseUrl for the media, needed to create correct subtitle paths
      * @returns {Array} - An array of subtitle objects packed into an array.
      */
-    function returnArrayOfSubtitlesFromMpdObject(mpdObject){
+    function returnArrayOfSubtitlesFromMpdObjectAndBaseUrl(mpdObject, baseUrl){
         //Should utilize low level methods to parse through and get the
         //subtitles that we need
 
@@ -248,7 +247,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                     var subtitleTrackObject = {};
                     //Now its confirmed that the adaptionSet actually contains a webvtt file
                     //Lets build our subtitleTrackObjects
-                    subtitleTrackObject.subtitleUrl = returnBaseUrlFromRepresentation(firstRepresentation);
+                    subtitleTrackObject.subtitleUrl = baseUrl + returnBaseUrlFromRepresentation(firstRepresentation);
                     subtitleTrackObject.subtitleLanguage = returnSubtitleLanguageFromAdaptionSet(currentAdaptionSet);
                     subtitleTrackObject.subtitleId = subtitleId;
                     //Lets add a tick to our subtitleId counter
@@ -259,11 +258,25 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not return array of subtitles, check method';
-                messageObject.methodName = 'returnArrayOfSubtitlesFromMpdObject';
+                messageObject.methodName = 'returnArrayOfSubtitlesFromMpdObjectAndBaseUrl';
                 messageObject.moduleName = moduleName;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnArrayOfSubtitles;
+    };
+
+    /**
+     * @function
+     * @name returnMpdObjectWithAddedBaseUrl
+     * @description Adds the baseUrl to the javascript mpdObject
+     * @public
+     * @param {object} mpdObject
+     * @param {string} baseUrl
+     * @returns {object} - mpdObject
+     */
+    function returnMpdObjectWithAddedBaseUrl(mpdObject, baseUrl){
+        mpdObject._freeVideoPlayerCurrentVideoBaseUrl = baseUrl;
+        return mpdObject;
     };
 
     //  #############################
@@ -597,6 +610,24 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
 
     /**
      * @function
+     * @name returnBaseUrlFromMpdUrl
+     * @description Returns the baseUrl from the actual mpdUrl (media url loaded to free video player)
+     * @public
+     * @param mpdUrl
+     * @returns {string}
+     */
+    function returnBaseUrlFromMpdUrl(mpdUrl){
+        var temporaryArray = [],
+            returnBaseUrl = '';
+
+        temporaryArray = mpdUrl.split('.mpd');
+        returnBaseUrl = temporaryArray[0].split('/').pop();
+
+        return returnBaseUrl;
+    };
+
+    /**
+     * @function
      * @name returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate
      * @description This method reorders the base url objects array in order based on the higest bitrate value
      * @param arrayOfBaseUrlObjects
@@ -635,7 +666,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         } else {
             return 0
         }
-    }
+    };
 
     /**
      * @function
@@ -816,7 +847,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return moduleName;
     };
 
-
     /**
      * @function
      * @name isModule
@@ -844,6 +874,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.returnStreamBaseUrlFromMpdUrl = returnStreamBaseUrlFromMpdUrl;
     that.returnTypeFromMimeTypeAndCodecString = returnTypeFromMimeTypeAndCodecString;
     that.returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate = returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate;
+    that.returnBaseUrlFromMpdUrl = returnBaseUrlFromMpdUrl;
 
     //AdapationSet methods
     that.returnMimeTypeFromAdaptionSet = returnMimeTypeFromAdaptionSet;
@@ -858,7 +889,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.returnAverageSegmentDurationFromMpdObject = returnAverageSegmentDurationFromMpdObject;
     that.returnMediaDurationInSecondsFromMpdObject = returnMediaDurationInSecondsFromMpdObject;
     that.returnArrayOfAdaptionSetsFromMpdObject = returnArrayOfAdaptionSetsFromMpdObject;
-    that.returnArrayOfSubtitlesFromMpdObject = returnArrayOfSubtitlesFromMpdObject;
+    that.returnArrayOfSubtitlesFromMpdObjectAndBaseUrl = returnArrayOfSubtitlesFromMpdObjectAndBaseUrl;
+    that.returnMpdObjectWithAddedBaseUrl = returnMpdObjectWithAddedBaseUrl;
 
     //SegmentTemplate methods
     that.returnDurationFromSegmentTemplate = returnDurationFromSegmentTemplate;
@@ -871,7 +903,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.returnStartNumberFromRepresentation = returnStartNumberFromRepresentation;
     that.returnMimeTypeFromRepresentation = returnMimeTypeFromRepresentation;
     that.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations = returnArrayOfBaseUrlObjectsFromArrayOfRepresentations;
-
 
     //Lets return our object
     return that;

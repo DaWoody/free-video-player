@@ -270,6 +270,7 @@ var freeVideoPlayer = function(initiationObject){
 
                 var mpdObject = responseObject.MPD;
 
+                //mpdObject = mpdParserModule.returnMpdObjectWithAddedBaseUrl(mpdObject, mediaBaseUrl);
                 mpdParserModule.setMpdObject(responseObject.MPD);
 
                 currentVideoObject.mediaType = mpdParserModule.returnMediaTypeFromMpdObject(mpdObject);
@@ -283,12 +284,11 @@ var freeVideoPlayer = function(initiationObject){
 
                 //Lets set our streamBaseUrl based on the mpdUrl
                 var streamBaseUrl = mpdParserModule.returnStreamBaseUrlFromMpdUrl(mpdUrl);
-
                 console.log('The stream base url is..' + streamBaseUrl);
 
                 //Lets add methods so we can parse the mpd already here and decide if
                 //there are subtitles to be added or not
-                var subtitleTracksArray = mpdParserModule.returnArrayOfSubtitlesFromMpdObject(mpdObject);
+                var subtitleTracksArray = mpdParserModule.returnArrayOfSubtitlesFromMpdObjectAndBaseUrl(mpdObject, streamBaseUrl);
                 currentVideoObject.subtitleTracksArray = videoControlsModule.returnModifiedArrayOfSubtitlesWithLabel(subtitleTracksArray, videoPlayerObject.subtitleLanguageObject);
 
                 console.log('THE SUBS ARE-...');
