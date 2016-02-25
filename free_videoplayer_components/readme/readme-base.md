@@ -45,8 +45,11 @@ You will need to include a reference to the source code provided, meaning one of
 Furthermore there are currently three dependencies which also comes bundled within **freevideoplayer**  folder:
 
 1 The first being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. 
-2 The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls.
+2 The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
+but default is that the player will try to look for this *json* file in the folder *subtitles* provided with the bundle.
 3 The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of *Free Video Player*.
+
+*Basically, if you just copy the **freevideoplayer** folder and put it inside your javascript (js) folder and reference it correctly from your html, it should work.* 
 
 Currently there is also one external dependency with [Font Awesome](https://fortawesome.github.io/Font-Awesome/), which the player uses for current icon implementation within the video controls.
 
