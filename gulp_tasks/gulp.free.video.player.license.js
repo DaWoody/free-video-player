@@ -16,6 +16,6 @@ gulp.task('build_free_video_player_license', function(cb) {
             './free_videoplayer_components/license/license-header.md',
             './free_videoplayer_components/license/license-base.md'])
         .pipe(concat('LICENSE.md'))
-        .pipe(gulp.dest('./production/freevideoplayer/readme/'));
+        .pipe(gulp.dest('./production/readme/'));
     cb(err);
 });

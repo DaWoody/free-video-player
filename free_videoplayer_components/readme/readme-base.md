@@ -38,11 +38,17 @@ The code base and files that generates the file ```free.video.player.full.js```,
 
 ##Installation
 ***
-To use the Free Video Player, you need to include a reference to the source code provided, meaning the javascript files ```free.video.player.full.js```.
-Furthermore there are currently two dependencies:
+To use the Free Video Player, firstly you could copy the folder **freevideoplayer** retrieved in the release. (releases found [here](https://www.github.com/DaWoody/free-video-player/releases/)), and then copy that into your javascript folder. Per default Free Video Player asumes that your javascript folder is called *js*. So
+That means you would have something like this in your references ```<script src="js/freevideoplayer/free.videoplayer.full.js"``` and such.  
 
-* One being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. 
-* The other being [Font Awesome](https://fortawesome.github.io/Font-Awesome/), which the player uses for current icon implementation within the video controls.
+You will need to include a reference to the source code provided, meaning one of the javascript files ```free.video.player.full.js```, or alternatively the minified version ```free.video.player.minified.js```.
+Furthermore there are currently three dependencies which also comes bundled within **freevideoplayer**  folder:
+
+1 The first being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. 
+2 The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls.
+3 The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of *Free Video Player*.
+
+Currently there is also one external dependency with [Font Awesome](https://fortawesome.github.io/Font-Awesome/), which the player uses for current icon implementation within the video controls.
 
 This is usually done in the top or the bottom of your html page. An example of how this could be implemented and inserted within
 your html, check the *Example of implementation* section below.

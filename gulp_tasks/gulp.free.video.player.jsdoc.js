@@ -28,7 +28,7 @@ gulp.task('run_jsdoc_free_video_player_production' ,['clean_jsdoc_files_free_vid
 
     var productionConfig = {
         "opts": {
-            "destination": "./production/freevideoplayer/jsdoc"
+            "destination": "./production/jsdoc"
         }
     };
 

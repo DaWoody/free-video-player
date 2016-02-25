@@ -17,7 +17,7 @@ gulp.task('build_free_video_player_readme', function(cb) {
             './free_videoplayer_components/readme/readme-version.md',
             './free_videoplayer_components/readme/readme-base.md'])
         .pipe(concat('README.md'))
-        .pipe(gulp.dest('./production/freevideoplayer/readme/'))
+        .pipe(gulp.dest('./production/readme/'))
         .pipe(gulp.dest('./'));
     cb(err);
 });
