@@ -28,7 +28,7 @@ $player-controls-button-width: 15px;
 }
 
 //Main styling class
-.free-video-player-container-style {
+.js-free-video-player-style {
   display:block;
   margin:0 auto 40px auto;
   width:700px;
@@ -493,6 +493,7 @@ video::-webkit-media-controls-panel {
         animate: 0.2s;
         background: $player-controls-background-color;
         border-radius: 1.3px;
+        width:100%;
       }
 
       &::-moz-range-thumb {
@@ -503,7 +504,7 @@ video::-webkit-media-controls-panel {
         box-shadow: 1px 1px 2px $player-controls-color;
         cursor: pointer;
         -webkit-appearance: none;
-        margin-top: -7px;
+        margin-top: -5px;
       }
 
       &::-ms-track {

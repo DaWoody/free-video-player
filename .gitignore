@@ -2,6 +2,7 @@ node_modules/
 .idea/
 public/.sass-cache/
 public/test/
+production/
 production/.git
 public/.DS_Store
 .DS_Store

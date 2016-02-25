@@ -248,13 +248,12 @@ Like for instance
 <!-- This is the default stylesheet used for the icons, Font-Awesome, this could of course be altered and changed depending on how you configure the Free Video Player -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <!-- Lets add the source to the different free video player js files that are necessary for running the free video player -->
-<script src="/xml2.json.min.js"></script>
-<script src="/free.video.player.full.js"></script>
+<script src="xml2.json.min.js"></script>
+<script src="free.video.player.full.js"></script>
 </head>
 <body>
-
     <!-- some html stuff here.. -->
-    <div class="js-free-video-player-container optional-other-classes-used-for-styling">
+    <div class="js-free-video-player js-free-video-player-style">
     <!-- here the free video player will be instantiated -->
     </div>
 

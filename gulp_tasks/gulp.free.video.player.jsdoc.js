@@ -11,7 +11,7 @@ var gulp = require('gulp'),
 //Remove JSDoc production files before building
 gulp.task('clean_jsdoc_files_free_video_player_production', ['build_free_video_player_full_with_modules'], function(cb){
     return del([
-        './production/documentation/**/*'
+        './production/jsdoc/**/*'
     ]);
     cb(err);
 });
@@ -28,7 +28,7 @@ gulp.task('run_jsdoc_free_video_player_production' ,['clean_jsdoc_files_free_vid
 
     var productionConfig = {
         "opts": {
-            "destination": "./production/freevideoplayer/documentation"
+            "destination": "./production/freevideoplayer/jsdoc"
         }
     };
 

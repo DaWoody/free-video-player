@@ -15,7 +15,7 @@ var gulp = require('gulp'),
 
 var input = './free_videoplayer_components/stylesheet/scss/*.scss',
     output1 = './public/css',
-    output2 = './production/freevideoplayer/css',
+    output2 = './production/freevideoplayer/',
     output3 = './production/freevideoplayer/scss';
 
 

@@ -1,4 +1,14 @@
 /**
+ * @name FREE VIDEO PLAYER
+ * @author Johan Wedfelt
+ * @license GPLv3, see http://www.gnu.org/licenses/gpl-3.0.en.html
+ * @description A cool open source html5 video library to use when want to play both regular HTML5 content such as mp4,
+ * webm but also for adaptive streaming formats such as DASH for instance,
+ * Requires the xml2json library to work.
+ * Check out more @ http://www.freevideoplayer.org
+ * @param {object} initiationObject - The initiation object containing information about how to configure the Free Video Player
+ */
+/**
  * @namespace freeVideoPlayerModulesNamespace
  * @description Defines the global namespace where free video player modules can be added to as property objects
  * @type {{}}
@@ -1172,7 +1182,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Add some attributes to our sliders
         volumeSlider.setAttribute('type','range');
         volumeSlider.setAttribute('value', 100);
-        volumeSlider.setAttribute('orient', 'vertical');
         progressSlider.setAttribute('type','range');
         progressSlider.setAttribute('value', 0);
 
@@ -3182,10 +3191,10 @@ var freeVideoPlayer = function(initiationObject){
         base64encodedImage = freeVideoPlayerModulesNamespace.freeVideoPlayerDefaultSplashImage,
         xml2json = new X2JS(),
         defaultSettingsObject = {
-            videoWrapperClassName: 'js-' + videoPlayerNameCss + '-container',
+            videoWrapperClassName: 'js-' + videoPlayerNameCss,
             videoWrapperBackgroundColor: '#292c3c',
-            videoSplashImageUrl: base64encodedImage,  //'../images/free-video-player-logo-dark.png',
-            iso6391Url:'/js/freevideoplayer/subtitles/iso-639-1.json',
+            videoSplashImageUrl: base64encodedImage,
+            iso6391Url:'js/freevideoplayer/subtitles/iso-639-1.json',
             videoControlsInnerHtml : {
                 playIconInnerHtml:'<i class="fa fa-play"></i>',
                 pauseIconInnerHtml:'<i class="fa fa-pause"></i>',
@@ -3306,7 +3315,6 @@ var freeVideoPlayer = function(initiationObject){
 
         //var className = that._videoWrapper.getAttribute('class');
         //that._videoWrapper.setAttribute('class', className + ' free-video-player-paused');
-
         switch (streamType){
             case 'mp4' : //Start video as an mp4
                 _loadNonAdaptiveVideo(videoUrl, 'mp4', optionalConfigurationObject);
@@ -3339,7 +3347,6 @@ var freeVideoPlayer = function(initiationObject){
                 messagesModule.printOutErrorMessageToConsole(messageObject);
         }
     };
-
 
     /**
      * @function
@@ -3492,9 +3499,6 @@ var freeVideoPlayer = function(initiationObject){
         });
     };
 
-
-
-
     /**
      * @function
      * @description A return method that could be public to return the current video's subtitle infor in
@@ -3506,7 +3510,6 @@ var freeVideoPlayer = function(initiationObject){
     var getArrayOfSubtitleObjects = function(){
         return currentVideoObject.subtitleTracksArray;
     };
-
 
     //  #########################
     //  #### REQUEST METHODS ####

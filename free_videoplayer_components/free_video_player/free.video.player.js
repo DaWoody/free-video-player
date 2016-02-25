@@ -21,10 +21,10 @@ var freeVideoPlayer = function(initiationObject){
         base64encodedImage = freeVideoPlayerModulesNamespace.freeVideoPlayerDefaultSplashImage,
         xml2json = new X2JS(),
         defaultSettingsObject = {
-            videoWrapperClassName: 'js-' + videoPlayerNameCss + '-container',
+            videoWrapperClassName: 'js-' + videoPlayerNameCss,
             videoWrapperBackgroundColor: '#292c3c',
-            videoSplashImageUrl: base64encodedImage,  //'../images/free-video-player-logo-dark.png',
-            iso6391Url:'/js/freevideoplayer/subtitles/iso-639-1.json',
+            videoSplashImageUrl: base64encodedImage,
+            iso6391Url:'js/freevideoplayer/subtitles/iso-639-1.json',
             videoControlsInnerHtml : {
                 playIconInnerHtml:'<i class="fa fa-play"></i>',
                 pauseIconInnerHtml:'<i class="fa fa-pause"></i>',
@@ -145,7 +145,6 @@ var freeVideoPlayer = function(initiationObject){
 
         //var className = that._videoWrapper.getAttribute('class');
         //that._videoWrapper.setAttribute('class', className + ' free-video-player-paused');
-
         switch (streamType){
             case 'mp4' : //Start video as an mp4
                 _loadNonAdaptiveVideo(videoUrl, 'mp4', optionalConfigurationObject);
@@ -178,7 +177,6 @@ var freeVideoPlayer = function(initiationObject){
                 messagesModule.printOutErrorMessageToConsole(messageObject);
         }
     };
-
 
     /**
      * @function
@@ -331,9 +329,6 @@ var freeVideoPlayer = function(initiationObject){
         });
     };
 
-
-
-
     /**
      * @function
      * @description A return method that could be public to return the current video's subtitle infor in
@@ -345,7 +340,6 @@ var freeVideoPlayer = function(initiationObject){
     var getArrayOfSubtitleObjects = function(){
         return currentVideoObject.subtitleTracksArray;
     };
-
 
     //  #########################
     //  #### REQUEST METHODS ####

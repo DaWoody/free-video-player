@@ -1172,7 +1172,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Add some attributes to our sliders
         volumeSlider.setAttribute('type','range');
         volumeSlider.setAttribute('value', 100);
-        volumeSlider.setAttribute('orient', 'vertical');
         progressSlider.setAttribute('type','range');
         progressSlider.setAttribute('value', 0);
 
