@@ -1,0 +1,153 @@
+<div class="container">
+    <h4 class="free-video-player-header">Api</h4>
+    <p>
+        There are a number of publically available methods through the <a href="/">Free Video Player</a> API.
+        Below these are described. The latest changes to the code (and also the API) can be found in the <a href="/documentation">documentation</a> section.
+        Basically lets imagine we instantiate a Free Video Player, such as <code>var player = freeVideoPlayer(optionalConfigurationObject);</code> then we can access the
+        publically methods as described in the table below.
+    </p>
+
+    <table class="table-bordered free-video-player-codecs-table">
+
+        <tr>
+            <th>
+                Method
+            </th>
+            <th>
+                Description
+            </th>
+        </tr>
+
+        <tr>
+            <td>
+                <code>
+                    player.load(videoUrl, optionalConfigurationObject)
+                </code>
+            </td>
+            <td>
+               - Loads the video into the player, should provide a url to where the asset can be found. The <code>optionalConfigurationObject</code> contains information such as alternative splash image and such.
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <code>
+                    player.play()
+                </code>
+            </td>
+            <td>
+                - Starts playback of the currently loaded asset
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <code>
+                    player.pause()
+                </code>
+            </td>
+            <td>
+                - Pauses playback of the currently loaded and playing asset.
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <code>
+                    player.getVolume()
+                </code>
+            </td>
+            <td>
+                - This method returns the video element volume as a number between 0 and 1.
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <code>
+                    player.setVolume(numberFromZeroToOne)
+                </code>
+            </td>
+            <td>
+                - This method interacts with the player video element and sets the volume within the stream/media. the variable <code>numberFromZeroToOne</code> should be a decimal number from zero to one, such as 0.8 for instance.
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <code>
+                    player.seek(positionInSeconds)
+                </code>
+            </td>
+            <td>
+                - This method interacts with the player video element and seeks within the stream/media. The variable <code>positionInSeconds</code> is the position since start, we want the player to skip to, should be an integer from 0 and up.
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <code>
+                    player.fullscreen()
+                </code>
+            </td>
+            <td>
+                - This method interacts with the player video element generates or exists a fullscreen mode.
+            </td>
+        </tr>
+
+
+
+
+        <tr>
+            <td>
+                <code>
+                    player.getArrayOfSubtitleObjects()
+                </code>
+            </td>
+            <td>
+                - A return method that could be public to return the current video's subtitle info in an array of subtitleObjects containing values such as label, language, id.
+                If a user/developer do not want to use the built in custom controls, and want to build their own but still utilize the feature of using subtitles for assets that has them,
+                this is method of accessing the subtitle info for the currently loaded asset.
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <code>
+                    player.getVersion()
+                </code>
+            </td>
+            <td>
+                - Returns the player version
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <code>
+                    player.getName()
+                </code>
+            </td>
+            <td>
+                - Returns the player name, like Free Video Player
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <code>
+                    player.isModule()
+                </code>
+            </td>
+            <td>
+                - Checks if the player is a module to itself, which should return false. Free Video Player is built as a module system with each module responsible for each specific tasks,
+                so all modules contain this public method to decern if the instance is a module to Free Video Player.
+            </td>
+        </tr>
+
+
+
+
+
+    </table>
+</div>

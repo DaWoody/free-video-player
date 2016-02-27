@@ -32,7 +32,7 @@ gulp.task('run_jsdoc_free_video_player_production' ,['clean_jsdoc_files_free_vid
         }
     };
 
-    gulp.src(['./free_videoplayer_components/modules/*', './free_videoplayer_components/free_video_player/*', './production/freevideoplayer/README.md'], {read:false})
+    gulp.src(['./free_videoplayer_components/modules/*', './free_videoplayer_components/free_video_player/*', './production/readme/README.md'], {read:false})
         .pipe(jsdoc(productionConfig, cb));
 
 });
@@ -45,6 +45,6 @@ gulp.task('run_jsdoc_free_video_player_sample_page' ,['clean_jsdoc_files_free_vi
         }
     };
 
-    gulp.src(['./free_videoplayer_components/modules/*', './free_videoplayer_components/free_video_player/*', './production/freevideoplayer/README.md'], {read:false})
+    gulp.src(['./free_videoplayer_components/modules/*', './free_videoplayer_components/free_video_player/*', './production/readme/README.md'], {read:false})
         .pipe(jsdoc(publicConfig, cb));
 });

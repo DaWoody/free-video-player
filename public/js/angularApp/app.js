@@ -17,6 +17,12 @@ angular.module('freeVideoPlayerApp', ['ngResource', 'ngRoute', 'ui.bootstrap'])
                 templateUrl:'/templates/pages/installing.html',
                 controller:'installingController'
             })
+            .when('/api', {
+                templateUrl:'/templates/pages/api.html',
+            })
+            .when('/codecs', {
+                templateUrl:'/templates/pages/codecs.html',
+            })
             .when('/contribute', {
                 templateUrl:'/templates/pages/contribute.html',
                 controller:'contributeController'
