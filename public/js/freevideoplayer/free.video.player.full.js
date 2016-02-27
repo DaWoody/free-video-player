@@ -869,7 +869,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         return moduleName;
     };
 
-
     /**
      * @function
      * @name isModule
@@ -879,6 +878,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     function isModule(){
         return isModuleValue;
+    };
+
+    /**
+     * @function
+     * @name getVideoElement
+     * @description This method returns the videoElement that has been setup by the source media extension and other streaming methods.
+     * making it publically accesible to the public API of Free Video Player for instance.
+     * @returns {element} - videoElement that is used with streaming technology
+     * @public
+     */
+    function getVideoElement(){
+        return that._videoElement;
     };
 
 
@@ -901,6 +912,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     that.getName = getName;
     that.getVersion = getVersion;
     that.isModule = isModule;
+    that.getVideoElement = getVideoElement;
 
     //Lets run this method on startup
     _initiate();
@@ -3476,6 +3488,10 @@ var freeVideoPlayer = function(initiationObject){
 
                 //Lets load our video stream as DASH
                 adaptiveStreamingModule.loadDashMediaWithMediaSourceExtension(adaptiveVideoObject);
+
+                // Lets overwrite our videoElement by fetching it from the adaptiveStreamingModule
+                // and setting it to the current video element
+                that._videoElement = adaptiveStreamingModule.getVideoElement();
 
                 //Lets add subtitles to DOM
                 videoControlsModule.addSubtitlesTracksToDom(currentVideoObject.subtitleTracksArray, that._videoWrapper);

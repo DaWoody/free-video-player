@@ -307,6 +307,10 @@ var freeVideoPlayer = function(initiationObject){
                 //Lets load our video stream as DASH
                 adaptiveStreamingModule.loadDashMediaWithMediaSourceExtension(adaptiveVideoObject);
 
+                // Lets overwrite our videoElement by fetching it from the adaptiveStreamingModule
+                // and setting it to the current video element
+                that._videoElement = adaptiveStreamingModule.getVideoElement();
+
                 //Lets add subtitles to DOM
                 videoControlsModule.addSubtitlesTracksToDom(currentVideoObject.subtitleTracksArray, that._videoWrapper);
 
