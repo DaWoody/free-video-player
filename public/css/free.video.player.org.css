@@ -135,7 +135,7 @@ h4 {
     .video-asset-container img:hover {
       cursor: pointer; }
 
-.free-video-player-codecs-table td {
+.free-video-player-table td, .free-video-player-table th {
   margin: 10px;
   padding: 10px; }
 
