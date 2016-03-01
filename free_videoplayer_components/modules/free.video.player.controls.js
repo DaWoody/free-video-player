@@ -943,8 +943,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 subtitlesMenu = documentFragment.appendChild(document.createElement('select'));
                 subtitlesMenu.className =  settingsObject.videoControlsCssClasses.subtitlesMenuClass;
                 that.currentVideoObject.subtitlesMenu = subtitlesMenu;
+                that.currentVideoObject.textTracks = videoElement.textTracks;
 
-                var textTracks = videoElement.textTracks;
                 //subtitlesMenu.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'subtitles-menu');
 
                 //Since we are setting the language to a value here, this subtitle button will appear
@@ -955,8 +955,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                     label: settingsObject.videoControlsInnerHtml.subtitlesMenuOffButtonInnerHtml,
                     videoElement: videoElement
                 };
-
-
+                
                 //Lets also add the CORS configuration on the video element
                 videoElement.setAttribute('crossorigin', 'anonymous');
 
@@ -971,27 +970,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                     };
                     subtitlesMenu.appendChild(_createSubtitlesMenuItem(createSubtitleMenuItemConfigObject));
                 }
-
-                subtitlesMenu.addEventListener('change', function(event){
-
-                    var subtitlesMenu = that.currentVideoObject.subtitlesMenu,
-                        subtitlesMenuButtonsArray = subtitlesMenu.children;
-
-                    for(var j = 0, subtitleMenuLength = subtitlesMenuButtonsArray.length; j < subtitleMenuLength; j++){
-                        subtitlesMenuButtonsArray[j].setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
-                    }
-
-                    //Lets first deactive all subtitles, setting this on the buttons so they can be styled
-                    for(var i = 0, textTracksLength = textTracks.length; i < textTracksLength; i++){
-                        if(textTracks[i].label === this.options[this.selectedIndex].text){
-                            textTracks[i].mode = 'showing';
-                            this.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
-                        } else {
-                            textTracks[i].mode = 'hidden';
-                        }
-                    }
-
-                });
+                subtitlesMenu.addEventListener('change', _changeSubtitle);
             }
         } catch(e){
 
@@ -1004,6 +983,33 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
         return subtitlesMenu;
     };
+
+    /**
+     * @name _changeSubtitle
+     * @param textTracks
+     * @private
+     */
+    function _changeSubtitle(){
+
+        var subtitlesMenu = that.currentVideoObject.subtitlesMenu,
+            subtitlesMenuButtonsArray = subtitlesMenu.children,
+            textTracks = that.currentVideoObject.textTracks;
+
+        for(var j = 0, subtitleMenuLength = subtitlesMenuButtonsArray.length; j < subtitleMenuLength; j++){
+            subtitlesMenuButtonsArray[j].setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
+        }
+
+        //Lets first deactive all subtitles, setting this on the buttons so they can be styled
+        for(var i = 0, textTracksLength = textTracks.length; i < textTracksLength; i++){
+            if(textTracks[i].label === this.options[this.selectedIndex].text){
+                textTracks[i].mode = 'showing';
+                this.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
+            } else {
+                textTracks[i].mode = 'hidden';
+            }
+        }
+    };
+
 
     /**
      * Creates a subtitle menu item. This will be added to the subtitle menu
