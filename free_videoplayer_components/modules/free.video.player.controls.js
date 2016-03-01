@@ -221,18 +221,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             volumeIcon.appendChild(volumeSliderContainer);
             controlsWrapper.appendChild(volumeIcon);
         }
-        if(settingsObject.videoControlsDisplay.showVolumeSlider){
-            //controlsWrapper.appendChild(volumeSliderContainer);
-        }
+
         if(subtitlesMenu
             && settingsObject.videoControlsDisplay.showSubtitlesMenu){
             subtitlesContainer.appendChild(subtitlesMenu);
-
-            console.log('Should have added it.!!.');
-
-            //_insertAfter(subtitlesContainer, settingsMenu);
-
-            console.log('Should have added it..');
             settingsMenu.appendChild(subtitlesContainer);
         }
 
@@ -580,18 +572,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
 
     /**
-     * @name _insertAfter
-     * @description A method that adds a node after the desired node in the DOM
-     * @param newNode - the node that should get added
-     * @param referenceNode - the reference node, where the node should be added after
-     * @private
-     */
-    function _insertAfter(newNode, referenceNode) {
-        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-    }
-
-
-    /**
      * A method that will enable full screen mode on the Free Video Player, or disable it
      * @private
      */
@@ -886,14 +866,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 bitrateMenu = documentFragment.appendChild(document.createElement('ul'));
                 bitrateMenu.className =  settingsObject.videoControlsCssClasses.bitrateMenuClass;
                 that.currentVideoObject.bitrateMenu = bitrateMenu;
-                //subtitlesMenu.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'subtitles-menu');
 
                 //Since we are setting the language to a value here, this subtitle button will appear
                 //as a choice in the menu, with label name set to the subtitlesMenuOffButtonInnerHtml,
-                //and this button will act as a deactivator of subtitles
+                //and this button will act as a deactivator
                 createBitrateMenuItemConfigObject = {
                     bitrateName: 'auto',
-                    bitrateIndex: 0,
+                    bitrateIndex: 0
                 };
 
                 bitrateMenu.appendChild(_createBitrateMenuItem(createBitrateMenuItemConfigObject));
@@ -1003,7 +982,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         for(var i = 0, textTracksLength = textTracks.length; i < textTracksLength; i++){
             if(textTracks[i].label === this.options[this.selectedIndex].text){
                 textTracks[i].mode = 'showing';
-                this.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
+                this.options[this.selectedIndex].setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
             } else {
                 textTracks[i].mode = 'hidden';
             }
