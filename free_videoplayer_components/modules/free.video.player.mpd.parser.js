@@ -251,7 +251,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                     //Lets find out if the subtitle url is dynamic or static
                     //if dynamic we should add the base url otherwise not
 
-                    var subtitleUrl = _baseUrlIsDynamic(baseUrl) ? baseUrl + returnBaseUrlFromRepresentation(firstRepresentation) : returnBaseUrlFromRepresentation(firstRepresentation);
+
+
+                    var subtitleUrl = _subtitleBaseUrlIsDynamic(returnBaseUrlFromRepresentation(firstRepresentation)) ? baseUrl + returnBaseUrlFromRepresentation(firstRepresentation) : returnBaseUrlFromRepresentation(firstRepresentation);
 
                     subtitleTrackObject.subtitleUrl = subtitleUrl;
                     subtitleTrackObject.subtitleLanguage = returnSubtitleLanguageFromAdaptionSet(currentAdaptionSet);
@@ -287,16 +289,19 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
 
 
     /**
-     * @name _baseUrlIsDynamic
+     * @name _subtitleBaseUrlIsDynamic
      * @param baseUrl
      * @returns {boolean}
      * @private
      */
-    function _baseUrlIsDynamic(baseUrl){
+    function _subtitleBaseUrlIsDynamic(baseUrl){
         var returnBoolean = true;
 
         var httpTest = baseUrl.split('http://'),
             httpsTest = baseUrl.split('https://');
+
+        console.log('The length of http is..' + httpTest.length);
+        console.log('The length of https is..' + httpsTest.length)
 
         if(httpTest.length > 1 || httpsTest.length > 1){
             returnBoolean = false;
