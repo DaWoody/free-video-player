@@ -1249,12 +1249,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Lets see if we have subtitles and if that is the case lets add the subtitle menu to the player controls
         var subtitlesMenu = _createSubtitlesMenuAndReturnMenu(videoElement);
 
-        if(subtitlesMenu){
-            //Lets add the subtitles menu to the subtitles button
-            subtitlesContainer.addEventListener('click', function(event){
-                subtitlesMenu.style.display = (subtitlesMenu.style.display === 'block' ? 'none' : 'block');
-            });
-        }
 
         //  #############################
         //  #### APPEND DOM ELEMENTS ####
@@ -1293,11 +1287,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         if(subtitlesMenu
             && settingsObject.videoControlsDisplay.showSubtitlesMenu){
             subtitlesContainer.appendChild(subtitlesMenu);
+
+            console.log('Should have added it.!!.');
+
+            //_insertAfter(subtitlesContainer, settingsMenu);
+
+            console.log('Should have added it..');
             settingsMenu.appendChild(subtitlesContainer);
         }
 
         if(settingsObject.videoControlsDisplay.showSettingsIcon){
             controlsWrapper.appendChild(settingsIcon);
+            controlsWrapper.appendChild(settingsMenu);
         }
 
         if(settingsObject.videoControlsDisplay.showTimer
@@ -1313,9 +1314,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         if(mediaType !== 'static'){
             videoWrapper.appendChild(liveIcon);
         }
-
-        //Lets add the settingsIcon to the videoControls
-        settingsIcon.appendChild(settingsMenu);
 
         //Add stuff to the videoWrapper
         videoWrapper.appendChild(videoOverlaySpinnerIcon);
@@ -1628,7 +1626,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that will make changes to the settings easy :).
+     * @name _changeSettings
+     * @description A method that will make changes to the settings easy :).
      * @private
      */
     function _changeSettings(){
@@ -1638,6 +1637,19 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             _addCssClassToElementAndReturn(that.currentVideoControlsObject.settingsMenu, settingsObject.videoControlsCssClasses.displayNoneClass)
         }
     };
+
+
+    /**
+     * @name _insertAfter
+     * @description A method that adds a node after the desired node in the DOM
+     * @param newNode - the node that should get added
+     * @param referenceNode - the reference node, where the node should be added after
+     * @private
+     */
+    function _insertAfter(newNode, referenceNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    }
+
 
     /**
      * A method that will enable full screen mode on the Free Video Player, or disable it
@@ -1988,9 +2000,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 subtitlesMenu = document.createElement('div');
                 subtitlesMenu.innerHTML = settingsObject.videoControlsInnerHtml.subtitlesMenuInnerHtml;
                 documentFragment = document.createDocumentFragment();
-                subtitlesMenu = documentFragment.appendChild(document.createElement('ul'));
+                subtitlesMenu = documentFragment.appendChild(document.createElement('select'));
                 subtitlesMenu.className =  settingsObject.videoControlsCssClasses.subtitlesMenuClass;
                 that.currentVideoObject.subtitlesMenu = subtitlesMenu;
+
+                var textTracks = videoElement.textTracks;
                 //subtitlesMenu.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'subtitles-menu');
 
                 //Since we are setting the language to a value here, this subtitle button will appear
@@ -2017,6 +2031,29 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                     };
                     subtitlesMenu.appendChild(_createSubtitlesMenuItem(createSubtitleMenuItemConfigObject));
                 }
+
+                subtitlesMenu.addEventListener('change', function(event){
+                    console.log(this.options[this.selectedIndex].text);
+
+                    var subtitlesMenu = that.currentVideoObject.subtitlesMenu,
+                        subtitlesMenuButtonsArray = subtitlesMenu.children;
+
+                    for(var j = 0, subtitleMenuLength = subtitlesMenuButtonsArray.length; j < subtitleMenuLength; j++){
+                        subtitlesMenuButtonsArray[j].setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
+                    }
+
+                    //Lets first deactive all subtitles, setting this on the buttons so they can be styled
+                    for(var i = 0, textTracksLength = textTracks.length; i < textTracksLength; i++){
+                        if(textTracks[i].label === this.options[this.selectedIndex].text){
+                            textTracks[i].mode = 'showing';
+                            this.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
+                        } else {
+                            textTracks[i].mode = 'hidden';
+                        }
+                    }
+
+                });
+
             }
         } catch(e){
 
@@ -2042,8 +2079,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             videoElement = configObject.videoElement,
             textTracks = videoElement.textTracks;
 
-        var listItem = document.createElement('li'),
-            button = listItem.appendChild(document.createElement('div'));
+        var button = document.createElement('option');
+            //button = listItem.appendChild(document.createElement('div'));
 
         //button.setAttribute('id', id);
         button.className = settingsObject.videoControlsCssClasses.subtitleButtonClass;
@@ -2051,43 +2088,44 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             //For the empty subtitles track
             button.setAttribute('lang', language);
             button.value = label;
+            button.innerHTML = label;
             button.setAttribute('data-' + videoPlayerNameCss + '-state' , 'inactive');
-            button.appendChild(document.createTextNode(label));
+            //button.appendChild(document.createTextNode(label));
             //Lets add an eventlistener to the subtitle button item
-            button.addEventListener('click', function(event){
-                //Set all buttons to inactive
-                console.log('Activating the subtitle with label ' + label);
-
-                try {
-                    //Lets fetch all buttons within the subtitle menu and set those
-                    //data states to inactive
-                    var subtitlesMenu = that.currentVideoObject.subtitlesMenu,
-                        subtitlesMenuButtonsArray = subtitlesMenu.children;
-
-                    for(var j = 0, subtitleMenuLength = subtitlesMenuButtonsArray.length; j < subtitleMenuLength; j++){
-                        subtitlesMenuButtonsArray[j].setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
-                    }
-
-                    //Lets first deactive all subtitles, setting this on the buttons so they can be styled
-                    for(var i = 0, textTracksLength = textTracks.length; i < textTracksLength; i++){
-                        if(textTracks[i].label === label){
-                            textTracks[i].mode = 'showing';
-                            this.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
-                        } else {
-                            textTracks[i].mode = 'hidden';
-                        }
-                    }
-                    //Now lets set the style to display none
-                    subtitlesMenu.style.display = 'none';
-                } catch(e){
-                    var messageObject = {};
-                        messageObject.message = 'Could not activate subtitle with language';
-                        messageObject.methodName = '_createSubtitlesMenuItem';
-                        messageObject.moduleName = moduleName;
-                        messageObject.moduleVersion = moduleVersion;
-                    messagesModule.printOutErrorMessageToConsole(messageObject, e);
-                }
-            });
+            //button.addEventListener('onchange', function(event){
+            //    //Set all buttons to inactive
+            //    console.log('Activating the subtitle with label ' + label);
+            //
+            //    try {
+            //        //Lets fetch all buttons within the subtitle menu and set those
+            //        //data states to inactive
+            //        var subtitlesMenu = that.currentVideoObject.subtitlesMenu,
+            //            subtitlesMenuButtonsArray = subtitlesMenu.children;
+            //
+            //        for(var j = 0, subtitleMenuLength = subtitlesMenuButtonsArray.length; j < subtitleMenuLength; j++){
+            //            subtitlesMenuButtonsArray[j].setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
+            //        }
+            //
+            //        //Lets first deactive all subtitles, setting this on the buttons so they can be styled
+            //        for(var i = 0, textTracksLength = textTracks.length; i < textTracksLength; i++){
+            //            if(textTracks[i].label === label){
+            //                textTracks[i].mode = 'showing';
+            //                this.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
+            //            } else {
+            //                textTracks[i].mode = 'hidden';
+            //            }
+            //        }
+            //        //Now lets set the style to display none
+            //        //subtitlesMenu.style.display = 'none';
+            //    } catch(e){
+            //        var messageObject = {};
+            //            messageObject.message = 'Could not activate subtitle with language';
+            //            messageObject.methodName = '_createSubtitlesMenuItem';
+            //            messageObject.moduleName = moduleName;
+            //            messageObject.moduleVersion = moduleVersion;
+            //        messagesModule.printOutErrorMessageToConsole(messageObject, e);
+            //    }
+            //});
         }
         return button;
     };
@@ -2520,7 +2558,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                     var subtitleTrackObject = {};
                     //Now its confirmed that the adaptionSet actually contains a webvtt file
                     //Lets build our subtitleTrackObjects
-                    subtitleTrackObject.subtitleUrl = baseUrl + returnBaseUrlFromRepresentation(firstRepresentation);
+
+                    //Lets find out if the subtitle url is dynamic or static
+                    //if dynamic we should add the base url otherwise not
+
+                    var subtitleUrl = _baseUrlIsDynamic(baseUrl) ? baseUrl + returnBaseUrlFromRepresentation(firstRepresentation) : returnBaseUrlFromRepresentation(firstRepresentation);
+
+                    subtitleTrackObject.subtitleUrl = subtitleUrl;
                     subtitleTrackObject.subtitleLanguage = returnSubtitleLanguageFromAdaptionSet(currentAdaptionSet);
                     subtitleTrackObject.subtitleId = subtitleId;
                     //Lets add a tick to our subtitleId counter
@@ -2550,6 +2594,26 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     function returnMpdObjectWithAddedBaseUrl(mpdObject, baseUrl){
         mpdObject._freeVideoPlayerCurrentVideoBaseUrl = baseUrl;
         return mpdObject;
+    };
+
+
+    /**
+     * @name _baseUrlIsDynamic
+     * @param baseUrl
+     * @returns {boolean}
+     * @private
+     */
+    function _baseUrlIsDynamic(baseUrl){
+        var returnBoolean = true;
+
+        var httpTest = baseUrl.split('http://'),
+            httpsTest = baseUrl.split('https://');
+
+        if(httpTest.length > 1 || httpsTest.length > 1){
+            returnBoolean = false;
+        }
+
+        return returnBoolean;
     };
 
     //  #############################

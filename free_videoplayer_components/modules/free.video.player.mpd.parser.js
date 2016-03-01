@@ -247,7 +247,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                     var subtitleTrackObject = {};
                     //Now its confirmed that the adaptionSet actually contains a webvtt file
                     //Lets build our subtitleTrackObjects
-                    subtitleTrackObject.subtitleUrl = baseUrl + returnBaseUrlFromRepresentation(firstRepresentation);
+
+                    //Lets find out if the subtitle url is dynamic or static
+                    //if dynamic we should add the base url otherwise not
+
+                    var subtitleUrl = _baseUrlIsDynamic(baseUrl) ? baseUrl + returnBaseUrlFromRepresentation(firstRepresentation) : returnBaseUrlFromRepresentation(firstRepresentation);
+
+                    subtitleTrackObject.subtitleUrl = subtitleUrl;
                     subtitleTrackObject.subtitleLanguage = returnSubtitleLanguageFromAdaptionSet(currentAdaptionSet);
                     subtitleTrackObject.subtitleId = subtitleId;
                     //Lets add a tick to our subtitleId counter
@@ -277,6 +283,26 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     function returnMpdObjectWithAddedBaseUrl(mpdObject, baseUrl){
         mpdObject._freeVideoPlayerCurrentVideoBaseUrl = baseUrl;
         return mpdObject;
+    };
+
+
+    /**
+     * @name _baseUrlIsDynamic
+     * @param baseUrl
+     * @returns {boolean}
+     * @private
+     */
+    function _baseUrlIsDynamic(baseUrl){
+        var returnBoolean = true;
+
+        var httpTest = baseUrl.split('http://'),
+            httpsTest = baseUrl.split('https://');
+
+        if(httpTest.length > 1 || httpsTest.length > 1){
+            returnBoolean = false;
+        }
+
+        return returnBoolean;
     };
 
     //  #############################
