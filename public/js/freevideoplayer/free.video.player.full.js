@@ -2073,42 +2073,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             button.value = label;
             button.innerHTML = label;
             button.setAttribute('data-' + videoPlayerNameCss + '-state' , 'inactive');
-            //button.appendChild(document.createTextNode(label));
-            //Lets add an eventlistener to the subtitle button item
-            //button.addEventListener('onchange', function(event){
-            //    //Set all buttons to inactive
-            //    console.log('Activating the subtitle with label ' + label);
-            //
-            //    try {
-            //        //Lets fetch all buttons within the subtitle menu and set those
-            //        //data states to inactive
-            //        var subtitlesMenu = that.currentVideoObject.subtitlesMenu,
-            //            subtitlesMenuButtonsArray = subtitlesMenu.children;
-            //
-            //        for(var j = 0, subtitleMenuLength = subtitlesMenuButtonsArray.length; j < subtitleMenuLength; j++){
-            //            subtitlesMenuButtonsArray[j].setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
-            //        }
-            //
-            //        //Lets first deactive all subtitles, setting this on the buttons so they can be styled
-            //        for(var i = 0, textTracksLength = textTracks.length; i < textTracksLength; i++){
-            //            if(textTracks[i].label === label){
-            //                textTracks[i].mode = 'showing';
-            //                this.setAttribute('data-' + videoPlayerNameCss + '-state', 'active');
-            //            } else {
-            //                textTracks[i].mode = 'hidden';
-            //            }
-            //        }
-            //        //Now lets set the style to display none
-            //        //subtitlesMenu.style.display = 'none';
-            //    } catch(e){
-            //        var messageObject = {};
-            //            messageObject.message = 'Could not activate subtitle with language';
-            //            messageObject.methodName = '_createSubtitlesMenuItem';
-            //            messageObject.moduleName = moduleName;
-            //            messageObject.moduleVersion = moduleVersion;
-            //        messagesModule.printOutErrorMessageToConsole(messageObject, e);
-            //    }
-            //});
         }
         return button;
     };
@@ -2134,13 +2098,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             trackElement.setAttribute('kind', 'subtitles');
 
             subtitleLabel = _returnFirstWordFromSubtitleLabel(currentSubtitleTrack.subtitleLabel);
-            subtitleLabel = _returnSubtitleLabelCapitalized(subtitleLabel);
+            subtitleLabel =  _returnSubtitleLabelSmallLetters(subtitleLabel);
+
+            //_returnSubtitleLabelCapitalized(subtitleLabel);
 
             trackElement.setAttribute('label', subtitleLabel);
             trackElement.setAttribute('data-video-player-subtitle-index', index+1);
             videoElement.appendChild(trackElement);
         });
-
     };
 
     /**
@@ -2186,6 +2151,30 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
         return modifiedSubtitleLabel;
     };
+
+    /**
+     * Returns the subtitle label in small letters, like for instance label instead of Label.
+     * @private
+     * @param {string} subtitleLabel
+     * @returns {*}
+     */
+    function _returnSubtitleLabelSmallLetters(subtitleLabel){
+        var modifiedSubtitleLabel = subtitleLabel;
+        try {
+            modifiedSubtitleLabel.trim();
+            modifiedSubtitleLabel = modifiedSubtitleLabel.charAt(0).toLowerCase() + modifiedSubtitleLabel.slice(1);
+        } catch (e){
+            var messageObject = {};
+            messageObject.message = 'Could not parse and smallify the subtitle label';
+            messageObject.methodName = '_returnSubtitleLabelSmallLetters';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return modifiedSubtitleLabel;
+    };
+
+
 
     /**
      * @function
@@ -3272,9 +3261,9 @@ var freeVideoPlayer = function(initiationObject){
                 settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
                 liveIconInnerHtml:'<i class="fa fa-circle"></i> LIVE',
                 videoFormatContainerInnerHtml:'format: ',
-                subtitlesMenuInnerHtml:'subtitles',
-                bitrateQualityMenuInnerHtml:'quality',
-                subtitlesMenuOffButtonInnerHtml:'Off'
+                subtitlesMenuInnerHtml:'subtitles: ',
+                bitrateQualityMenuInnerHtml:'quality: ',
+                subtitlesMenuOffButtonInnerHtml:'off'
             },
             videoControlsCssClasses: {
                 videoControlsClass: videoPlayerNameCss + '-controls',

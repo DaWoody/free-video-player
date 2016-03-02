@@ -38,9 +38,9 @@ var freeVideoPlayer = function(initiationObject){
                 settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
                 liveIconInnerHtml:'<i class="fa fa-circle"></i> LIVE',
                 videoFormatContainerInnerHtml:'format: ',
-                subtitlesMenuInnerHtml:'subtitles',
-                bitrateQualityMenuInnerHtml:'quality',
-                subtitlesMenuOffButtonInnerHtml:'Off'
+                subtitlesMenuInnerHtml:'subtitles: ',
+                bitrateQualityMenuInnerHtml:'quality: ',
+                subtitlesMenuOffButtonInnerHtml:'off'
             },
             videoControlsCssClasses: {
                 videoControlsClass: videoPlayerNameCss + '-controls',

@@ -181,21 +181,21 @@ video::-webkit-media-controls-panel {
   .free-video-player-controls-subtitles-container {
     width:100%;
     margin-left:10px;
+    background:$player-controls-color;
+    color:$player-controls-white-color;
     &:hover {
       cursor:pointer;
     }
   }
 
   .free-video-player-controls-subtitles-menu {
-    width:100px;
-    background:$player-controls-background-color;
-    list-style-type:none;
-    padding:10px 0;
-    min-width:20px;
+    background: transparent; //$player-controls-background-color;
+    margin-left:5px;
     color: $player-controls-white-color;
     text-shadow: 1px 1px 2px $player-controls-color;
+    display:inline;
 
-    border:1px solid $player-controls-color;
+    border:0px solid $player-controls-color;
     border-radius: 3px;
     -webkit-border-radius:3px;
     -o-border-radius:3px;
@@ -276,8 +276,8 @@ video::-webkit-media-controls-panel {
     position: absolute;
     background:$player-controls-background-color;
     bottom: 50px;
-    left: 550px;
-    min-width: 120px;
+    left: 520px;
+    min-width: 165px;
     height:auto;
     color:$player-controls-shadow-color;
     text-shadow: 1px 1px 2px $player-controls-color;
@@ -601,7 +601,7 @@ video::-webkit-media-controls-panel {
 
   .free-video-player-controls{
     .free-video-player-controls-settings-menu {
-      left:300px;
+      left:260px;
     }
   }
 
@@ -637,7 +637,7 @@ video::-webkit-media-controls-panel {
 
   .free-video-player-controls{
     .free-video-player-controls-settings-menu {
-      left:170px;
+      left:150px;
     }
   }
 }
