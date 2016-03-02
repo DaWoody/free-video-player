@@ -193,6 +193,10 @@ video::-webkit-media-controls-panel {
     -webkit-border-radius: 3px;
     -o-border-radius: 3px;
     -moz-border-radius: 3px; }
+    .free-video-player-controls .free-video-player-controls-settings-menu::fullscreen, .free-video-player-controls .free-video-player-controls-settings-menu::-moz-full-screen, .free-video-player-controls .free-video-player-controls-settings-menu::-webkit-full-screen {
+      background: red;
+      left: auto;
+      right: 10px; }
     .free-video-player-controls .free-video-player-controls-settings-menu div {
       margin-left: 0;
       padding-left: 10px;

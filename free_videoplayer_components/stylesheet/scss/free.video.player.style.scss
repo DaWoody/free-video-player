@@ -284,6 +284,16 @@ video::-webkit-media-controls-panel {
     -webkit-border-radius:3px;
     -o-border-radius:3px;
     -moz-border-radius: 3px;
+
+    //Not working currently
+    &:fullscreen,
+    &:-moz-full-screen,
+    &:-webkit-full-screen {
+      //Lets set the position as when fullscreen
+      left:auto;
+      right:10px;
+    }
+
     div {
       margin-left:0;
       padding-left:10px;
