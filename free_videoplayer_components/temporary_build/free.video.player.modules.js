@@ -68,14 +68,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     function printOutOnStartup(){
         if(browserSupportsMediaSource()){
             var messageObject = {};
-            messageObject.message = 'Adaptive Bitrate Module - started with support for MSE';
+            messageObject.message = 'Adaptive Bitrate Module - started with support for Media Source Extension';
             messageObject.methodName = 'printOutOnStartup';
             messageObject.moduleName = moduleName;
             messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutMessageToConsole(messageObject);
         } else {
             var messageObject = {};
-            messageObject.message = 'ERROR - Adaptive Bitrate Module - Browser do not support MSE';
+            messageObject.message = 'ERROR - Adaptive Bitrate Module - Browser do NOT support Media Source Extension';
             messageObject.methodName = 'printOutOnStartup';
             messageObject.moduleName = moduleName;
             messageObject.moduleVersion = moduleVersion;
@@ -129,7 +129,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @returns {string}
      * @private
      */
-    var _returnBaseUrlBasedOnStoredUserSettings = function(){
+    function _returnBaseUrlBasedOnStoredUserSettings(){
         console.log('Base URL set by user!');
         var returnBaseUrl = currentVideoObject.streamObject.currentVideoBaseUrl;
         return returnBaseUrl;
@@ -141,7 +141,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @returns {boolean}
      * @private
      */
-    var _isBitrateAuto = function(){
+    function _isBitrateAuto(){
         var bitrateIsAudio = false;
         console.log('The currentVideoStreamObject current VideBaseUrl is ..' + currentVideoObject.streamObject.currentVideoBaseUrl);
         if(currentVideoObject.streamObject.currentVideoBaseUrl === 'auto'){
@@ -216,17 +216,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         //Lets try loading it
         currentVideoObject.streamObject.streamBaseUrl = baseUrl;
 
-        that._videoElement.src = window.URL.createObjectURL(that._mediaSource);
+        var sourceElement = document.createElement('source');
+        sourceElement.src = window.URL.createObjectURL(that._mediaSource);
+
+        that._videoElement.appendChild(sourceElement);
 
         if(optionalConfigurationObject){
             that._videoElement.poster = optionalConfigurationObject.videoSplashImageUrl ? optionalConfigurationObject.videoSplashImageUrl : settingsObject.videoSplashImageUrl;
         } else {
-            that._videoElement.poster = settingsObject.videoSplashImageUrl;
+            //that._videoElement.poster = settingsObject.videoSplashImageUrl;
         }
     };
 
     /**
-     * Creates a video element
+     * Creates a video elementloadDashMediaWithMediaSourceExtension
      * @param that
      * @param videoWrapperClassName
      * @returns {*}
@@ -244,12 +247,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         that._videoWrapper.appendChild(videoElement);
     };
 
-
     //  #######################
     //  #### VIDEO METHODS ####
     //  #######################
-
-
     /**
      * @function
      * @name addStreamBaseUrl
@@ -304,11 +304,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 mimeType = adaptionSetMimeType ? adaptionSetMimeType : mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
                 segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
                 initializationFile = null,
-                mediaObject = mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate),
+                mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
                 streamDurationInSeconds =  mpdParserModule.returnMediaDurationInSecondsFromMpdObject(currentVideoObject.streamObject.mpdObject),
                 startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
-                segmentPrefix = mediaObject.segmentPrefix,
-                segmentEnding = mediaObject.segmentEnding,
+                segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
+                segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
                 averageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject(currentVideoObject.streamObject.mpdObject),
                 codecs = '',
                 baseUrl = '',
@@ -324,13 +324,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 contentComponentArrayLength = 0,
                 sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
 
-            if(adaptionSetMimeType){
-                // When we have mimeType in adaptionSet,
-                // like with Bento implementation for instance
-                mimeType = adaptionSetMimeType;
-            } else {
-                mimeType = mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
-            }
+            //if(adaptionSetMimeType){
+            //    // When we have mimeType in adaptionSet,
+            //    // like with Bento implementation for instance
+            //    mimeType = adaptionSetMimeType;
+            //} else {
+            //    mimeType = mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
+            //}
             console.log('The mimeType we find is ' + mimeType);
             //Lets use the contentComponent to find out if we have a muxxed stream or not
 
@@ -1227,7 +1227,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         volumeIcon.addEventListener('mouseout', _hideVolumeSlider);
 
         volumeSliderContainer.addEventListener('mouseout', _hideVolumeSlider);
-
         volumeSlider.addEventListener('change', _volumeShiftMethod);
 
         settingsIcon.addEventListener('click', _changeSettings);
@@ -1236,9 +1235,16 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         videoElement.addEventListener('loadedmetadata', _printMediaTotalDuration);
         videoElement.addEventListener('timeupdate', _progressUpdateMethod);
 
-        //Lets see if we have subtitles and if that is the case lets add the subtitle menu to the player controls
-        var subtitlesMenu = _createSubtitlesMenuAndReturnMenu(videoElement);
+        //Lets add the subtitles after the loadeddata has been reached.
+        videoElement.addEventListener('loadeddata', function(){
+            var subtitlesMenu = _createSubtitlesMenuAndReturnMenu(videoElement);
 
+            if(subtitlesMenu
+                && settingsObject.videoControlsDisplay.showSubtitlesMenu){
+                subtitlesContainer.appendChild(subtitlesMenu);
+                settingsMenu.appendChild(subtitlesContainer);
+            }
+        });
 
         //  #############################
         //  #### APPEND DOM ELEMENTS ####
@@ -1270,12 +1276,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         if(settingsObject.videoControlsDisplay.showVolumeIcon){
             volumeIcon.appendChild(volumeSliderContainer);
             controlsWrapper.appendChild(volumeIcon);
-        }
-
-        if(subtitlesMenu
-            && settingsObject.videoControlsDisplay.showSubtitlesMenu){
-            subtitlesContainer.appendChild(subtitlesMenu);
-            settingsMenu.appendChild(subtitlesContainer);
         }
 
         if(settingsObject.videoControlsDisplay.showSettingsIcon){
@@ -1626,7 +1626,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
-
     /**
      * A method that will enable full screen mode on the Free Video Player, or disable it
      * @private
@@ -1820,7 +1819,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
-
     /**
      * The actual method that catches the event from the spacebar button
      * @param event
@@ -1899,7 +1897,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return returnHourMinutesSeconds;
     };
 
-
     //  ################################
     //  #### BITRATE METHODS / DOM ####
     //  ################################
@@ -1954,8 +1951,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return bitrateMenu;
     };
 
-
-
     //  ################################
     //  #### SUBTITLE METHODS / DOM ####
     //  ################################
@@ -1970,6 +1965,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             documentFragment,
             createSubtitleMenuItemConfigObject = {};
         try {
+
 
             if (videoElement.textTracks.length > 0) {
                 subtitlesMenu = document.createElement('div');
@@ -2021,7 +2017,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
     /**
      * @name _changeSubtitle
-     * @param textTracks
+     * @description A private method for changing/switching between subtitles
      * @private
      */
     function _changeSubtitle(){
@@ -2045,7 +2041,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
-
     /**
      * Creates a subtitle menu item. This will be added to the subtitle menu
      * @param configObject
@@ -2059,7 +2054,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             textTracks = videoElement.textTracks;
 
         var button = document.createElement('option');
-            //button = listItem.appendChild(document.createElement('div'));
 
         //button.setAttribute('id', id);
         button.className = settingsObject.videoControlsCssClasses.subtitleButtonClass;
@@ -2073,7 +2067,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return button;
     };
 
-
     /**
      * @function
      * @name addSubtitlesTracksToDom
@@ -2084,24 +2077,24 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function addSubtitlesTracksToDom(subtitleTracksArray , videoWrapper){
         var videoElement = videoWrapper.getElementsByTagName('video')[0];
-        subtitleTracksArray.forEach(function(currentSubtitleTrack, index, subtitleTracksArray){
-            //Lets create a track object and append it to the video element
-            var trackElement = document.createElement('track'),
-                subtitleLabel = '';
 
-            trackElement.src = currentSubtitleTrack.subtitleUrl;
-            trackElement.srclang = currentSubtitleTrack.subtitleLanguage;
-            trackElement.setAttribute('kind', 'subtitles');
+            subtitleTracksArray.forEach(function(currentSubtitleTrack, index, subtitleTracksArray){
+                //Lets create a track object and append it to the video element
+                var trackElement = document.createElement('track'),
+                    subtitleLabel = '';
 
-            subtitleLabel = _returnFirstWordFromSubtitleLabel(currentSubtitleTrack.subtitleLabel);
-            subtitleLabel =  _returnSubtitleLabelSmallLetters(subtitleLabel);
+                trackElement.setAttribute('kind', 'subtitles');
+                trackElement.setAttribute('src', currentSubtitleTrack.subtitleUrl);
+                trackElement.setAttribute('srclang', currentSubtitleTrack.subtitleLanguage);
 
-            //_returnSubtitleLabelCapitalized(subtitleLabel);
+                subtitleLabel = _returnFirstWordFromSubtitleLabel(currentSubtitleTrack.subtitleLabel);
+                subtitleLabel =  _returnSubtitleLabelSmallLetters(subtitleLabel);
 
-            trackElement.setAttribute('label', subtitleLabel);
-            trackElement.setAttribute('data-video-player-subtitle-index', index+1);
-            videoElement.appendChild(trackElement);
-        });
+                //_returnSubtitleLabelCapitalized(subtitleLabel);
+                trackElement.setAttribute('label', subtitleLabel);
+                trackElement.setAttribute('data-' + videoPlayerNameCss + '-subtitle-index', index+1);
+                videoElement.appendChild(trackElement);
+            });
     };
 
     /**
@@ -2300,9 +2293,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
      */
     var currentVideoObject = {},
         that = {},
+        moduleName = 'MPD PARSER',
         moduleVersion = '0.9.0',
         isModuleValue = true,
-        moduleName = 'MPD PARSER',
         defaultObject = {
             debugMode:true
         },
@@ -2456,6 +2449,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not generate a max segment duration string from the MPD';
                 messageObject.methodName = 'returnAverageSegmentDurationFromMpdObject';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         //First lets set that the segment length should not be more than one minute
@@ -2489,6 +2483,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse mdpObject.Period.AdapationSet';
                 messageObject.methodName = 'returnArrayOfAdaptionSetsFromMpdObject';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
 
         }
@@ -2547,6 +2542,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not return array of subtitles, check method';
                 messageObject.methodName = 'returnArrayOfSubtitlesFromMpdObjectAndBaseUrl';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnArrayOfSubtitles;
@@ -2579,13 +2575,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         var httpTest = baseUrl.split('http://'),
             httpsTest = baseUrl.split('https://');
 
-        console.log('The length of http is..' + httpTest.length);
-        console.log('The length of https is..' + httpsTest.length)
-
-        if(httpTest.length > 1 || httpsTest.length > 1){
-            returnBoolean = false;
-        }
-
+            if(httpTest.length > 1 || httpsTest.length > 1){
+                returnBoolean = false;
+            }
         return returnBoolean;
     };
 
@@ -2609,6 +2601,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse SegmentTemplate from AdapationSet';
                 messageObject.methodName = 'returnSegmentTemplateFromAdapationSet';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return segmentTemplate;
@@ -2631,6 +2624,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not return MimeType from AdaptionSet';
                 messageObject.methodName = 'returnMimeTypeFromAdaptionSet';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mimeType;
@@ -2653,6 +2647,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse Subtitle track url from AdapationSet';
                 messageObject.methodName = 'returnSubtitleUrlFromAdapationSet';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return subtitleLanguage;
@@ -2684,6 +2679,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse and return an array of Representation from AdapationSet, check input';
                 messageObject.methodName = 'returnArrayOfRepresentationFromAdapationSet';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnArray;
@@ -2711,6 +2707,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse and return an array of ContentComponents from AdapationSet, check input';
                 messageObject.methodName = 'returnArrayOfContentComponentsFromAdaptionSet';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnArray;
@@ -2735,6 +2732,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse BaseURL from Representation';
                 messageObject.methodName = 'returnBaseUrlFromRepresentation';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return baseUrl;
@@ -2756,6 +2754,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not return MimeType from Representation';
                 messageObject.methodName = 'returnMimeTypeFromRepresentation';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mimeType;
@@ -2777,6 +2776,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not return Codecs from Representation';
                 messageObject.methodName = 'returnCodecsFromRepresentation';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return codecs;
@@ -2798,6 +2798,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse mpdObject and retrieve Representation._startWithSAP';
                 messageObject.methodName = 'returnStartNumberFromRepresentation';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return startNumber;
@@ -2838,6 +2839,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse and extract the array of base urls from the array of representations, checkt input';
                 messageObject.methodName = 'returnArrayOfBaseUrlsFromArrayOfRepresentations';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return arrayOfBaseUrlObjects;
@@ -2862,6 +2864,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse Duration from SegmentTemplate';
                 messageObject.methodName = 'returnDurationFromSegmentTemplate';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return duration;
@@ -2883,6 +2886,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse initializationFile from SegmentTemplate';
                 messageObject.methodName = 'returnInitializationFromSegmentTemplate';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return initializationFile;
@@ -2896,11 +2900,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
      * @returns {object} - mediaStructureObject
      */
     function returnMediaStructureAsObjectFromSegmentTemplate(SegmentTemplate){
-        var returnObject = {};
+        var returnObject = null;
         try {
             var mediaStructure = SegmentTemplate._media,
                 mediaStructure = mediaStructure.split('$Number$');
 
+            returnObject = {};
             returnObject.segmentPrefix = mediaStructure[0];
             returnObject.segmentEnding = mediaStructure[1];
         } catch (e){
@@ -2954,6 +2959,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse and extract the array of base urls from the array of base urls, check input';
                 messageObject.methodName = 'returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnArray;
@@ -3034,6 +3040,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                     messageObject.message = 'Could not parse and return type (video or audio) from mimeType, check input';
                     messageObject.methodName = 'returnTypeFromMimeType';
                     messageObject.moduleName = moduleName;
+                    messageObject.moduleVersion = moduleVersion;
                 messagesModule.printOutErrorMessageToConsole(messageObject, e);
             }
         return returnType;
@@ -3081,6 +3088,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not generate the streamBaseUrl from the mpdUrl';
                 messageObject.methodName = 'returnStreamBaseUrlFromMpdUrl';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnBaseUrl;
@@ -3104,6 +3112,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not check if stream has multiple adaptionSets';
                 messageObject.methodName = 'checkIfMultipleAdaptionSets';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return multipleAdaptionSetsBoolean;
@@ -3129,6 +3138,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.message = 'Could not parse through the AdaptionSet';
                 messageObject.methodName = 'checkIfAdapationSetContainSingleRepresentation';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
 
         }
@@ -3167,7 +3177,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     function isModule(){
         return isModuleValue;
     };
-
 
     //  #############################
     //  #### MAKE METHODS PUBLIC ####

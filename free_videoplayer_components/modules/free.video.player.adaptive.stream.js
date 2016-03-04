@@ -51,14 +51,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     function printOutOnStartup(){
         if(browserSupportsMediaSource()){
             var messageObject = {};
-            messageObject.message = 'Adaptive Bitrate Module - started with support for MSE';
+            messageObject.message = 'Adaptive Bitrate Module - started with support for Media Source Extension';
             messageObject.methodName = 'printOutOnStartup';
             messageObject.moduleName = moduleName;
             messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutMessageToConsole(messageObject);
         } else {
             var messageObject = {};
-            messageObject.message = 'ERROR - Adaptive Bitrate Module - Browser do not support MSE';
+            messageObject.message = 'ERROR - Adaptive Bitrate Module - Browser do NOT support Media Source Extension';
             messageObject.methodName = 'printOutOnStartup';
             messageObject.moduleName = moduleName;
             messageObject.moduleVersion = moduleVersion;
@@ -112,7 +112,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @returns {string}
      * @private
      */
-    var _returnBaseUrlBasedOnStoredUserSettings = function(){
+    function _returnBaseUrlBasedOnStoredUserSettings(){
         console.log('Base URL set by user!');
         var returnBaseUrl = currentVideoObject.streamObject.currentVideoBaseUrl;
         return returnBaseUrl;
@@ -124,7 +124,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @returns {boolean}
      * @private
      */
-    var _isBitrateAuto = function(){
+    function _isBitrateAuto(){
         var bitrateIsAudio = false;
         console.log('The currentVideoStreamObject current VideBaseUrl is ..' + currentVideoObject.streamObject.currentVideoBaseUrl);
         if(currentVideoObject.streamObject.currentVideoBaseUrl === 'auto'){
@@ -199,17 +199,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         //Lets try loading it
         currentVideoObject.streamObject.streamBaseUrl = baseUrl;
 
-        that._videoElement.src = window.URL.createObjectURL(that._mediaSource);
+        var sourceElement = document.createElement('source');
+        sourceElement.src = window.URL.createObjectURL(that._mediaSource);
+
+        that._videoElement.appendChild(sourceElement);
 
         if(optionalConfigurationObject){
             that._videoElement.poster = optionalConfigurationObject.videoSplashImageUrl ? optionalConfigurationObject.videoSplashImageUrl : settingsObject.videoSplashImageUrl;
         } else {
-            that._videoElement.poster = settingsObject.videoSplashImageUrl;
+            //that._videoElement.poster = settingsObject.videoSplashImageUrl;
         }
     };
 
     /**
-     * Creates a video element
+     * Creates a video elementloadDashMediaWithMediaSourceExtension
      * @param that
      * @param videoWrapperClassName
      * @returns {*}
@@ -227,12 +230,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         that._videoWrapper.appendChild(videoElement);
     };
 
-
     //  #######################
     //  #### VIDEO METHODS ####
     //  #######################
-
-
     /**
      * @function
      * @name addStreamBaseUrl
@@ -287,11 +287,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 mimeType = adaptionSetMimeType ? adaptionSetMimeType : mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
                 segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
                 initializationFile = null,
-                mediaObject = mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate),
+                mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
                 streamDurationInSeconds =  mpdParserModule.returnMediaDurationInSecondsFromMpdObject(currentVideoObject.streamObject.mpdObject),
                 startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
-                segmentPrefix = mediaObject.segmentPrefix,
-                segmentEnding = mediaObject.segmentEnding,
+                segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
+                segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
                 averageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject(currentVideoObject.streamObject.mpdObject),
                 codecs = '',
                 baseUrl = '',
@@ -307,13 +307,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 contentComponentArrayLength = 0,
                 sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
 
-            if(adaptionSetMimeType){
-                // When we have mimeType in adaptionSet,
-                // like with Bento implementation for instance
-                mimeType = adaptionSetMimeType;
-            } else {
-                mimeType = mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
-            }
+            //if(adaptionSetMimeType){
+            //    // When we have mimeType in adaptionSet,
+            //    // like with Bento implementation for instance
+            //    mimeType = adaptionSetMimeType;
+            //} else {
+            //    mimeType = mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
+            //}
             console.log('The mimeType we find is ' + mimeType);
             //Lets use the contentComponent to find out if we have a muxxed stream or not
 

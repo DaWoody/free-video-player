@@ -177,7 +177,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         volumeIcon.addEventListener('mouseout', _hideVolumeSlider);
 
         volumeSliderContainer.addEventListener('mouseout', _hideVolumeSlider);
-
         volumeSlider.addEventListener('change', _volumeShiftMethod);
 
         settingsIcon.addEventListener('click', _changeSettings);
@@ -186,9 +185,16 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         videoElement.addEventListener('loadedmetadata', _printMediaTotalDuration);
         videoElement.addEventListener('timeupdate', _progressUpdateMethod);
 
-        //Lets see if we have subtitles and if that is the case lets add the subtitle menu to the player controls
-        var subtitlesMenu = _createSubtitlesMenuAndReturnMenu(videoElement);
+        //Lets add the subtitles after the loadeddata has been reached.
+        videoElement.addEventListener('loadeddata', function(){
+            var subtitlesMenu = _createSubtitlesMenuAndReturnMenu(videoElement);
 
+            if(subtitlesMenu
+                && settingsObject.videoControlsDisplay.showSubtitlesMenu){
+                subtitlesContainer.appendChild(subtitlesMenu);
+                settingsMenu.appendChild(subtitlesContainer);
+            }
+        });
 
         //  #############################
         //  #### APPEND DOM ELEMENTS ####
@@ -220,12 +226,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         if(settingsObject.videoControlsDisplay.showVolumeIcon){
             volumeIcon.appendChild(volumeSliderContainer);
             controlsWrapper.appendChild(volumeIcon);
-        }
-
-        if(subtitlesMenu
-            && settingsObject.videoControlsDisplay.showSubtitlesMenu){
-            subtitlesContainer.appendChild(subtitlesMenu);
-            settingsMenu.appendChild(subtitlesContainer);
         }
 
         if(settingsObject.videoControlsDisplay.showSettingsIcon){
@@ -576,7 +576,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
-
     /**
      * A method that will enable full screen mode on the Free Video Player, or disable it
      * @private
@@ -770,7 +769,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
-
     /**
      * The actual method that catches the event from the spacebar button
      * @param event
@@ -849,7 +847,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return returnHourMinutesSeconds;
     };
 
-
     //  ################################
     //  #### BITRATE METHODS / DOM ####
     //  ################################
@@ -904,8 +901,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return bitrateMenu;
     };
 
-
-
     //  ################################
     //  #### SUBTITLE METHODS / DOM ####
     //  ################################
@@ -920,6 +915,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             documentFragment,
             createSubtitleMenuItemConfigObject = {};
         try {
+
 
             if (videoElement.textTracks.length > 0) {
                 subtitlesMenu = document.createElement('div');
@@ -971,7 +967,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
     /**
      * @name _changeSubtitle
-     * @param textTracks
+     * @description A private method for changing/switching between subtitles
      * @private
      */
     function _changeSubtitle(){
@@ -995,7 +991,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
-
     /**
      * Creates a subtitle menu item. This will be added to the subtitle menu
      * @param configObject
@@ -1009,7 +1004,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             textTracks = videoElement.textTracks;
 
         var button = document.createElement('option');
-            //button = listItem.appendChild(document.createElement('div'));
 
         //button.setAttribute('id', id);
         button.className = settingsObject.videoControlsCssClasses.subtitleButtonClass;
@@ -1023,7 +1017,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return button;
     };
 
-
     /**
      * @function
      * @name addSubtitlesTracksToDom
@@ -1034,24 +1027,24 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function addSubtitlesTracksToDom(subtitleTracksArray , videoWrapper){
         var videoElement = videoWrapper.getElementsByTagName('video')[0];
-        subtitleTracksArray.forEach(function(currentSubtitleTrack, index, subtitleTracksArray){
-            //Lets create a track object and append it to the video element
-            var trackElement = document.createElement('track'),
-                subtitleLabel = '';
 
-            trackElement.src = currentSubtitleTrack.subtitleUrl;
-            trackElement.srclang = currentSubtitleTrack.subtitleLanguage;
-            trackElement.setAttribute('kind', 'subtitles');
+            subtitleTracksArray.forEach(function(currentSubtitleTrack, index, subtitleTracksArray){
+                //Lets create a track object and append it to the video element
+                var trackElement = document.createElement('track'),
+                    subtitleLabel = '';
 
-            subtitleLabel = _returnFirstWordFromSubtitleLabel(currentSubtitleTrack.subtitleLabel);
-            subtitleLabel =  _returnSubtitleLabelSmallLetters(subtitleLabel);
+                trackElement.setAttribute('kind', 'subtitles');
+                trackElement.setAttribute('src', currentSubtitleTrack.subtitleUrl);
+                trackElement.setAttribute('srclang', currentSubtitleTrack.subtitleLanguage);
 
-            //_returnSubtitleLabelCapitalized(subtitleLabel);
+                subtitleLabel = _returnFirstWordFromSubtitleLabel(currentSubtitleTrack.subtitleLabel);
+                subtitleLabel =  _returnSubtitleLabelSmallLetters(subtitleLabel);
 
-            trackElement.setAttribute('label', subtitleLabel);
-            trackElement.setAttribute('data-video-player-subtitle-index', index+1);
-            videoElement.appendChild(trackElement);
-        });
+                //_returnSubtitleLabelCapitalized(subtitleLabel);
+                trackElement.setAttribute('label', subtitleLabel);
+                trackElement.setAttribute('data-' + videoPlayerNameCss + '-subtitle-index', index+1);
+                videoElement.appendChild(trackElement);
+            });
     };
 
     /**

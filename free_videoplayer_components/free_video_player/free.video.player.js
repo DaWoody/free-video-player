@@ -107,12 +107,6 @@ var freeVideoPlayer = function(initiationObject){
         currentVideoBaseUrl:'auto'
     };
 
-    var currentVideoStreamObject = {
-        bitrateSwitchTimerSegmentAppendTime:0,
-        currentVideoBitrateIndex:0,
-        sourceBuffers: []
-    };
-
     //Add references to helper libraries
     var messagesModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion),
         mpdParserModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser(),
@@ -257,14 +251,13 @@ var freeVideoPlayer = function(initiationObject){
 
         var responseObject = {};
 
-        console.log('Reached here..');
         mpdParserModule.getMpd(mpdUrl, function(response){
             try {
                 currentVideoObject.adaptiveStream = true;
                 responseObject = xml2json.xml_str2json(response);
 
-                console.log('MPD');
-                console.log(responseObject.MPD);
+                _printDebug('MPD OBJECT:');
+                _printDebug(responseObject.MPD);
 
                 var mpdObject = responseObject.MPD;
 
@@ -282,15 +275,14 @@ var freeVideoPlayer = function(initiationObject){
 
                 //Lets set our streamBaseUrl based on the mpdUrl
                 var streamBaseUrl = mpdParserModule.returnStreamBaseUrlFromMpdUrl(mpdUrl);
-                console.log('The stream base url is..' + streamBaseUrl);
 
                 //Lets add methods so we can parse the mpd already here and decide if
                 //there are subtitles to be added or not
                 var subtitleTracksArray = mpdParserModule.returnArrayOfSubtitlesFromMpdObjectAndBaseUrl(mpdObject, streamBaseUrl);
                 currentVideoObject.subtitleTracksArray = videoControlsModule.returnModifiedArrayOfSubtitlesWithLabel(subtitleTracksArray, videoPlayerObject.subtitleLanguageObject);
 
-                console.log('THE SUBS ARE-...');
-                console.log(currentVideoObject.subtitleTracksArray);
+                _printDebug('THE SUBS ARE-...');
+                _printDebug(currentVideoObject.subtitleTracksArray);
 
                 //Lets create objects we need to perform the streaming
                 //Lets initiate the media source now if the stream is
@@ -645,6 +637,13 @@ var freeVideoPlayer = function(initiationObject){
             messagesModule.printOutMessageToConsole(messageObject);
         }
     };
+
+    var _printDebug = function(message){
+        if(settingsObject.debugMode){
+            console.log('Free Video Player - ' + message);
+        }
+    };
+
 
 
     //  #############################
