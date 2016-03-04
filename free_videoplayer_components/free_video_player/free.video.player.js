@@ -168,6 +168,7 @@ var freeVideoPlayer = function(initiationObject){
                     messageObject.message = 'The provided media url does not seem to be valid, check input';
                     messageObject.methodName = 'load';
                     messageObject.moduleName = moduleName;
+                    messageObject.moduleVersion = moduleVersion;
                 messagesModule.printOutErrorMessageToConsole(messageObject);
         }
     };
@@ -237,6 +238,7 @@ var freeVideoPlayer = function(initiationObject){
                 messageObject.message = 'Could not create and load non-adaptive-video stream, check input type and videoUrl';
                 messageObject.methodName = 'loadNonAdaptiveVideo';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
     };
@@ -256,8 +258,8 @@ var freeVideoPlayer = function(initiationObject){
                 currentVideoObject.adaptiveStream = true;
                 responseObject = xml2json.xml_str2json(response);
 
-                _printDebug('MPD OBJECT:');
-                _printDebug(responseObject.MPD);
+                messagesModule.printOutLine('MPD OBJECT:');
+                messagesModule.printOutLine(responseObject.MPD);
 
                 var mpdObject = responseObject.MPD;
 
@@ -281,8 +283,8 @@ var freeVideoPlayer = function(initiationObject){
                 var subtitleTracksArray = mpdParserModule.returnArrayOfSubtitlesFromMpdObjectAndBaseUrl(mpdObject, streamBaseUrl);
                 currentVideoObject.subtitleTracksArray = videoControlsModule.returnModifiedArrayOfSubtitlesWithLabel(subtitleTracksArray, videoPlayerObject.subtitleLanguageObject);
 
-                _printDebug('THE SUBS ARE-...');
-                _printDebug(currentVideoObject.subtitleTracksArray);
+                messagesModule.printOutLine('INCLUDES SUBS:');
+                messagesModule.printOutLine(currentVideoObject.subtitleTracksArray);
 
                 //Lets create objects we need to perform the streaming
                 //Lets initiate the media source now if the stream is
@@ -307,8 +309,8 @@ var freeVideoPlayer = function(initiationObject){
                 videoControlsModule.addSubtitlesTracksToDom(currentVideoObject.subtitleTracksArray, that._videoWrapper);
 
                 //Just for testing printint out the object
-                console.log('Current Video Object');
-                console.log(currentVideoObject);
+                messagesModule.printOutLine('CURRENT VIDEO OBJECT:');
+                messagesModule.printOutLine(currentVideoObject);
 
                 if(settingsObject.createControls){
                     //If we want to create the video controls our selves
@@ -431,6 +433,7 @@ var freeVideoPlayer = function(initiationObject){
                 messageObject.message = 'Could not seek to position, check that input is number';
                 messageObject.methodName = 'seek';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
     };
@@ -450,6 +453,7 @@ var freeVideoPlayer = function(initiationObject){
                 messageObject.message = 'Could not set volume, check that input is number from 0 to 1';
                 messageObject.methodName = 'setVolume';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
     };
@@ -551,6 +555,7 @@ var freeVideoPlayer = function(initiationObject){
                 messageObject.message = 'Could not determine stream type, check videoUrl as input';
                 messageObject.methodName = 'returnStreamTypeBasedOnVideoUrl';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return streamType;
@@ -575,6 +580,7 @@ var freeVideoPlayer = function(initiationObject){
                 messageObject.message = 'Could not clear videoElement from videoWrapper, checkt accessibility in DOM';
                 messageObject.methodName = 'clearVideoContainer';
                 messageObject.moduleName = moduleName;
+                messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
     };
@@ -638,11 +644,7 @@ var freeVideoPlayer = function(initiationObject){
         }
     };
 
-    var _printDebug = function(message){
-        if(settingsObject.debugMode){
-            console.log('Free Video Player - ' + message);
-        }
-    };
+
 
 
 

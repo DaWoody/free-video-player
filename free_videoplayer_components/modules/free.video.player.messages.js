@@ -81,6 +81,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
         }
     };
 
+    function printOutLine(message){
+        if(settingsObject.debugMode){
+            console.log('Free Video Player - ' + message);
+        }
+    };
+
+
     //  #########################
     //  #### GENERAL METHODS ####
     //  #########################
@@ -125,6 +132,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     //Messages
     that.printOutErrorMessageToConsole  = printOutErrorMessageToConsole;
     that.printOutMessageToConsole = printOutMessageToConsole;
+    that.printOutLine = printOutLine;
 
     //General
     that.getVersion = getVersion;
