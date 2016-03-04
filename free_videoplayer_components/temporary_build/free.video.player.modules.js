@@ -1366,7 +1366,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', bitrateObjectsArray[i].baseUrl);
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
                 bitrateItem.innerHTML = bitrateObjectsArray[i].height + 'p';
-                bitrateMenu.appendChild(bitrateItem);
+                bitrateMenu.insertBefore(bitrateItem, bitrateMenu.firstChild);
             }
 
             //Lets add an auto option here
@@ -1386,6 +1386,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             that.currentVideoControlsObject.settingsMenu.appendChild(bitrateMenuContainer);
         }
     };
+
+
 
     /**
      * @function
@@ -2983,9 +2985,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
      * @private
      */
     function _sortObjectOnBandwidthProperty(a, b){
-        if(a.bandwidth < b.bandwidth){
+
+        var aBandwidth = parseInt(a.bandwidth, 10),
+            bBandwidth = parseInt(b.bandwidth, 10);
+
+        if(aBandwidth < bBandwidth){
             return -1;
-        } else if(a.bandwidth > b.bandwidth){
+        } else if(aBandwidth > bBandwidth){
             return 1;
         } else {
             return 0

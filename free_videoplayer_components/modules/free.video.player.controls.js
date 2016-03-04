@@ -308,7 +308,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url', bitrateObjectsArray[i].baseUrl);
                 bitrateItem.setAttribute('data-' + videoPlayerNameCss + '-state', 'inactive');
                 bitrateItem.innerHTML = bitrateObjectsArray[i].height + 'p';
-                bitrateMenu.appendChild(bitrateItem);
+                bitrateMenu.insertBefore(bitrateItem, bitrateMenu.firstChild);
             }
 
             //Lets add an auto option here
@@ -328,6 +328,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             that.currentVideoControlsObject.settingsMenu.appendChild(bitrateMenuContainer);
         }
     };
+
+
 
     /**
      * @function

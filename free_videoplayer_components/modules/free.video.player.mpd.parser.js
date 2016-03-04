@@ -703,9 +703,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
      * @private
      */
     function _sortObjectOnBandwidthProperty(a, b){
-        if(a.bandwidth < b.bandwidth){
+
+        var aBandwidth = parseInt(a.bandwidth, 10),
+            bBandwidth = parseInt(b.bandwidth, 10);
+
+        if(aBandwidth < bBandwidth){
             return -1;
-        } else if(a.bandwidth > b.bandwidth){
+        } else if(aBandwidth > bBandwidth){
             return 1;
         } else {
             return 0
