@@ -86,18 +86,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         try {
             console.log('Reached abort source buffers');
 
+            //Utilizing methods for media source extension
             //Read more @
             //https://w3c.github.io/media-source/#mediasource-detach
 
             var sourceBuffers = currentVideoObject.streamObject.sourceBuffers,
-                activeSourceBuffers = currentVideoObject.streamObject.activeSourceBuffers;
+                activeSourceBuffers = currentVideoObject.streamObject.activeSourceBuffers,
+                endTimeForVideo = 99999999999;
 
             //Setting the current video to closed and NaN
             currentVideoObject.readyState = 'closed';
             currentVideoObject.duration = NaN;
 
             for(var j = 0, activeSourceBuffersLength = activeSourceBuffers.length; j < activeSourceBuffersLength; j++){
-                activeSourceBuffers[j].remove(0, 9999999999);
+                activeSourceBuffers[j].remove(0, endTimeForVideo);
             };
 
             //Add event to active source buffers
@@ -106,7 +108,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
             for(var i = 0, sourceBuffersLength = sourceBuffers.length; i < sourceBuffersLength; i++){
                 //Source buffer
-                sourceBuffers[i].remove(0, 9999999999);
+                sourceBuffers[i].remove(0, endTimeForVideo);
             }
 
             //Add event to sourceBuffers
@@ -209,7 +211,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     function _initiateMediaSource(){
         //Add the mediaSource to the class scoped storage
-        that._mediaSource = new MediaSource();
+        that._mediaSource = that._mediaSource ? that._mediaSource :  new MediaSource();
     };
 
     /**
@@ -451,12 +453,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     if(that._videoElement.error)
                         console.log(that._videoElement.error);
                     if( sourceBuffer.buffered.length > 0 )
-                        console.log(mimeType + ' buffer timerange start=' + sourceBuffer.buffered.start(0) + ' / end=' + sourceBuffer.buffered.end(0));
+                        messagesModule.printOutLine(mimeType + ' buffer timerange start=' + sourceBuffer.buffered.start(0) + ' / end=' + sourceBuffer.buffered.end(0));
                     sourceCount++;
 
-
-                    console.log('The stream duration is.. ' + streamDurationInSeconds);
-                    console.log('The average segment length is ' + averageSegmentDuration);
+                    messagesModule.printOutLine('The stream duration is.. ' + streamDurationInSeconds);
+                    messagesModule.printOutLine('The average segment length is ' + averageSegmentDuration);
                     var amountOfSegments = Math.round(streamDurationInSeconds/averageSegmentDuration);
 
                     console.log('The amount of segments should be around.. ' + amountOfSegments);

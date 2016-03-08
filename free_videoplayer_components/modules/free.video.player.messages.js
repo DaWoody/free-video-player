@@ -105,8 +105,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
         }
     };
 
-
-
     //  #########################
     //  #### GENERAL METHODS ####
     //  #########################
@@ -132,7 +130,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
         return moduleName;
     };
 
-
     /**
      * @function
      * @name isModule
@@ -143,7 +140,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     function isModule(){
         return isModuleValue;
     };
-
 
     //  #############################
     //  #### MAKE METHODS PUBLIC ####
