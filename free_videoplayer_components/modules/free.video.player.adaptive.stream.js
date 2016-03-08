@@ -85,13 +85,38 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     function abortSourceBuffers(currentVideoObject){
         try {
             console.log('Reached abort source buffers');
-            var sourceBuffers = currentVideoObject.streamObject.sourceBuffers;
+
+            //Read more @
+            //https://w3c.github.io/media-source/#mediasource-detach
+
+            var sourceBuffers = currentVideoObject.streamObject.sourceBuffers,
+                activeSourceBuffers = currentVideoObject.streamObject.activeSourceBuffers;
+
+            //Setting the current video to closed and NaN
+            currentVideoObject.readyState = 'closed';
+            currentVideoObject.duration = NaN;
+
+            for(var j = 0, activeSourceBuffersLength = activeSourceBuffers.length; j < activeSourceBuffersLength; j++){
+                activeSourceBuffers[j].remove(0, 9999999999);
+            };
+
+            //Add event to active source buffers
+            var removeActiveSourceBuffersEvent = new Event('removesourcebuffer', {"bubbles":false, "cancelable":false});
+            activeSourceBuffers.dispatch(removeActiveSourceBuffersEvent);
+
             for(var i = 0, sourceBuffersLength = sourceBuffers.length; i < sourceBuffersLength; i++){
                 //Source buffer
-                console.log('Trying to abort source buffer stream index ' + i);
-                sourceBuffers[i].abort();
+                sourceBuffers[i].remove(0, 9999999999);
             }
-            currentVideoObject.streamObject.sourceBuffers = [];
+
+            //Add event to sourceBuffers
+            var removeSourceBuffersEvent = new Event('removesourcebuffer', {"bubbles":false, "cancelable":false});
+            sourceBuffers.dispatch(removeSourceBuffersEvent);
+
+            //Add sourceclose event to MediaSource
+            var sourceCloseEvent = new Event('sourceclose', {"bubbles":false, "cancelable":false});
+            that._mediaSource.dispatch(sourceCloseEvent);
+            //currentVideoObject.streamObject.sourceBuffers = [];
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not abort source buffers, check accessibility';
@@ -100,7 +125,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
-
         //Should we just return that module or the videoStreamingObject
     };
 
@@ -113,7 +137,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @private
      */
     function _returnBaseUrlBasedOnStoredUserSettings(){
-        console.log('Base URL set by user!');
+        messagesModule.printOutLine('Base URL set by user!');
         var returnBaseUrl = currentVideoObject.streamObject.currentVideoBaseUrl;
         return returnBaseUrl;
     };
@@ -126,7 +150,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     function _isBitrateAuto(){
         var bitrateIsAudio = false;
-        console.log('The currentVideoStreamObject current VideBaseUrl is ..' + currentVideoObject.streamObject.currentVideoBaseUrl);
+        messagesModule.printOutLine('The currentVideoStreamObject current VideBaseUrl is ..' + currentVideoObject.streamObject.currentVideoBaseUrl);
         if(currentVideoObject.streamObject.currentVideoBaseUrl === 'auto'){
             bitrateIsAudio = true;
         }
@@ -167,7 +191,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         //Lets set our class scoped currentVideoObject to the stuff we get in when the load dash method is called.
         currentVideoObject = adaptiveVideoObject.currentVideoObject,
         currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
-
         currentVideoObject.streamObject.streamBaseUrl = adaptiveVideoObject.streamBaseUrl;
 
         //Lets add the mpdObject to our currentVideoStreamObject
@@ -195,7 +218,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @param baseUrl
      */
     function _createMediaSourceStream(baseUrl, optionalConfigurationObject){
-        console.log('## LOADING VIDEO WITH URL ' + baseUrl);
+        messagesModule.printOutLine('## LOADING VIDEO WITH URL ' + baseUrl);
         //Lets try loading it
         currentVideoObject.streamObject.streamBaseUrl = baseUrl;
 
@@ -263,8 +286,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
      function _videoready (e) {
 
-        console.log('Reached _videoReady function');
-
         var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
             representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
             videoBufferAdded = false,
@@ -272,8 +293,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             streamBaseUrl = _getStreamBaseUrl(),
             arrayOfSourceBuffers = [];
 
-        console.log('The adaptionsets are:');
-        console.log(adaptionSets);
+        messagesModule.printOutLine('The adaptionsets are:');
+        messagesModule.printOutObject(adaptionSets);
 
         console.log('The representation are:');
         console.log(representationSets);
@@ -307,18 +328,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 contentComponentArrayLength = 0,
                 sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
 
-            //if(adaptionSetMimeType){
-            //    // When we have mimeType in adaptionSet,
-            //    // like with Bento implementation for instance
-            //    mimeType = adaptionSetMimeType;
-            //} else {
-            //    mimeType = mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
-            //}
-            console.log('The mimeType we find is ' + mimeType);
+            messagesModule.printOutLine('The mimeType we find is ' + mimeType);
             //Lets use the contentComponent to find out if we have a muxxed stream or not
 
-            console.log('The representation sets are ');
-            console.log(arrayOfRepresentationSets);
+            messagesModule.printOutLine('The representation sets are: ');
+            messagesModule.printOutObject(arrayOfRepresentationSets);
 
             //Lets set the contentComponent length, this will decide if the stream is a muxxed (video and audio) stream
             contentComponentArray = mpdParserModule.returnArrayOfContentComponentsFromAdaptionSet(currentAdaptionSet);
@@ -360,7 +374,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
                 //Lets save our sourceBuffer to temporary storage
                 currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
-                console.log('Adding a video stream!');
+                messagesModule.printOutLine('Adding a video stream!');
                 //Do more stuff here and add markers for the video Stream, where should we save?
                 videoBufferAdded = true;
                 typeOfStream = 'video';
@@ -373,7 +387,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
                 //Lets save our sourceBuffer to temporary storage
                 currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
-                console.log('Adding a audio stream!');
+                messagesModule.printOutLine('Adding a audio stream!');
                 //Do more stuff here and add markers for the audio Stream, where should we save?
                 audioBufferAdded = true;
                 typeOfStream = 'audio';
@@ -386,15 +400,16 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
                 //Lets save our sourceBuffer to temporary storage
                 currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
-                console.log('Adding a video and audio stream!');
+                messagesModule.printOutLine('Adding a video and audio stream!');
                 //Do more stuff here and add markers for the video & audio Stream, where should we save?
                 videoBufferAdded = true;
                 audioBufferAdded = true;
                 typeOfStream = 'videoAndAudio';
             }
 
-            //If we have multiple representations within the current
-            //adaptionset awesomeness :)
+            // If we have multiple representations within the current,
+            // which means that the stream we have is either video or audio,
+            // since there is only one representation set if the track is a subtitle track.
             if(arrayOfRepresentationSets.length > 0){
                 baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets);
                 
@@ -402,8 +417,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 var baseUrlObjectsArrayLength = baseUrlObjectArray.length,
                     baseUrlObjectsArrayHighestIndex = baseUrlObjectsArrayLength - 1;
 
-                console.log('Setting the highest index to' + baseUrlObjectsArrayHighestIndex);
-                console.log('The stream we have is..' + typeOfStream);
+                messagesModule.printOutLine('The stream we have is..' + typeOfStream);
 
                 currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
             } else {
@@ -510,30 +524,30 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @private
      */
     function _checkBuffers() {
-        console.log('video player buffer: ' + that._videoElement.buffered);
-        console.log('video player state: ' + that._videoElement.readyState);
+        console.log('video player buffer: ' + currentVideoObject.buffered);
+        console.log('video player state: ' + currentVideoObject.readyState);
 
-        if( that._videoElement.HAVE_NOTHING == that._videoElement.readyState){
+        if( currentVideoObject.HAVE_NOTHING == currentVideoObject.readyState){
             //return;
         }
 
-        if( 0 == that._videoElement.buffered.length ) {
-            that._videoElement.readyState = that._videoElement.HAVE_METADATA;
+        if( 0 == currentVideoObject.buffered.length ) {
+            currentVideoObject.readyState = currentVideoObject.HAVE_METADATA;
             //return;
-        } else if( that._videoElement.currentTime > that._videoElement.buffered.end(0) - 15 ) {
-            that._videoElement.readyState = that._videoElement.HAVE_FUTURE_DATA;
+        } else if( currentVideoObject.currentTime > currentVideoObject.buffered.end(0) - 15 ) {
+            currentVideoObject.readyState = currentVideoObject.HAVE_FUTURE_DATA;
         }
 
-        switch(that._videoElement.readyState) {
-            case that._videoElement.HAVE_NOTHING:
-            case that._videoElement.HAVE_METADATA:
-            case that._videoElement.HAVE_CURRENT_DATA:
-            case that._videoElement.HAVE_FUTURE_DATA:
+        switch(currentVideoObject.readyState) {
+            case currentVideoObject.HAVE_NOTHING:
+            case currentVideoObject.HAVE_METADATA:
+            case currentVideoObject.HAVE_CURRENT_DATA:
+            case currentVideoObject.HAVE_FUTURE_DATA:
                 // Should load more data
                 //appendData(vSourceBuffer, VFILE, 'video/mp4');
                 //appendData(aSourceBuffer, AFILE, 'audio/mp4');
                 break;
-            case that._videoElement.HAVE_ENOUGH_DATA:
+            case currentVideoObject.HAVE_ENOUGH_DATA:
                 break;
         };
     };

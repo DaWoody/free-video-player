@@ -24,7 +24,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
           videoOverlayFadeOutDelay:100
         },
         videoPlayerNameCss = videoPlayerNameCss,
-        messagesModule = messagesModule || freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion);
+        messagesModule = messagesModule || freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion),
+        videoControlsKeyboardCodes = new Map();
 
     /**
      * @function
@@ -172,6 +173,15 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         progressSlider.addEventListener('mousedown', _pauseMethodFromSlider);
         progressSlider.addEventListener('mouseup', _playMethodFromSlider);
 
+        //TEST METHOD FOR CHANGING POINTER AT SLIDER
+        progressSlider.addEventListener('click', function(event){
+
+            console.log('Ok clicked it..');
+            console.log(this);
+            console.log(event);
+           // that.videoElement.currentTime = 30;
+        });
+
         volumeIcon.addEventListener('click', _volumeMuteUnmuteMethod);
         volumeIcon.addEventListener('mouseover', _showVolumeSlider);
         volumeIcon.addEventListener('mouseout', _hideVolumeSlider);
@@ -182,6 +192,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         settingsIcon.addEventListener('click', _changeSettings);
 
         //Lets add event listeners to the video element so we can update the progress bar when we need it
+        videoElement.addEventListener('loadstart', addSpinnerIconToVideoOverlay);
+        videoElement.addEventListener('canplay', removeSpinnerIconFromVideoOverlay);
+
         videoElement.addEventListener('loadedmetadata', _printMediaTotalDuration);
         videoElement.addEventListener('timeupdate', _progressUpdateMethod);
 
@@ -195,6 +208,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 settingsMenu.appendChild(subtitlesContainer);
             }
         });
+
 
         //  #############################
         //  #### APPEND DOM ELEMENTS ####
@@ -257,7 +271,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         _createKeyboardListeners();
     };
 
-
     /**
      * @function
      * @name _addAndReturnVideoFormatName
@@ -288,7 +301,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function addBitrateMenuToSettingsIcon(typeOfStream, bitrateObjectsArray){
 
-        console.log('_addBitrateMenuToSettingsIcon - The stream is..' + typeOfStream);
+        messagesModule.printOutLine('_addBitrateMenuToSettingsIcon - The stream is..' + typeOfStream);
+
         if(typeOfStream !== 'audio'){
             //Should be video or videoAndAudio stream now
             var bitrateMenuContainer = document.createElement('div'),
@@ -339,12 +353,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _changeVideoBitrate(){
-
-        console.log('This is the thing we changed');
-
         var selectedOption = this.options[this.selectedIndex];
-
-        console.log(selectedOption.text);
 
         var elementTagName = selectedOption.nodeName,
             baseUrl = selectedOption.getAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url'),
@@ -439,7 +448,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function _pauseMethodFromSlider(){
         that.videoElement.pause();
-        //that.currentVideoObject.playing = false;
         _addPlayIconToControls();
     };
 
@@ -515,12 +523,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _progressShiftMethod(){
+
+        that.videoElement.pause();
+
         //First get the total value of the asset.
         var videoDurationInSeconds = that.currentVideoObject.mediaDurationInSeconds,
             newPosition = Math.floor((that.currentVideoControlsObject.progressSlider.value/100)*videoDurationInSeconds);
+
         //Seek to new position
         that.videoElement.currentTime = newPosition;
         console.log('The current video object playing is...' + that.currentVideoObject.playing);
+
+        that.videoElement.play();
 
         if(!that.currentVideoObject.playing){
             _pauseMethodFromSlider();
@@ -528,7 +542,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that can be called continuasly to update the progress bar of the current video position.
+     * @name _progressUpdateMethod
+     * @description A method that can be called continuasly to update the progress bar of the current video position.
      * @private
      */
     function _progressUpdateMethod(){
@@ -541,7 +556,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that can be called to print the total media duration of an asset
+     * @name _printMediaTotalDuration
+     * @description A method that can be called to print the total media duration of an asset
      * @private
      */
     function _printMediaTotalDuration(){
@@ -550,7 +566,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method will make the volume slider visible
+     * @name _showVolumeSlider
+     * @description A method will make the volume slider visible
      * @private
      */
     function _showVolumeSlider(){
@@ -558,7 +575,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that will make the volume slider not visible
+     * @name _hideVolumeSlider
+     * @description A method that will make the volume slider not visible
      * @private
      */
     function _hideVolumeSlider(){
@@ -579,7 +597,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that will enable full screen mode on the Free Video Player, or disable it
+     * @name _fullScreenMethod
+     * @description A method that will enable full screen mode on the Free Video Player, or disable it
      * @private
      */
     function _fullScreenMethod(){
@@ -600,7 +619,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * Checks if the browsers is in full-screen mode
+     * @name  _isFullScreen
+     * @description Checks if the browsers is in full-screen mode
      * @returns {boolean}
      * @private
      */
@@ -612,8 +632,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### VIDEO OVERLAY METHODS ####
     //  ###############################
     /**
-     * A method that adds a play icon to the video overlay
-     * @public
+     * @name _addPlayIconToVideoOverlay
+     * @description A method that adds a play icon to the video overlay
+     * @private
      */
     function _addPlayIconToVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
@@ -622,8 +643,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that adds a pause icon to the video overlay
-     * @public
+     * @name _addPauseIconToVideoOverlay
+     * @description A method that adds a pause icon to the video overlay
+     * @private
      */
     function _addPauseIconToVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
@@ -659,9 +681,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### CSS METHODS ####
     //  #####################
     /**
-     * A method that adds a css class to an an element
-     * @param element
-     * @param className
+     * @name _addCssClassToElementAndReturn
+     * @description A method that adds a css class to an an element
+     * @param element {element} - The element which should get the css class added
+     * @param className {string} - The classname
      * @private
      */
     function _addCssClassToElementAndReturn(element, className){
@@ -682,9 +705,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that removes a css class from an an element
-     * @param element
-     * @param className
+     * @name _removeCssClassToElementAndReturn
+     * @description A method that removes a css class from an an element
+     * @param element {element}
+     * @param className {string}
      * @private
      */
     function _removeCssClassToElementAndReturn(element, className){
@@ -697,13 +721,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             classString = classString[0].trim();
         } else {
             //Do nothing here
-
         }
         element.setAttribute('class', classString);
     };
 
     /**
-     * A utility method meant to be able to filter between css classes, and if an element has the class
+     * @name _checkIfElementHasCssClassReturnBoolean
+     * @description A utility method meant to be able to filter between css classes, and if an element has the class
      * @param element
      * @param className
      * @returns {boolean}
@@ -728,16 +752,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### KEYBOARD EVENTS ####
     //  #########################
     /**
-     * A method that aggregates the methods that will add keyboard eventListeners to the Free Video Player
+     * @name _createKeyboardListeners
+     * @description A method that aggregates the methods that will add keyboard eventListeners to the Free Video Player
      * @private
      */
     function _createKeyboardListeners(){
+        //Lets first add the codes for the different buttons
+        _addKeyboardShortCodes();
         //Add event listener for space button - play/pause
         _createPlayPauseSpaceBarListener();
     };
 
     /**
-     * An overall method to remove eventListeners connected to the keyboard, if say a previous asset was loaded and
+     * @name _removeKeyboardListeners
+     * @description An overall method to remove eventListeners connected to the keyboard, if say a previous asset was loaded and
      * a new one is loaded.
      * @private
      */
@@ -747,7 +775,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that enables to play/pause from the keyboard spacebar.
+     * @name _createPlayPauseSpaceBarListener
+     * @description A method that enables to play/pause from the keyboard spacebar.
      * @private
      */
     function _createPlayPauseSpaceBarListener(){
@@ -755,7 +784,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * The method that removes the play/pause button from the spacebar.
+     * @description The method that removes the play/pause button from the spacebar.
      * @private
      */
     function _removePlayPauseSpaceBarAndEscFullscreenListener(){
@@ -772,27 +801,22 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * The actual method that catches the event from the spacebar button
+     * @description The actual method that catches the event from the spacebar button
      * @param event
      * @private
      */
     function _spaceBarEscKeyPress(event){
-        var code;
-        if (event.keyCode) {
-            code = event.keyCode;
-        } else if (event.which) {
-            code = event.which;
-        }
 
+        var code = event.keyCode ? event.keyCode : event.which;
         console.log('The keyboard code is ' + code);
 
         //SpaceBar KeyPress
-        if (code === 32 || code === 0) {
+        if (code === videoControlsKeyboardCodes.get('spacebar')) {
             event.preventDefault();
             _playPauseMethod();
         }
         //Esc KeyPress
-        if (code === 27) {
+        if (code === videoControlsKeyboardCodes.get('esc')) {
             event.preventDefault();
             if(_isFullScreen()){
                 that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
@@ -800,6 +824,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenCompressIconInnerHtml;
             }
         }
+    };
+
+    /**
+     * @name _addKeyboardShortCodes
+     * @description A method to add the different keyboard codes to common module map object
+     * @private
+     */
+    function _addKeyboardShortCodes(){
+        videoControlsKeyboardCodes.set('spacebar', 32);
+        videoControlsKeyboardCodes.set('esc', 27);
+        videoControlsKeyboardCodes.set('leftArrow', 37);
+        videoControlsKeyboardCodes.set('rightArray', 39);
     };
 
     //  ################################

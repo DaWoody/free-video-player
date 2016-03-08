@@ -102,13 +102,38 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     function abortSourceBuffers(currentVideoObject){
         try {
             console.log('Reached abort source buffers');
-            var sourceBuffers = currentVideoObject.streamObject.sourceBuffers;
+
+            //Read more @
+            //https://w3c.github.io/media-source/#mediasource-detach
+
+            var sourceBuffers = currentVideoObject.streamObject.sourceBuffers,
+                activeSourceBuffers = currentVideoObject.streamObject.activeSourceBuffers;
+
+            //Setting the current video to closed and NaN
+            currentVideoObject.readyState = 'closed';
+            currentVideoObject.duration = NaN;
+
+            for(var j = 0, activeSourceBuffersLength = activeSourceBuffers.length; j < activeSourceBuffersLength; j++){
+                activeSourceBuffers[j].remove(0, 9999999999);
+            };
+
+            //Add event to active source buffers
+            var removeActiveSourceBuffersEvent = new Event('removesourcebuffer', {"bubbles":false, "cancelable":false});
+            activeSourceBuffers.dispatch(removeActiveSourceBuffersEvent);
+
             for(var i = 0, sourceBuffersLength = sourceBuffers.length; i < sourceBuffersLength; i++){
                 //Source buffer
-                console.log('Trying to abort source buffer stream index ' + i);
-                sourceBuffers[i].abort();
+                sourceBuffers[i].remove(0, 9999999999);
             }
-            currentVideoObject.streamObject.sourceBuffers = [];
+
+            //Add event to sourceBuffers
+            var removeSourceBuffersEvent = new Event('removesourcebuffer', {"bubbles":false, "cancelable":false});
+            sourceBuffers.dispatch(removeSourceBuffersEvent);
+
+            //Add sourceclose event to MediaSource
+            var sourceCloseEvent = new Event('sourceclose', {"bubbles":false, "cancelable":false});
+            that._mediaSource.dispatch(sourceCloseEvent);
+            //currentVideoObject.streamObject.sourceBuffers = [];
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not abort source buffers, check accessibility';
@@ -117,7 +142,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 messageObject.moduleVersion = moduleVersion;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
-
         //Should we just return that module or the videoStreamingObject
     };
 
@@ -130,7 +154,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @private
      */
     function _returnBaseUrlBasedOnStoredUserSettings(){
-        console.log('Base URL set by user!');
+        messagesModule.printOutLine('Base URL set by user!');
         var returnBaseUrl = currentVideoObject.streamObject.currentVideoBaseUrl;
         return returnBaseUrl;
     };
@@ -143,7 +167,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     function _isBitrateAuto(){
         var bitrateIsAudio = false;
-        console.log('The currentVideoStreamObject current VideBaseUrl is ..' + currentVideoObject.streamObject.currentVideoBaseUrl);
+        messagesModule.printOutLine('The currentVideoStreamObject current VideBaseUrl is ..' + currentVideoObject.streamObject.currentVideoBaseUrl);
         if(currentVideoObject.streamObject.currentVideoBaseUrl === 'auto'){
             bitrateIsAudio = true;
         }
@@ -184,7 +208,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         //Lets set our class scoped currentVideoObject to the stuff we get in when the load dash method is called.
         currentVideoObject = adaptiveVideoObject.currentVideoObject,
         currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
-
         currentVideoObject.streamObject.streamBaseUrl = adaptiveVideoObject.streamBaseUrl;
 
         //Lets add the mpdObject to our currentVideoStreamObject
@@ -212,7 +235,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @param baseUrl
      */
     function _createMediaSourceStream(baseUrl, optionalConfigurationObject){
-        console.log('## LOADING VIDEO WITH URL ' + baseUrl);
+        messagesModule.printOutLine('## LOADING VIDEO WITH URL ' + baseUrl);
         //Lets try loading it
         currentVideoObject.streamObject.streamBaseUrl = baseUrl;
 
@@ -280,8 +303,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
      function _videoready (e) {
 
-        console.log('Reached _videoReady function');
-
         var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
             representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
             videoBufferAdded = false,
@@ -289,8 +310,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             streamBaseUrl = _getStreamBaseUrl(),
             arrayOfSourceBuffers = [];
 
-        console.log('The adaptionsets are:');
-        console.log(adaptionSets);
+        messagesModule.printOutLine('The adaptionsets are:');
+        messagesModule.printOutObject(adaptionSets);
 
         console.log('The representation are:');
         console.log(representationSets);
@@ -324,18 +345,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 contentComponentArrayLength = 0,
                 sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
 
-            //if(adaptionSetMimeType){
-            //    // When we have mimeType in adaptionSet,
-            //    // like with Bento implementation for instance
-            //    mimeType = adaptionSetMimeType;
-            //} else {
-            //    mimeType = mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
-            //}
-            console.log('The mimeType we find is ' + mimeType);
+            messagesModule.printOutLine('The mimeType we find is ' + mimeType);
             //Lets use the contentComponent to find out if we have a muxxed stream or not
 
-            console.log('The representation sets are ');
-            console.log(arrayOfRepresentationSets);
+            messagesModule.printOutLine('The representation sets are: ');
+            messagesModule.printOutObject(arrayOfRepresentationSets);
 
             //Lets set the contentComponent length, this will decide if the stream is a muxxed (video and audio) stream
             contentComponentArray = mpdParserModule.returnArrayOfContentComponentsFromAdaptionSet(currentAdaptionSet);
@@ -377,7 +391,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
                 //Lets save our sourceBuffer to temporary storage
                 currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
-                console.log('Adding a video stream!');
+                messagesModule.printOutLine('Adding a video stream!');
                 //Do more stuff here and add markers for the video Stream, where should we save?
                 videoBufferAdded = true;
                 typeOfStream = 'video';
@@ -390,7 +404,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
                 //Lets save our sourceBuffer to temporary storage
                 currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
-                console.log('Adding a audio stream!');
+                messagesModule.printOutLine('Adding a audio stream!');
                 //Do more stuff here and add markers for the audio Stream, where should we save?
                 audioBufferAdded = true;
                 typeOfStream = 'audio';
@@ -403,15 +417,16 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
                 //Lets save our sourceBuffer to temporary storage
                 currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
-                console.log('Adding a video and audio stream!');
+                messagesModule.printOutLine('Adding a video and audio stream!');
                 //Do more stuff here and add markers for the video & audio Stream, where should we save?
                 videoBufferAdded = true;
                 audioBufferAdded = true;
                 typeOfStream = 'videoAndAudio';
             }
 
-            //If we have multiple representations within the current
-            //adaptionset awesomeness :)
+            // If we have multiple representations within the current,
+            // which means that the stream we have is either video or audio,
+            // since there is only one representation set if the track is a subtitle track.
             if(arrayOfRepresentationSets.length > 0){
                 baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets);
                 
@@ -419,8 +434,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 var baseUrlObjectsArrayLength = baseUrlObjectArray.length,
                     baseUrlObjectsArrayHighestIndex = baseUrlObjectsArrayLength - 1;
 
-                console.log('Setting the highest index to' + baseUrlObjectsArrayHighestIndex);
-                console.log('The stream we have is..' + typeOfStream);
+                messagesModule.printOutLine('The stream we have is..' + typeOfStream);
 
                 currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
             } else {
@@ -527,30 +541,30 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @private
      */
     function _checkBuffers() {
-        console.log('video player buffer: ' + that._videoElement.buffered);
-        console.log('video player state: ' + that._videoElement.readyState);
+        console.log('video player buffer: ' + currentVideoObject.buffered);
+        console.log('video player state: ' + currentVideoObject.readyState);
 
-        if( that._videoElement.HAVE_NOTHING == that._videoElement.readyState){
+        if( currentVideoObject.HAVE_NOTHING == currentVideoObject.readyState){
             //return;
         }
 
-        if( 0 == that._videoElement.buffered.length ) {
-            that._videoElement.readyState = that._videoElement.HAVE_METADATA;
+        if( 0 == currentVideoObject.buffered.length ) {
+            currentVideoObject.readyState = currentVideoObject.HAVE_METADATA;
             //return;
-        } else if( that._videoElement.currentTime > that._videoElement.buffered.end(0) - 15 ) {
-            that._videoElement.readyState = that._videoElement.HAVE_FUTURE_DATA;
+        } else if( currentVideoObject.currentTime > currentVideoObject.buffered.end(0) - 15 ) {
+            currentVideoObject.readyState = currentVideoObject.HAVE_FUTURE_DATA;
         }
 
-        switch(that._videoElement.readyState) {
-            case that._videoElement.HAVE_NOTHING:
-            case that._videoElement.HAVE_METADATA:
-            case that._videoElement.HAVE_CURRENT_DATA:
-            case that._videoElement.HAVE_FUTURE_DATA:
+        switch(currentVideoObject.readyState) {
+            case currentVideoObject.HAVE_NOTHING:
+            case currentVideoObject.HAVE_METADATA:
+            case currentVideoObject.HAVE_CURRENT_DATA:
+            case currentVideoObject.HAVE_FUTURE_DATA:
                 // Should load more data
                 //appendData(vSourceBuffer, VFILE, 'video/mp4');
                 //appendData(aSourceBuffer, AFILE, 'audio/mp4');
                 break;
-            case that._videoElement.HAVE_ENOUGH_DATA:
+            case currentVideoObject.HAVE_ENOUGH_DATA:
                 break;
         };
     };
@@ -938,8 +952,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
      * @function
      * @name  printOutErrorMessageToConsole
      * @description A method that generates an error message on the console
-     * @param messageObject
-     * @param error
+     * @param messageObject {object}
+     * @param error {error}
      * @public
      */
     function printOutErrorMessageToConsole(messageObject, error){
@@ -969,7 +983,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
      * @function
      * @name  printOutMessageToConsole
      * @description A method that generates a message on the console
-     * @param messageObject
+     * @param messageObject {object}
      * @public
      */
     function printOutMessageToConsole(messageObject){
@@ -994,11 +1008,30 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
         }
     };
 
+    /**
+     * @name printOutLine
+     * @description A simple console method to print out a line with a message, could be switched on and off based on a debug parameter when Free Video Player is instantiated.
+     * @param message {string} - a message string to print out
+     * @public
+     */
     function printOutLine(message){
         if(settingsObject.debugMode){
             console.log('Free Video Player - ' + message);
         }
     };
+
+    /**
+     * @name printOutObject
+     * @description A simple console method to print out an object with a message, could be switched on and off based on a debug parameter when Free Video Player is instantiated.
+     * @param object {object} - the actual object to print out
+     * @public
+     */
+    function printOutObject(object){
+        if(settingsObject.debugMode){
+            console.log(object);
+        }
+    };
+
 
 
     //  #########################
@@ -1046,6 +1079,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     that.printOutErrorMessageToConsole  = printOutErrorMessageToConsole;
     that.printOutMessageToConsole = printOutMessageToConsole;
     that.printOutLine = printOutLine;
+    that.printOutObject = printOutObject;
 
     //General
     that.getVersion = getVersion;
@@ -1082,7 +1116,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
           videoOverlayFadeOutDelay:100
         },
         videoPlayerNameCss = videoPlayerNameCss,
-        messagesModule = messagesModule || freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion);
+        messagesModule = messagesModule || freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion),
+        videoControlsKeyboardCodes = new Map();
 
     /**
      * @function
@@ -1230,6 +1265,15 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         progressSlider.addEventListener('mousedown', _pauseMethodFromSlider);
         progressSlider.addEventListener('mouseup', _playMethodFromSlider);
 
+        //TEST METHOD FOR CHANGING POINTER AT SLIDER
+        progressSlider.addEventListener('click', function(event){
+
+            console.log('Ok clicked it..');
+            console.log(this);
+            console.log(event);
+           // that.videoElement.currentTime = 30;
+        });
+
         volumeIcon.addEventListener('click', _volumeMuteUnmuteMethod);
         volumeIcon.addEventListener('mouseover', _showVolumeSlider);
         volumeIcon.addEventListener('mouseout', _hideVolumeSlider);
@@ -1240,6 +1284,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         settingsIcon.addEventListener('click', _changeSettings);
 
         //Lets add event listeners to the video element so we can update the progress bar when we need it
+        videoElement.addEventListener('loadstart', addSpinnerIconToVideoOverlay);
+        videoElement.addEventListener('canplay', removeSpinnerIconFromVideoOverlay);
+
         videoElement.addEventListener('loadedmetadata', _printMediaTotalDuration);
         videoElement.addEventListener('timeupdate', _progressUpdateMethod);
 
@@ -1253,6 +1300,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 settingsMenu.appendChild(subtitlesContainer);
             }
         });
+
 
         //  #############################
         //  #### APPEND DOM ELEMENTS ####
@@ -1315,7 +1363,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         _createKeyboardListeners();
     };
 
-
     /**
      * @function
      * @name _addAndReturnVideoFormatName
@@ -1346,7 +1393,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function addBitrateMenuToSettingsIcon(typeOfStream, bitrateObjectsArray){
 
-        console.log('_addBitrateMenuToSettingsIcon - The stream is..' + typeOfStream);
+        messagesModule.printOutLine('_addBitrateMenuToSettingsIcon - The stream is..' + typeOfStream);
+
         if(typeOfStream !== 'audio'){
             //Should be video or videoAndAudio stream now
             var bitrateMenuContainer = document.createElement('div'),
@@ -1397,12 +1445,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _changeVideoBitrate(){
-
-        console.log('This is the thing we changed');
-
         var selectedOption = this.options[this.selectedIndex];
-
-        console.log(selectedOption.text);
 
         var elementTagName = selectedOption.nodeName,
             baseUrl = selectedOption.getAttribute('data-' + videoPlayerNameCss + '-bitrate-base-url'),
@@ -1497,7 +1540,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function _pauseMethodFromSlider(){
         that.videoElement.pause();
-        //that.currentVideoObject.playing = false;
         _addPlayIconToControls();
     };
 
@@ -1573,12 +1615,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _progressShiftMethod(){
+
+        that.videoElement.pause();
+
         //First get the total value of the asset.
         var videoDurationInSeconds = that.currentVideoObject.mediaDurationInSeconds,
             newPosition = Math.floor((that.currentVideoControlsObject.progressSlider.value/100)*videoDurationInSeconds);
+
         //Seek to new position
         that.videoElement.currentTime = newPosition;
         console.log('The current video object playing is...' + that.currentVideoObject.playing);
+
+        that.videoElement.play();
 
         if(!that.currentVideoObject.playing){
             _pauseMethodFromSlider();
@@ -1586,7 +1634,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that can be called continuasly to update the progress bar of the current video position.
+     * @name _progressUpdateMethod
+     * @description A method that can be called continuasly to update the progress bar of the current video position.
      * @private
      */
     function _progressUpdateMethod(){
@@ -1599,7 +1648,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that can be called to print the total media duration of an asset
+     * @name _printMediaTotalDuration
+     * @description A method that can be called to print the total media duration of an asset
      * @private
      */
     function _printMediaTotalDuration(){
@@ -1608,7 +1658,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method will make the volume slider visible
+     * @name _showVolumeSlider
+     * @description A method will make the volume slider visible
      * @private
      */
     function _showVolumeSlider(){
@@ -1616,7 +1667,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that will make the volume slider not visible
+     * @name _hideVolumeSlider
+     * @description A method that will make the volume slider not visible
      * @private
      */
     function _hideVolumeSlider(){
@@ -1637,7 +1689,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that will enable full screen mode on the Free Video Player, or disable it
+     * @name _fullScreenMethod
+     * @description A method that will enable full screen mode on the Free Video Player, or disable it
      * @private
      */
     function _fullScreenMethod(){
@@ -1658,7 +1711,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * Checks if the browsers is in full-screen mode
+     * @name  _isFullScreen
+     * @description Checks if the browsers is in full-screen mode
      * @returns {boolean}
      * @private
      */
@@ -1670,8 +1724,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### VIDEO OVERLAY METHODS ####
     //  ###############################
     /**
-     * A method that adds a play icon to the video overlay
-     * @public
+     * @name _addPlayIconToVideoOverlay
+     * @description A method that adds a play icon to the video overlay
+     * @private
      */
     function _addPlayIconToVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
@@ -1680,8 +1735,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that adds a pause icon to the video overlay
-     * @public
+     * @name _addPauseIconToVideoOverlay
+     * @description A method that adds a pause icon to the video overlay
+     * @private
      */
     function _addPauseIconToVideoOverlay(){
         _removeCssClassToElementAndReturn(that.currentVideoControlsObject.videoOverlayPlayPauseIcon, settingsObject.videoControlsCssClasses.hideVideoOverlayClass);
@@ -1717,9 +1773,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### CSS METHODS ####
     //  #####################
     /**
-     * A method that adds a css class to an an element
-     * @param element
-     * @param className
+     * @name _addCssClassToElementAndReturn
+     * @description A method that adds a css class to an an element
+     * @param element {element} - The element which should get the css class added
+     * @param className {string} - The classname
      * @private
      */
     function _addCssClassToElementAndReturn(element, className){
@@ -1740,9 +1797,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that removes a css class from an an element
-     * @param element
-     * @param className
+     * @name _removeCssClassToElementAndReturn
+     * @description A method that removes a css class from an an element
+     * @param element {element}
+     * @param className {string}
      * @private
      */
     function _removeCssClassToElementAndReturn(element, className){
@@ -1755,13 +1813,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             classString = classString[0].trim();
         } else {
             //Do nothing here
-
         }
         element.setAttribute('class', classString);
     };
 
     /**
-     * A utility method meant to be able to filter between css classes, and if an element has the class
+     * @name _checkIfElementHasCssClassReturnBoolean
+     * @description A utility method meant to be able to filter between css classes, and if an element has the class
      * @param element
      * @param className
      * @returns {boolean}
@@ -1786,16 +1844,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #### KEYBOARD EVENTS ####
     //  #########################
     /**
-     * A method that aggregates the methods that will add keyboard eventListeners to the Free Video Player
+     * @name _createKeyboardListeners
+     * @description A method that aggregates the methods that will add keyboard eventListeners to the Free Video Player
      * @private
      */
     function _createKeyboardListeners(){
+        //Lets first add the codes for the different buttons
+        _addKeyboardShortCodes();
         //Add event listener for space button - play/pause
         _createPlayPauseSpaceBarListener();
     };
 
     /**
-     * An overall method to remove eventListeners connected to the keyboard, if say a previous asset was loaded and
+     * @name _removeKeyboardListeners
+     * @description An overall method to remove eventListeners connected to the keyboard, if say a previous asset was loaded and
      * a new one is loaded.
      * @private
      */
@@ -1805,7 +1867,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * A method that enables to play/pause from the keyboard spacebar.
+     * @name _createPlayPauseSpaceBarListener
+     * @description A method that enables to play/pause from the keyboard spacebar.
      * @private
      */
     function _createPlayPauseSpaceBarListener(){
@@ -1813,7 +1876,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * The method that removes the play/pause button from the spacebar.
+     * @description The method that removes the play/pause button from the spacebar.
      * @private
      */
     function _removePlayPauseSpaceBarAndEscFullscreenListener(){
@@ -1830,27 +1893,22 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     * The actual method that catches the event from the spacebar button
+     * @description The actual method that catches the event from the spacebar button
      * @param event
      * @private
      */
     function _spaceBarEscKeyPress(event){
-        var code;
-        if (event.keyCode) {
-            code = event.keyCode;
-        } else if (event.which) {
-            code = event.which;
-        }
 
+        var code = event.keyCode ? event.keyCode : event.which;
         console.log('The keyboard code is ' + code);
 
         //SpaceBar KeyPress
-        if (code === 32 || code === 0) {
+        if (code === videoControlsKeyboardCodes.get('spacebar')) {
             event.preventDefault();
             _playPauseMethod();
         }
         //Esc KeyPress
-        if (code === 27) {
+        if (code === videoControlsKeyboardCodes.get('esc')) {
             event.preventDefault();
             if(_isFullScreen()){
                 that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
@@ -1858,6 +1916,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenCompressIconInnerHtml;
             }
         }
+    };
+
+    /**
+     * @name _addKeyboardShortCodes
+     * @description A method to add the different keyboard codes to common module map object
+     * @private
+     */
+    function _addKeyboardShortCodes(){
+        videoControlsKeyboardCodes.set('spacebar', 32);
+        videoControlsKeyboardCodes.set('esc', 27);
+        videoControlsKeyboardCodes.set('leftArrow', 37);
+        videoControlsKeyboardCodes.set('rightArray', 39);
     };
 
     //  ################################

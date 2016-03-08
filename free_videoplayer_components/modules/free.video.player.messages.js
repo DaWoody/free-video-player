@@ -25,8 +25,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
      * @function
      * @name  printOutErrorMessageToConsole
      * @description A method that generates an error message on the console
-     * @param messageObject
-     * @param error
+     * @param messageObject {object}
+     * @param error {error}
      * @public
      */
     function printOutErrorMessageToConsole(messageObject, error){
@@ -56,7 +56,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
      * @function
      * @name  printOutMessageToConsole
      * @description A method that generates a message on the console
-     * @param messageObject
+     * @param messageObject {object}
      * @public
      */
     function printOutMessageToConsole(messageObject){
@@ -81,11 +81,30 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
         }
     };
 
+    /**
+     * @name printOutLine
+     * @description A simple console method to print out a line with a message, could be switched on and off based on a debug parameter when Free Video Player is instantiated.
+     * @param message {string} - a message string to print out
+     * @public
+     */
     function printOutLine(message){
         if(settingsObject.debugMode){
             console.log('Free Video Player - ' + message);
         }
     };
+
+    /**
+     * @name printOutObject
+     * @description A simple console method to print out an object with a message, could be switched on and off based on a debug parameter when Free Video Player is instantiated.
+     * @param object {object} - the actual object to print out
+     * @public
+     */
+    function printOutObject(object){
+        if(settingsObject.debugMode){
+            console.log(object);
+        }
+    };
+
 
 
     //  #########################
@@ -133,6 +152,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     that.printOutErrorMessageToConsole  = printOutErrorMessageToConsole;
     that.printOutMessageToConsole = printOutMessageToConsole;
     that.printOutLine = printOutLine;
+    that.printOutObject = printOutObject;
 
     //General
     that.getVersion = getVersion;
