@@ -852,7 +852,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     function _spaceBarEscKeyPress(event){
 
         var code = event.keyCode ? event.keyCode : event.which;
-        console.log('The keyboard code is ' + code);
+        messagesModule.printOutLine('The keyboard code is ' + code);
 
         //SpaceBar KeyPress
         if (code === videoControlsKeyboardCodes.get('spacebar')) {

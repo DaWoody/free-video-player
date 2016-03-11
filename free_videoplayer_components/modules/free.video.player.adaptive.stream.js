@@ -84,7 +84,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     function abortSourceBuffers(currentVideoObject){
         try {
-            console.log('Reached abort source buffers');
+            messagesModule.printOutLine('Reached abort source buffers');
 
             //Utilizing methods for media source extension
             //Read more @
@@ -457,7 +457,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     messagesModule.printOutLine('The average segment length is ' + averageSegmentDuration);
                     var amountOfSegments = Math.round(streamDurationInSeconds/averageSegmentDuration);
 
-                    console.log('The amount of segments should be around.. ' + amountOfSegments);
+                    messagesModule.printOutLine('The amount of segments should be around.. ' + amountOfSegments);
 
                     if( sourceCount > amountOfSegments
                         && MediaSource.readyState == 'open') {
@@ -527,8 +527,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         messagesModule.printOutLine('video player buffer: ');
         messagesModule.printOutObject(that._videoElement.buffered);
         messagesModule.printOutLine('video player state: ' + that._videoElement.readyState);
-
-        messagesModule.printOutLine('BUffered length:...' + that._videoElement.buffered.length);
+        messagesModule.printOutLine('Buffered length:...' + that._videoElement.buffered.length);
 
         //Ready States
         //State  Description
@@ -540,12 +539,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
         if(that._videoElement.readyState == 4){
             //return;
-            console.log('Ready state is.. 4.. completed');
+            messagesModule.printOutLine('Ready state is.. 4.. completed');
         }
 
         if(that._videoElement.buffered.length > 0){
-            console.log('BVuffered start.. ' + that._videoElement.buffered.start(0));
-            console.log('Buffered end..' +  that._videoElement.buffered.end(0));
+            //console.log('BVuffered start.. ' + that._videoElement.buffered.start(0));
+            //console.log('Buffered end..' +  that._videoElement.buffered.end(0));
             videoControlsModule.updateProgressBarWithBufferedData(
                 that._videoElement.buffered.start(0),
                 that._videoElement.buffered.end(0),
@@ -561,13 +560,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
         switch(that._videoElement.readyState) {
             case that._videoElement.HAVE_NOTHING:
-                console.log('WE HAVE NOTHING YET..');
+                //console.log('WE HAVE NOTHING YET..');
                 break;
             case that._videoElement.HAVE_METADATA:
             case that._videoElement.HAVE_CURRENT_DATA:
             case that._videoElement.HAVE_FUTURE_DATA:
 
-                console.log('WE HAVE BUFFERED FUTURE DATA! :)');
+                //console.log('WE HAVE BUFFERED FUTURE DATA! :)');
 
                 // Should load more data
                 //appendData(vSourceBuffer, VFILE, 'video/mp4');
@@ -590,7 +589,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         }
 
         //audioBuffer, videoBuffer
-        console.log('setMediaSource Duration reacehd');
+        messagesModule.printOutLine('setMediaSource Duration reacehd');
         //if( audioBuffer.updating || videoBuffer.updating )
         //    return;
         //
@@ -610,7 +609,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @param type {string}
      */
     function _appendData(buffer, file, type) {
-        console.log('Appending '+type+' data');
+        messagesModule.printOutLine('Appending '+type+' data');
         _getArrayBuffer(file, function(uInt8Array) {
 
             var file = new Blob([uInt8Array], {type: type}),

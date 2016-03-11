@@ -420,8 +420,12 @@ var freeVideoPlayer = function(initiationObject){
      * @private
      */
     var _isFullScreen = function() {
-        return !!(document.fullScreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement);
-    }
+        return !!(document.fullScreen
+        || document.webkitIsFullScreen
+        || document.mozFullScreen
+        || document.msFullscreenElement
+        || document.fullscreenElement);
+    };
 
     /**
      * @function
@@ -474,7 +478,6 @@ var freeVideoPlayer = function(initiationObject){
         return that._videoElement.volume;
     };
 
-
     //  #########################
     //  #### GENERAL METHODS ####
     //  #########################
@@ -500,7 +503,6 @@ var freeVideoPlayer = function(initiationObject){
         return moduleName;
     };
 
-
     /**
      * @function
      * @name isModule
@@ -511,8 +513,6 @@ var freeVideoPlayer = function(initiationObject){
     var isModule = function(){
         return isModuleValue;
     };
-
-
 
     /**
      * This method parses through the videoUrl and returns the type of stream based on the ending of the videoUrl
@@ -649,15 +649,13 @@ var freeVideoPlayer = function(initiationObject){
         }
     };
 
-
-
-
-
     //  #############################
     //  #### MAKE METHODS PUBLIC ####
     //  #############################
-    //mpd methods
+
+    //Loading
     that.load = load;
+
     //Player methods
     that.pause = pause;
     that.play = play;
