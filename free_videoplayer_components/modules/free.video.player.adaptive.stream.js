@@ -298,9 +298,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         messagesModule.printOutLine('The adaptionsets are:');
         messagesModule.printOutObject(adaptionSets);
 
-        console.log('The representation are:');
-        console.log(representationSets);
-
         //lets set a start number so we actually do not currently add more than just one video and audio buffer
         adaptionSets.forEach(function(currentAdaptionSet, index, adaptionSetArray){
 
@@ -439,19 +436,19 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
                 //These two following should probably be rewritten and changed
                 sourceBuffer.addEventListener('updatestart', function(){
-                    console.log('Should start with update... sourceBuffer.updating should be true..' + sourceBuffer.updating);
+                    messagesModule.printOutLine('Should start with update... sourceBuffer.updating should be true..' + sourceBuffer.updating);
                     //videoControlsModule.addSpinnerIconToVideoOverlay();
                 });
 
                 sourceBuffer.addEventListener('update', function(){
-                    console.log('Should be done with update... sourceBuffer.updating should be false..' + sourceBuffer.updating);
+                    messagesModule.printOutLine('Should be done with update... sourceBuffer.updating should be false..' + sourceBuffer.updating);
                     //videoControlsModule.removeSpinnerIconFromVideoOverlay();
                 });
 
                 //When we are done updating
                 sourceBuffer.addEventListener('updateend', function() {
                     if(that._videoElement.error)
-                        console.log(that._videoElement.error);
+                        messagesModule.printOutObject(that._videoElement.error);
                     if( sourceBuffer.buffered.length > 0 )
                         messagesModule.printOutLine(mimeType + ' buffer timerange start=' + sourceBuffer.buffered.start(0) + ' / end=' + sourceBuffer.buffered.end(0));
                     sourceCount++;
@@ -479,11 +476,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     if(!_isBitrateAuto()
                         && typeOfStream !== 'audio'){
                         baseUrl = _returnBaseUrlBasedOnStoredUserSettings();
-                        console.log('User set bitrate! :)');
-                        console.log('THE BASE URL WE TRY TO SET IS THIS.. ' + baseUrl + ' .. with type ' + typeOfStream);
+                        messagesModule.printOutLine('THE BASE URL USER TRY TO SET IS THIS.. ' + baseUrl + ' .. with type ' + typeOfStream);
                     } else {
                         baseUrl = _returnBaseUrlBasedOnBitrateTimeSwitch(typeOfStream);
-                        console.log('THE BASE URL SET BY THE ALGORITHM IS THIS..' + baseUrl + ' .. with type ' + typeOfStream);
+                        messagesModule.printOutLine('THE BASE URL SET BY THE ALGORITHM IS THIS..' + baseUrl + ' .. with type ' + typeOfStream);
                     }
 
                     setTimeout(function(){
@@ -495,6 +491,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                             segmentEnding,
                             mimeType);
                     }, sourceBufferWaitBeforeNewAppendInMiliseconds);
+
+                    _checkBuffers(streamDurationInSeconds);
+
                 });
 
                 console.log('source buffer ' + index + ' mode: ' + sourceBuffer.mode );
@@ -524,31 +523,57 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * This method checks the buffers
      * @private
      */
-    function _checkBuffers() {
-        console.log('video player buffer: ' + currentVideoObject.buffered);
-        console.log('video player state: ' + currentVideoObject.readyState);
+    function _checkBuffers(streamDurationInSeconds) {
+        messagesModule.printOutLine('video player buffer: ');
+        messagesModule.printOutObject(that._videoElement.buffered);
+        messagesModule.printOutLine('video player state: ' + that._videoElement.readyState);
 
-        if( currentVideoObject.HAVE_NOTHING == currentVideoObject.readyState){
+        messagesModule.printOutLine('BUffered length:...' + that._videoElement.buffered.length);
+
+        //Ready States
+        //State  Description
+        //0      The request is not initialized
+        //1      The request has been set up
+        //2      The request has been sent
+        //3      The request is in process
+        //4      The request is complete
+
+        if(that._videoElement.readyState == 4){
             //return;
+            console.log('Ready state is.. 4.. completed');
         }
 
-        if( 0 == currentVideoObject.buffered.length ) {
-            currentVideoObject.readyState = currentVideoObject.HAVE_METADATA;
-            //return;
-        } else if( currentVideoObject.currentTime > currentVideoObject.buffered.end(0) - 15 ) {
-            currentVideoObject.readyState = currentVideoObject.HAVE_FUTURE_DATA;
+        if(that._videoElement.buffered.length > 0){
+            console.log('BVuffered start.. ' + that._videoElement.buffered.start(0));
+            console.log('Buffered end..' +  that._videoElement.buffered.end(0));
+            videoControlsModule.updateProgressBarWithBufferedData(
+                that._videoElement.buffered.start(0),
+                that._videoElement.buffered.end(0),
+                streamDurationInSeconds);
         }
 
-        switch(currentVideoObject.readyState) {
-            case currentVideoObject.HAVE_NOTHING:
-            case currentVideoObject.HAVE_METADATA:
-            case currentVideoObject.HAVE_CURRENT_DATA:
-            case currentVideoObject.HAVE_FUTURE_DATA:
+        if( 0 == that._videoElement.buffered.length ) {
+            that._videoElement.readyState = that._videoElement.HAVE_METADATA;
+            //return;
+        } else if( that._videoElement.currentTime > that._videoElement.buffered.end(0) - 15 ) {
+            //that._videoElement.readyState = that._videoElement.HAVE_FUTURE_DATA;
+        }
+
+        switch(that._videoElement.readyState) {
+            case that._videoElement.HAVE_NOTHING:
+                console.log('WE HAVE NOTHING YET..');
+                break;
+            case that._videoElement.HAVE_METADATA:
+            case that._videoElement.HAVE_CURRENT_DATA:
+            case that._videoElement.HAVE_FUTURE_DATA:
+
+                console.log('WE HAVE BUFFERED FUTURE DATA! :)');
+
                 // Should load more data
                 //appendData(vSourceBuffer, VFILE, 'video/mp4');
                 //appendData(aSourceBuffer, AFILE, 'audio/mp4');
                 break;
-            case currentVideoObject.HAVE_ENOUGH_DATA:
+            case that._videoElement.HAVE_ENOUGH_DATA:
                 break;
         };
     };
@@ -561,7 +586,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     function _setMediaSourceDuration(arrayOfSourceBuffers) {
 
         if(arrayOfSourceBuffers.length){
-            console.log('THe number of source buffers are ' + arrayOfSourceBuffers.length);
+            messagesModule.printOutLine('The number of source buffers are ' + arrayOfSourceBuffers.length);
         }
 
         //audioBuffer, videoBuffer
@@ -624,16 +649,16 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * This method adds eventlisteners to the media source object
+     * @name _addEventListenersToMediaSource
+     * @description This method adds eventlisteners to the media source object
      * @private
      */
     function _addEventListenersToMediaSource(){
         //  ### EVENT LISTENERS ###
         that._mediaSource.addEventListener('sourceopen', _videoready, false);
         that._mediaSource.addEventListener('webkitsourceopen', _videoready, false);
-
         that._mediaSource.addEventListener('webkitsourceended', function(e) {
-            console.log('mediaSource readyState: ' + this.readyState);
+            messagesModule.printOutLine('mediaSource readyState: ' + this.readyState);
         }, false);
         return that;
     };
@@ -701,12 +726,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @param bitrateSettingsObject
      * @private
      */
-    var _updateVideoControlsWithBitrateSettings = function(bitrateSettingsObject){
+    function _updateVideoControlsWithBitrateSettings(bitrateSettingsObject){
         var typeOfStream = bitrateSettingsObject.typeOfStream,
             baseUrlObjectArray = bitrateSettingsObject.baseUrlObjectArray;
-
-        console.log('Ok reached this thing here.. baseUrlObejctsArray..:');
-        console.log(bitrateSettingsObject);
 
         //If the videoControlsModule is defined
         if(videoControlsModule){
@@ -756,7 +778,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
             if(timeDifferenceFromLastAppendedSegment < lowestValue){
                 // Lets go high directly since latency is low
-                console.log('Switching to highest bitrate - dl time less than ' + lowestValue);
+                messagesModule.printOutLine('Switching to highest bitrate - dl time less than ' + lowestValue);
                 var highestIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlHighestIndex');
                 baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[highestIndex].baseUrl;
                 currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', highestIndex);
@@ -766,7 +788,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 && timeDifferenceFromLastAppendedSegment < secondLowestValue){
                 // We still don't have to low latency in this so lets go up a notch at a time
                 // lets take it from here, now we are checking if the latency took
-                console.log('Switching to higher bitrate - dl time less than 2500, higher than ' + lowestValue);
+                messagesModule.printOutLine('Switching to higher bitrate - dl time less than 2500, higher than ' + lowestValue);
                 var currentIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex'),
                     highestIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlHighestIndex');
 
@@ -783,7 +805,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 && timeDifferenceFromLastAppendedSegment < middleValue){
                 // We still don't have to low latency in this so lets go up a notch at a time
                 // lets take it from here, now we are checking if the latency took
-                console.log('Staying at this bitrate - dl time more than ' + secondLowestValue + ', less than ' + middleValue);
+                messagesModule.printOutLine('Staying at this bitrate - dl time more than ' + secondLowestValue + ', less than ' + middleValue);
                 var currentIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
 
                 baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[currentIndex].baseUrl;
@@ -795,7 +817,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 // Lets go down a notch since the dl time was more than 3500 ms
                 //  but the dl time was not more than 6000 ms so we should try going down just one notch
                 //  Awesomeness lets see how this works
-                console.log('Switching to lower bitrate - dl time higher than ' +  middleValue + ' but lower than ' + highestValue);
+                messagesModule.printOutLine('Switching to lower bitrate - dl time higher than ' +  middleValue + ' but lower than ' + highestValue);
                 var currentIndex = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_currentStreamIndex');
 
                 if(currentIndex > 0){
@@ -809,7 +831,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
             if(timeDifferenceFromLastAppendedSegment >= highestValue){
                 // Lets go high directly since latency is low
-                console.log('Switching to lowest bitrate - dl time more than ' + highestValue);
+                messagesModule.printOutLine('Switching to lowest bitrate - dl time more than ' + highestValue);
                 baseUrl = currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.get(typeOfStream + '_baseUrlObjectArray')[0].baseUrl;
                 currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_currentStreamIndex', 0);
             }
@@ -834,7 +856,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #########################
     //  #### GENERAL METHODS ####
     //  #########################
-
     /**
      * @function
      * @name getVersion
@@ -880,11 +901,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         return that._videoElement;
     };
 
-
     //  #############################
     //  #### MAKE METHODS PUBLIC ####
     //  #############################
-
     //currentVideoObject methods
     that.addStreamBaseUrl = addStreamBaseUrl;
     that.clearCurrentVideoStreamObject = clearCurrentVideoStreamObject;

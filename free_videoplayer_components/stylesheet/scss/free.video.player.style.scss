@@ -8,6 +8,7 @@
 
 $player-controls-color: rgba(75,96, 108, 0.7);
 $player-controls-shadow-color: darken($player-controls-color, 30%);
+$player-controls-buffered-color: #31708F;
 $player-controls-background-color: rgba(176, 228, 255, 0.8);
 $player-controls-white-color: rgba(255,255,255,0.7);
 $player-green-live-color: #7cff92;
@@ -136,7 +137,7 @@ video::-webkit-media-controls-panel {
   width: 100%;
   height: 50px;
   display: inline-block;
-  opacity: 0;
+  opacity: 1;
   left:0;
   bottom:0;
   color: $player-controls-background-color;
@@ -263,7 +264,7 @@ video::-webkit-media-controls-panel {
 
   //Settings button
   .free-video-player-controls-settings-icon{
-    right: 40px;
+    right: 25px;
     position: absolute;
     width: 40px;
     margin-right: 0;
@@ -285,14 +286,10 @@ video::-webkit-media-controls-panel {
     -o-border-radius:3px;
     -moz-border-radius: 3px;
 
-    //Not working currently
-    &:fullscreen,
-    &:-moz-full-screen,
-    &:-webkit-full-screen {
-      //Lets set the position as when fullscreen
-      left:auto;
-      right:10px;
-    }
+
+
+
+
 
     div {
       margin-left:0;
@@ -344,9 +341,29 @@ video::-webkit-media-controls-panel {
     display:none;
   }
 
+  //Progress bar
+  .free-video-player-controls-progress{
+    position: relative;
+    z-index: 2;
+  }
+
+  //Progress bar buffered
+  .free-video-player-controls-progress-buffered {
+    position: absolute;
+    display: block;
+    left:0;
+    top:0;
+    background: $player-controls-color;
+    height:15px;
+    min-width: 0;
+    z-index:1;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+  }
+
   //Progress timer
   .free-video-player-controls-progress-timer{
-    right: 100px;
+    right: 115px;
     top:25px;
     position: absolute;
     text-align: center;
@@ -623,6 +640,11 @@ video::-webkit-media-controls-panel {
 
 }
 
+
+
+
+
+
 //Lets change the video player here when its really small(mobile devices and such)
 @media all and (max-width: 450px){
   .js-free-video-player-style{
@@ -656,4 +678,37 @@ video::-webkit-media-controls-panel {
       left:150px;
     }
   }
+}
+
+
+
+//Fullscreen styling
+//Not working currently
+:fullscreen,
+:-moz-full-screen,
+:-webkit-full-screen,
+:-ms-fullscreen{
+  .free-video-player-controls {
+    .free-video-player-controls-settings-menu {
+      background: red;
+      //Lets set the position as when fullscreen
+      left:auto !important;
+      right:10px !important;
+    }
+  }
+
+  .free-video-player-controls-settings-menu {
+    background: blue;
+    //Lets set the position as when fullscreen
+    left:auto !important;
+    right:10px !important;
+  }
+}
+
+:fullscreen video {
+  background:red;
+}
+
+:-webkit-full-screen video {
+  background:red;
 }

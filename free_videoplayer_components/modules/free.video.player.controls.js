@@ -72,6 +72,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             volumeIcon = document.createElement('div'),
             fullScreenButton = document.createElement('div'),
             progressSlider = document.createElement('input'),
+            progressBarBuffered = document.createElement('div'),
             volumeSliderContainer = document.createElement('div'),
             volumeSlider = document.createElement('input'),
             progressTimerContainer = document.createElement('div'),
@@ -92,6 +93,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoControlsObject.volumeIcon = volumeIcon;
         that.currentVideoControlsObject.fullScreenButton = fullScreenButton;
         that.currentVideoControlsObject.progressSlider = progressSlider;
+        that.currentVideoControlsObject.progressBarBuffered = progressBarBuffered;
         that.currentVideoControlsObject.volumeSliderContainer = volumeSliderContainer;
         that.currentVideoControlsObject.volumeSlider = volumeSlider;
         that.currentVideoControlsObject.progressTimerContainer = progressTimerContainer;
@@ -119,6 +121,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //Lets set classes to the different objects
         playButton.setAttribute('class', settingsObject.videoControlsCssClasses.playpauseContainerClass);
         progressSlider.setAttribute('class', settingsObject.videoControlsCssClasses.progressbarContainerClass);
+        progressBarBuffered.setAttribute('class', settingsObject.videoControlsCssClasses.progressBarBufferedClass);
         volumeSliderContainer.setAttribute('class', settingsObject.videoControlsCssClasses.volumeContainerClass);
         volumeIcon.setAttribute('class', settingsObject.videoControlsCssClasses.volumeIconClass);
         subtitlesContainer.setAttribute('class', settingsObject.videoControlsCssClasses.subtitlesMenuContainerClass);
@@ -137,6 +140,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         volumeSlider.setAttribute('value', 100);
         progressSlider.setAttribute('type','range');
         progressSlider.setAttribute('value', 0);
+
+        progressBarBuffered.setAttribute('role', 'progressbar');
+        progressBarBuffered.setAttribute('aria-valuenow', 0);
+        progressBarBuffered.setAttribute('aria-valumin', 0);
+        progressBarBuffered.setAttribute('aria-valumax', 100);
+        progressBarBuffered.setAttribute('style', 'width:0%;');
+
 
         //Add the data attribute to the different elements, maybe we should use this for selection in the future
         playButton.setAttribute('data-' + videoPlayerNameCss + '-control-type', 'playpause');
@@ -230,6 +240,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         if(settingsObject.videoControlsDisplay.showProgressSlider
             && mediaType === 'static') {
             //Adds both the progress bar and the progress timer container showing current time and the medias
+            controlsWrapper.appendChild(progressBarBuffered);
             controlsWrapper.appendChild(progressSlider);
         }
 
@@ -270,6 +281,22 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //the different buttons we want our player to interact with from the keyboard.
         _createKeyboardListeners();
     };
+
+    function updateProgressBarWithBufferedData(bufferedStart, bufferedEnd, totalDurationInSeconds){
+
+        //lets update the progressBar in the Dom with buffered data
+        var progressBar = that.currentVideoControlsObject.progressBarBuffered,
+            bufferedStartRound = Math.round(bufferedStart),
+            bufferedEndRound = Math.round(bufferedEnd),
+            totalBuffered = bufferedEnd - bufferedStart,
+            totalDurationAsNumber = parseInt(totalDurationInSeconds, 10),
+            totalBufferedInPercent = Math.round((totalBuffered / totalDurationAsNumber) * 100);
+
+        that.currentVideoControlsObject.progressBarBuffered.setAttribute('style', 'width:' + totalBufferedInPercent + '%;');
+        that.currentVideoControlsObject.progressBarBuffered.setAttribute('aria-valuenow', totalBufferedInPercent);
+    };
+
+
 
     /**
      * @function
@@ -1231,13 +1258,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
 
-
     //  #############################
     //  #### MAKE METHODS PUBLIC ####
     //  #############################
 
     //Controls
     that.createVideoControls = createVideoControls;
+    that.updateProgressBarWithBufferedData = updateProgressBarWithBufferedData;
 
     //Subtitle methods
     that.addSubtitlesTracksToDom = addSubtitlesTracksToDom;

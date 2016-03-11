@@ -49,6 +49,7 @@ var freeVideoPlayer = function(initiationObject){
                 videoFullScreenClass: videoPlayerNameCss + '-controls-fullscreen',
                 playpauseContainerClass: videoPlayerNameCss + '-controls-playpause',
                 progressbarContainerClass: videoPlayerNameCss + '-controls-progress',
+                progressBarBufferedClass: videoPlayerNameCss + '-controls-progress-buffered',
                 progressTimerContainerClass: videoPlayerNameCss + '-controls-progress-timer',
                 volumeContainerClass: videoPlayerNameCss + '-controls-volume',
                 volumeIconClass: videoPlayerNameCss + '-controls-volume-icon',
@@ -220,6 +221,10 @@ var freeVideoPlayer = function(initiationObject){
 
             that._videoElement.addEventListener('durationchange', function(){
                 currentVideoObject.mediaDurationInSeconds = that._videoElement.duration;
+                videoControlsModule.updateProgressBarWithBufferedData(
+                    0,
+                    that._videoElement.duration,
+                    that._videoElement.duration);
             });
 
             //Ok fetching the video wrapper which we previously defined in the load method.
@@ -606,7 +611,7 @@ var freeVideoPlayer = function(initiationObject){
         _clearVideoContainer();
         if(adaptiveStreamingModule){
             adaptiveStreamingModule.abortSourceBuffers();
-            adaptiveStreamingModule.clearMediaSource();
+            //adaptiveStreamingModule.clearMediaSource();
             adaptiveStreamingModule.clearCurrentVideoStreamObject();
         }
     };
