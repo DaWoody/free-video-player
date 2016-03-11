@@ -1158,6 +1158,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         controlsWrapper.setAttribute('class', settingsObject.videoControlsCssClasses.videoControlsClass);
 
         //Add the data to the class scoped variables
+
+        currentVideoObject._isPlaying = false;
+
         that.currentVideoObject = currentVideoObject;
         that.videoWrapper = videoWrapper;
         that.videoElement = videoElement;
@@ -1165,6 +1168,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             volumeHighStart: volumeHighStart,
             volumeLowEnd: volumeLowEnd
         };
+
 
         //Lets remove the older controls div before adding the new one
         if(currentControls){
@@ -1288,17 +1292,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         fullScreenButton.addEventListener('click', _fullScreenMethod);
 
         progressSlider.addEventListener('change', _progressShiftMethod);
-        progressSlider.addEventListener('mousedown', _pauseMethodFromSlider);
-        progressSlider.addEventListener('mouseup', _playMethodFromSlider);
+        progressSlider.addEventListener('mousedown', _pauseUpdateProgressBar);
+        progressSlider.addEventListener('mouseup', _continueUpdateProgressBar);
 
         //TEST METHOD FOR CHANGING POINTER AT SLIDER
-        progressSlider.addEventListener('click', function(event){
-
-            console.log('Ok clicked it..');
-            console.log(this);
-            console.log(event);
-           // that.videoElement.currentTime = 30;
-        });
+        //progressSlider.addEventListener('click', function(event){
+        //
+        //    console.log('Ok clicked it..');
+        //    console.log(this);
+        //    console.log(event);
+        //   // that.videoElement.currentTime = 30;
+        //});
 
         volumeIcon.addEventListener('click', _volumeMuteUnmuteMethod);
         volumeIcon.addEventListener('mouseover', _showVolumeSlider);
@@ -1518,17 +1522,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _playPauseMethod(){
-        if(!that.currentVideoObject.playing){
+        if(!that.currentVideoObject._isPlaying){
             that.videoElement.play();
             _addPauseIconToControls();
             _addPlayIconToVideoOverlay();
-            that.currentVideoObject.playing = true;
+            that.currentVideoObject._isPlaying = true;
 
         } else {
             that.videoElement.pause();
             _addPlayIconToControls();
             _addPauseIconToVideoOverlay();
-            that.currentVideoObject.playing = false;
+            that.currentVideoObject._isPlaying = false;
         }
     };
 
@@ -1553,6 +1557,23 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function _addPauseIconToControls(){
         that.currentVideoControlsObject.playButton.innerHTML = settingsObject.videoControlsInnerHtml.pauseIconInnerHtml;
+    };
+
+
+    /**
+     *
+     * @private
+     */
+    function _pauseUpdateProgressBar(){
+        that.currentVideoObject._isPlaying = false;
+    };
+
+    /**
+     *
+     * @private
+     */
+    function _continueUpdateProgressBar(){
+        that.currentVideoObject._isPlaying = true;
     };
 
 
@@ -1660,20 +1681,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function _progressShiftMethod(){
 
-        that.videoElement.pause();
-
         //First get the total value of the asset.
         var videoDurationInSeconds = that.currentVideoObject.mediaDurationInSeconds,
             newPosition = Math.floor((that.currentVideoControlsObject.progressSlider.value/100)*videoDurationInSeconds);
 
         //Seek to new position
-        that.videoElement.currentTime = newPosition;
-        console.log('The current video object playing is...' + that.currentVideoObject.playing);
-
-        that.videoElement.play();
-
-        if(!that.currentVideoObject.playing){
-            _pauseMethodFromSlider();
+        if(that.currentVideoObject._isPlaying){
+            that.videoElement.currentTime = newPosition;
         }
     };
 
@@ -1683,12 +1697,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _progressUpdateMethod(){
-        var videoDurationInSeconds = that.currentVideoObject.mediaDurationInSeconds,
-            currentPosition = that.videoElement.currentTime,
-            progressInPercentage = Math.round((currentPosition/videoDurationInSeconds)*100);
+        if(that.currentVideoObject._isPlaying){
+            var videoDurationInSeconds = that.currentVideoObject.mediaDurationInSeconds,
+                currentPosition = that.videoElement.currentTime,
+                progressInPercentage = Math.round((currentPosition/videoDurationInSeconds)*100);
 
             that.currentVideoControlsObject.progressTimerCurrentTime.innerHTML = _returnHoursMinutesSecondsFromSeconds(currentPosition),
             that.currentVideoControlsObject.progressSlider.value = progressInPercentage;
+        }
     };
 
     /**

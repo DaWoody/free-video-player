@@ -34,7 +34,7 @@ var freeVideoPlayer = function(initiationObject){
                 novolumeIconInnerHtml:'<i class="fa fa-volume-off"></i>',
                 fullscreenExpandIconInnerHtml:'<i class="fa fa-expand"></i>',
                 fullscreenCompressIconInnerHtml:'<i class="fa fa-compress"></i>',
-                spinnerIconInnerHtml: '<i class="fa fa-spinner fa-spin"></i>',
+                spinnerIconInnerHtml: '<i class="fa fa-circle-o-notch fa-spin"></i>',
                 settingsIconInnerHtml:'<i class="fa fa-cog"></i>',
                 liveIconInnerHtml:'<i class="fa fa-circle"></i> LIVE',
                 videoFormatContainerInnerHtml:'format: ',

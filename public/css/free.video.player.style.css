@@ -262,11 +262,11 @@ video::-webkit-media-controls-panel {
       border-radius: 1.3px; }
     .free-video-player-controls .free-video-player-controls-progress::-webkit-slider-thumb {
       height: 20px;
-      width: 10px;
-      border-radius: 3px;
+      width: 20px;
+      border-radius: 10px;
       background: rgba(176, 228, 255, 0.8);
       box-shadow: 1px 1px 2px rgba(75, 96, 108, 0.7);
-      border: 1px solid rgba(12, 16, 18, 0.7);
+      border: 2px solid rgba(75, 96, 108, 0.7);
       cursor: pointer;
       -webkit-appearance: none;
       margin-top: -7px; }
@@ -280,11 +280,11 @@ video::-webkit-media-controls-panel {
       border-radius: 1.3px; }
     .free-video-player-controls .free-video-player-controls-progress::-moz-range-thumb {
       height: 20px;
-      width: 10px;
-      border-radius: 3px;
+      width: 20px;
+      border-radius: 10px;
       background: rgba(176, 228, 255, 0.8);
-      border: 1px solid rgba(12, 16, 18, 0.7);
       box-shadow: 1px 1px 2px rgba(75, 96, 108, 0.7);
+      border: 2px solid rgba(75, 96, 108, 0.7);
       cursor: pointer;
       -webkit-appearance: none;
       margin-top: -7px; }
@@ -308,12 +308,15 @@ video::-webkit-media-controls-panel {
       border-radius: 2.6px;
       box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; }
     .free-video-player-controls .free-video-player-controls-progress::-ms-thumb {
-      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-      border: 1px solid #000000;
-      height: 36px;
-      width: 16px;
-      border-radius: 3px;
-      cursor: pointer; }
+      height: 20px;
+      width: 20px;
+      border-radius: 10px;
+      background: rgba(176, 228, 255, 0.8);
+      box-shadow: 1px 1px 2px rgba(75, 96, 108, 0.7);
+      border: 2px solid rgba(75, 96, 108, 0.7);
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -7px; }
     .free-video-player-controls .free-video-player-controls-progress:focus::-ms-fill-lower {
       background: #3071a9; }
     .free-video-player-controls .free-video-player-controls-progress:focus::-ms-fill-upper {
@@ -345,11 +348,10 @@ video::-webkit-media-controls-panel {
         border-radius: 1.3px; }
       .free-video-player-controls .free-video-player-controls-volume input[type=range]::-webkit-slider-thumb {
         height: 20px;
-        width: 10px;
-        border-radius: 3px;
+        width: 7px;
+        border-radius: 2px;
         background: rgba(176, 228, 255, 0.8);
-        border: 1px solid rgba(12, 16, 18, 0.7);
-        box-shadow: 1px 1px 2px rgba(75, 96, 108, 0.7);
+        border: 2px solid rgba(75, 96, 108, 0.7);
         cursor: pointer;
         -webkit-appearance: none;
         margin-top: -7px; }
@@ -364,11 +366,10 @@ video::-webkit-media-controls-panel {
         width: 100%; }
       .free-video-player-controls .free-video-player-controls-volume input[type=range]::-moz-range-thumb {
         height: 20px;
-        width: 10px;
-        border-radius: 3px;
-        border: 1px solid rgba(12, 16, 18, 0.7);
+        width: 7px;
+        border-radius: 2px;
         background: rgba(176, 228, 255, 0.8);
-        box-shadow: 1px 1px 4px rgba(75, 96, 108, 0.7);
+        border: 2px solid rgba(75, 96, 108, 0.7);
         cursor: pointer;
         -webkit-appearance: none;
         margin-top: -7px; }
@@ -392,12 +393,14 @@ video::-webkit-media-controls-panel {
         border-radius: 2.6px;
         box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; }
       .free-video-player-controls .free-video-player-controls-volume input[type=range]::-ms-thumb {
-        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-        border: 1px solid #000000;
-        height: 36px;
-        width: 16px;
-        border-radius: 3px;
-        cursor: pointer; }
+        height: 20px;
+        width: 7px;
+        border-radius: 2px;
+        background: rgba(176, 228, 255, 0.8);
+        border: 2px solid rgba(75, 96, 108, 0.7);
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -7px; }
       .free-video-player-controls .free-video-player-controls-volume input[type=range]:focus::-ms-fill-lower {
         background: #3071a9; }
       .free-video-player-controls .free-video-player-controls-volume input[type=range]:focus::-ms-fill-upper {
