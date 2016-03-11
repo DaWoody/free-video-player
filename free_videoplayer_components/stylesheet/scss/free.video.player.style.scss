@@ -37,7 +37,7 @@ $player-controls-button-width: 15px;
   //clear:both;
   video {
     width:100%;
-    height:auto;
+    height:100%;
   }
 
   &:hover .free-video-player-controls {
@@ -185,15 +185,13 @@ video::-webkit-media-controls-panel {
   .free-video-player-controls-subtitles-container {
     width:100%;
     margin-left:10px;
-    //background:$player-controls-color;
-    //color: $player-controls-white-color;
     &:hover {
       cursor:pointer;
     }
   }
 
   .free-video-player-controls-subtitles-menu {
-    background: transparent;
+    background: $player-controls-color;
     margin-left:5px;
     color: $player-controls-white-color;
     text-shadow: 1px 1px 2px $player-controls-color;
@@ -312,7 +310,7 @@ video::-webkit-media-controls-panel {
 
   //Bitrate
   .free-video-player-controls-bitrate-quality-menu {
-    background: transparent;
+    background: $player-controls-color;
     margin-left:5px;
     color: $player-controls-white-color;
     text-shadow: 1px 1px 2px $player-controls-color;

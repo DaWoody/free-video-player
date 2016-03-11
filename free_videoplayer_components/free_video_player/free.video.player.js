@@ -22,7 +22,7 @@ var freeVideoPlayer = function(initiationObject){
         xml2json = new X2JS(),
         defaultSettingsObject = {
             videoWrapperClassName: 'js-' + videoPlayerNameCss,
-            videoWrapperBackgroundColor: '#292c3c',
+            videoWrapperBackgroundColor:  '#292c3c',
             videoSplashImageUrl: base64encodedImage,
             iso6391Url:'js/freevideoplayer/subtitles/iso-639-1.json',
             videoControlsInnerHtml : {
@@ -267,6 +267,7 @@ var freeVideoPlayer = function(initiationObject){
                 messagesModule.printOutLine(responseObject.MPD);
 
                 var mpdObject = responseObject.MPD;
+
 
                 //mpdObject = mpdParserModule.returnMpdObjectWithAddedBaseUrl(mpdObject, mediaBaseUrl);
                 mpdParserModule.setMpdObject(responseObject.MPD);

@@ -200,7 +200,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         hlsObject ?  currentVideoObject.streamObject.hlsObject = hlsObject : adaptiveVideoObject.hlsObject = {};
 
         _initiateMediaSource();
-        _createVideoElementAndAppendToWrapper(videoWrapperClassName);
+        _createVideoElementAndAppendToWrapper(videoWrapperClassName, optionalConfigurationObject);
         _createMediaSourceStream(currentVideoObject.streamObject.streamBaseUrl, optionalConfigurationObject);
         _addEventListenersToMediaSource();
     };
@@ -232,7 +232,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         if(optionalConfigurationObject){
             that._videoElement.poster = optionalConfigurationObject.videoSplashImageUrl ? optionalConfigurationObject.videoSplashImageUrl : settingsObject.videoSplashImageUrl;
         } else {
-            //that._videoElement.poster = settingsObject.videoSplashImageUrl;
+            that._videoElement.poster = settingsObject.videoSplashImageUrl;
         }
     };
 
