@@ -1489,7 +1489,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
 
-
     /**
      * @function
      * @name _changeVideoBitrate
@@ -1514,6 +1513,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
         //Now lets also save the baseUrl we fetched from the DOM node
         that.currentVideoObject.streamObject.currentVideoBaseUrl = baseUrl;
+        _changeSettings();
     };
 
     //  ##########################
@@ -1541,6 +1541,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             that.currentVideoObject.playing = false;
         }
     };
+
 
     /**
      * @function
@@ -2171,6 +2172,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             } else {
                 textTracks[i].mode = 'hidden';
             }
+            _changeSettings();
         }
     };
 
