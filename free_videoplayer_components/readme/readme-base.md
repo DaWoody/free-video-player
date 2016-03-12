@@ -227,7 +227,7 @@ player.getArrayOfSubtitleObjects();
 ##Example of implementation
 ***
 
-Also in the html of your page a div container with the class ```js-free-video-player-container``` is necessary. Within this class a
+Also in the html of your page a div container with the class ```js-free-video-player``` is necessary. Within this class a
 video player instance will be created.
 Like for instance
 
@@ -252,26 +252,33 @@ Like for instance
 
 <script>
 
-//Ok so lets instantiate the free video player here..
-//First create an optional configuration object
+// Ok so lets instantiate the free video player here..
+// First create an optional configuration object
 var optionalConfigurationObject = {
-    //Add your own configurations here
-    //See the section How to configure the Free Video Player, to see more of the possible configuration options
+    // Add your own configurations here
+    // See the section How to configure the Free Video Player, 
+    // to see more of the possible configuration options
 }
 
-//Then instantiate the actual player object
+// Then instantiate the actual player object
 var player = freeVideoPlayer(optionalConfigurationObject);
 
-//Now we can use the player object with regular javascript or libraries such as for instance jQuery/Angular or the
-//developers choice
-//Like for instance if we have a button or element in the DOM that has an onclick event listener,
-//then we could use that to call a method like this..
+// Now we can use the player object with regular javascript or libraries such as for instance jQuery/Angular or the
+// developers choice
+// Like for instance if we have a button or element in the DOM that has an onclick event listener,
+// then we could use that to call a method like this..
 function someFunctionToPlay(){
 
        var videoUrl = document.getElementById('some-id-field-value-containing-the-video-url-value').value;
+        
+        // This object is optional to add, 
+        // and can include information about the splash (loading) image and such
+        var optionalConfigurationObject = {
+            videoSplashImageUrl:'url_to_splash_image_'
+        };
 
-        //Loads the player
-        player.load(videUrl);
+        //Loads the player (the optionalConfigurationObject is an optional parameter).
+        player.load(videoUrl, optionalConfigurationObject);
 
         //Starts the video..
         player.play();
