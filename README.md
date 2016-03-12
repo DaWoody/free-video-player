@@ -293,13 +293,13 @@ function someFunctionToPlay(){
 
        var videoUrl = document.getElementById('some-id-field-value-containing-the-video-url-value').value;
         
-        // This object is optional to add, 
+        // This object is optional to add when loading a video into the player, 
         // and can include information about the splash (loading) image and such
-        var optionalConfigurationObject = {
+        var optionalPlayConfigurationObject = {
             videoSplashImageUrl:'url_to_splash_image_'
         };
 
-        //Loads the player (the optionalConfigurationObject is an optional parameter).
+        //Loads the player (the optionalPlayConfigurationObject is an optional parameter).
         player.load(videoUrl, optionalConfigurationObject);
 
         //Starts the video..
