@@ -33,12 +33,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
 
         var consoleMessage = '',
             message = messageObject.message,
+            isModule = messageObject.isModule || false,
             methodName = messageObject.methodName,
-            moduleName = messageObject.moduleName,
-            moduleVersion = messageObject.moduleVersion;
+            moduleName = isModule ? messageObject.moduleName : '',
+            moduleVersion = isModule ? messageObject.moduleVersion : '';
 
         consoleMessage += '====================================================' + '\n';
-        consoleMessage += 'Free Video Player Library - ERROR' + '\n';
+        consoleMessage += 'FREE VIDEO PLAYER - ERROR' + '\n';
+        consoleMessage += 'Module: ' + isModule + '\n';
         consoleMessage += 'ModuleName: ' + moduleName + '\n';
         consoleMessage += 'ModuleVersion: ' + moduleVersion + '\n';
         consoleMessage += 'See more @: ' + freeVideoPlayerWebUrl + '\n';
@@ -63,12 +65,15 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
 
         var consoleMessage = '',
             message = messageObject.message,
+            isModule = messageObject.isModule || false,
             methodName = messageObject.methodName,
-            moduleName = messageObject.moduleName,
-            moduleVersion = messageObject.moduleVersion;
+            moduleName = isModule ? messageObject.moduleName : '',
+            moduleVersion = isModule ? messageObject.moduleVersion : '';
+
 
         consoleMessage += '====================================================' + '\n';
-        consoleMessage += 'Free Video Player Library - MESSAGE' + '\n';
+        consoleMessage += 'FREE VIDEO PLAYER - MESSAGE' + '\n';
+        consoleMessage += 'Module: ' + isModule + '\n';
         consoleMessage += 'ModuleName: ' + moduleName + '\n';
         consoleMessage += 'ModuleVersion: ' + moduleVersion + '\n';
         consoleMessage += 'See more @: ' + freeVideoPlayerWebUrl + '\n';
@@ -89,7 +94,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
      */
     function printOutLine(message){
         if(settingsObject.debugMode){
-            console.log('Free Video Player - ' + message);
+            console.log('FREE VIDEO PLAYER - ' + message);
         }
     };
 
@@ -101,7 +106,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
      */
     function printOutWarning(message){
         if(settingsObject.debugMode){
-            console.warn('Free Video Player - ' + message);
+            console.warn('FREE VIDEO PLAYER - ' + message);
         }
     };
 

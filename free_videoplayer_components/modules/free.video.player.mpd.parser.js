@@ -58,6 +58,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnMediaTypeFromMpdObject';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mediaType;
@@ -93,6 +94,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnMaxSegmentDurationFromMpdObject';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
                 messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return segmentDuration;
@@ -141,6 +143,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnMediaDurationInSecondsFromMpdObject';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mediaDurationInSeconds;
@@ -178,6 +181,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnAverageSegmentDurationFromMpdObject';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         //First lets set that the segment length should not be more than one minute
@@ -212,6 +216,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnArrayOfAdaptionSetsFromMpdObject';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
 
         }
@@ -271,6 +276,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnArrayOfSubtitlesFromMpdObjectAndBaseUrl';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnArrayOfSubtitles;
@@ -330,6 +336,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnSegmentTemplateFromAdapationSet';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return segmentTemplate;
@@ -353,6 +360,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnMimeTypeFromAdaptionSet';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mimeType;
@@ -376,6 +384,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnSubtitleUrlFromAdapationSet';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return subtitleLanguage;
@@ -408,6 +417,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnArrayOfRepresentationFromAdapationSet';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnArray;
@@ -436,6 +446,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnArrayOfContentComponentsFromAdaptionSet';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnArray;
@@ -461,6 +472,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnBaseUrlFromRepresentation';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return baseUrl;
@@ -483,6 +495,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnMimeTypeFromRepresentation';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return mimeType;
@@ -505,6 +518,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnCodecsFromRepresentation';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return codecs;
@@ -527,6 +541,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnStartNumberFromRepresentation';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return startNumber;
@@ -568,6 +583,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnArrayOfBaseUrlsFromArrayOfRepresentations';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return arrayOfBaseUrlObjects;
@@ -593,6 +609,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnDurationFromSegmentTemplate';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return duration;
@@ -615,6 +632,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnInitializationFromSegmentTemplate';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return initializationFile;
@@ -642,6 +660,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnMediaStructureAsObjectFromSegmentTemplate';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnObject;
@@ -688,6 +707,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 messageObject.methodName = 'returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return returnArray;
@@ -773,6 +793,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                     messageObject.methodName = 'returnTypeFromMimeType';
                     messageObject.moduleName = moduleName;
                     messageObject.moduleVersion = moduleVersion;
+                    messageObject.isModule = isModuleValue;
                 messagesModule.printOutErrorMessageToConsole(messageObject, e);
             }
         return returnType;

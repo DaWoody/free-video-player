@@ -14,7 +14,7 @@ var freeVideoPlayer = function(initiationObject){
     //  #### VARIABLE INSTANTIATION ####
     //  ################################
     var that = {},
-        moduleName = 'Free Video Player',
+        moduleName = 'FREE VIDEO PLAYER',
         isModuleValue = false,
         moduleVersion = '0.9.0',
         videoPlayerNameCss = 'free-video-player',
@@ -611,7 +611,7 @@ var freeVideoPlayer = function(initiationObject){
         _clearCurrentVideoObjectProperties();
         _clearVideoContainer();
         if(adaptiveStreamingModule){
-            adaptiveStreamingModule.abortSourceBuffers();
+            //adaptiveStreamingModule.abortSourceBuffers(currentVideoObject);
             //adaptiveStreamingModule.clearMediaSource();
             adaptiveStreamingModule.clearCurrentVideoStreamObject();
         }

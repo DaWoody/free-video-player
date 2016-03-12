@@ -55,6 +55,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             messageObject.methodName = 'printOutOnStartup';
             messageObject.moduleName = moduleName;
             messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
             messagesModule.printOutMessageToConsole(messageObject);
         } else {
             var messageObject = {};
@@ -62,6 +63,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             messageObject.methodName = 'printOutOnStartup';
             messageObject.moduleName = moduleName;
             messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
             messagesModule.printOutMessageToConsole(messageObject);
         }
     };
@@ -89,9 +91,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             //Utilizing methods for media source extension
             //Read more @
             //https://w3c.github.io/media-source/#mediasource-detach
+            //More testing for future implementation
+            //var streamObject = currentVideoObject.streamObject;
+            //console.log('StreamObject');
+            //console.log(streamObject);
 
-            var sourceBuffers = currentVideoObject.streamObject.sourceBuffers,
-                activeSourceBuffers = currentVideoObject.streamObject.activeSourceBuffers,
+            var sourceBuffers = currentVideoObject.streamObject.sourceBuffers || [],
+                activeSourceBuffers = currentVideoObject.streamObject.activeSourceBuffers || [],
                 endTimeForVideo = 99999999999;
 
             //Setting the current video to closed and NaN
@@ -125,6 +131,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 messageObject.methodName = 'abortSourceBuffers';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         //Should we just return that module or the videoStreamingObject
@@ -552,8 +559,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         }
 
         if( 0 == that._videoElement.buffered.length ) {
-            that._videoElement.readyState = that._videoElement.HAVE_METADATA;
-            //return;
+            //that._videoElement.readyState = that._videoElement.HAVE_METADATA;
+            //Do stuff here
+            return;
         } else if( that._videoElement.currentTime > that._videoElement.buffered.end(0) - 15 ) {
             //that._videoElement.readyState = that._videoElement.HAVE_FUTURE_DATA;
         }
@@ -678,6 +686,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 messageObject.methodName = 'clearMediaSource';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return that;
@@ -842,6 +851,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 messageObject.methodName = '_returnBaseUrlBasedOnBitrateTimeSwitch';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return baseUrl;

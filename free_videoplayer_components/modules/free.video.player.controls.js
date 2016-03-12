@@ -467,38 +467,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoObject._isPlaying = true;
     };
 
-
-    /**
-     * @function
-     * @name _playMethodFromSlider
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
-     * @description A method called when the progress slider is moved, if the current state of the videoElement
-     * is playing then the video should continue playing, otherwise the state should be stopped/paused.
-     * @private
-     */
-    function _playMethodFromSlider(){
-        if(that.currentVideoObject.playing){
-            that.videoElement.play();
-            _addPauseIconToControls();
-            that.currentVideoObject.playing = true;
-        } else {
-            _pauseMethodFromSlider();
-            that.currentVideoObject.playing = false;
-        }
-    };
-
-    /**
-     * @function
-     * @name _pauseMethodFromSlider
-     * @memberof FREE VIDEO PLAYER - VIDEO CONTROLS MODULE
-     * @description A method to pause the videoElement, utilized as a sub-method when the slider is moved
-     * @private
-     */
-    function _pauseMethodFromSlider(){
-        that.videoElement.pause();
-        _addPlayIconToControls();
-    };
-
     /**
      * @function
      * @name _volumeShiftMethod
@@ -743,6 +711,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 messageObject.methodName = '_addCssClassToElementAndReturn';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutMessageToConsole(messageObject);
         }
     };
@@ -813,7 +782,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @private
      */
     function _removeKeyboardListeners(){
-        //Remove space bar key listener
+        //Remove key listeners
         _removeKeyPressListener();
         _removeFullscreenListener();
     };
@@ -864,6 +833,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 messageObject.methodName = '_removePlayPauseSpaceBarListener';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutMessageToConsole(messageObject);
         }
     };
@@ -882,9 +852,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             _playPauseMethod();
         }
 
-        if (code === videoControlsKeyboardCodes.get('spacebar')) {
+        if (code === videoControlsKeyboardCodes.get('enter')) {
             event.preventDefault();
-            _playPauseMethod();
+            _fullScreenMethod();
         }
     };
 
@@ -956,6 +926,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                     messageObject.methodName = 'returnHoursMinutesSecondsFromSeconds';
                     messageObject.moduleName = moduleName;
                     messageObject.moduleVersion = moduleVersion;
+                    messageObject.isModule = isModuleValue;
                 messagesModule.printOutErrorMessageToConsole(messageObject, e);
             }
         return returnHourMinutesSeconds;
@@ -1010,6 +981,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             messageObject.methodName = '_createBitrateMenuAndReturnMenu';
             messageObject.moduleName = moduleName;
             messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return bitrateMenu;
@@ -1074,6 +1046,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 messageObject.methodName = '_createSubtitlesMenuAndReturnMenu';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return subtitlesMenu;
@@ -1179,6 +1152,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 messageObject.methodName = '_returnFirstWordFromSubtitleLabel';
                 messageObject.moduleName = moduleName;
                 messageObject.moduleVersion = moduleVersion;
+                messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return modifiedSubtitleLabel;
@@ -1201,6 +1175,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             messageObject.methodName = '_returnSubtitleLabelCapitalized';
             messageObject.moduleName = moduleName;
             messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return modifiedSubtitleLabel;
@@ -1223,6 +1198,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             messageObject.methodName = '_returnSubtitleLabelSmallLetters';
             messageObject.moduleName = moduleName;
             messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return modifiedSubtitleLabel;
@@ -1263,6 +1239,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             messageObject.methodName = '_returnModifiedArrayOfSubtitlesWithLabel';
             messageObject.moduleName = moduleName;
             messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
             messagesModule.printOutErrorMessageToConsole(messageObject, e);
         }
         return arrayOfSubtitles;
@@ -1294,8 +1271,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         return moduleName;
     };
 
-
-
     /**
      * @function
      * @name isModule
@@ -1311,7 +1286,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     //  #############################
     //  #### MAKE METHODS PUBLIC ####
     //  #############################
-
     //Controls
     that.createVideoControls = createVideoControls;
     that.updateProgressBarWithBufferedData = updateProgressBarWithBufferedData;
@@ -1332,6 +1306,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     that.getVersion = getVersion;
     that.isModule = isModule;
 
-    //Return our object
+    //Return our controls object
     return that;
 };
