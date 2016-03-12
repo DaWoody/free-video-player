@@ -71,7 +71,7 @@ Furthermore there are currently three dependencies which also comes bundled with
 but default is that the player will try to look for this *json* file in the folder *subtitles* provided with the bundle.
 3 The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of *Free Video Player*.
 
-*Basically, if you just copy the **freevideoplayer** folder and put it inside your javascript (js) folder and reference it correctly from your html, it should work.* 
+Basically, if you just copy the **freevideoplayer** folder and put it inside your javascript (js) folder and reference it correctly from your html, it should work.
 
 Currently there is also one external dependency with [Font Awesome](https://fortawesome.github.io/Font-Awesome/), which the player uses for current icon implementation within the video controls.
 
@@ -102,12 +102,13 @@ var freeVideoPlayerOptionalConfigurationObject = {
     
                 //Add this parameter if you want to change the actual js class name that the Free Video Player uses
                 //as a target to instantiate the player, the default value is js-free-video-player-container.
-                videoWrapperClassName: 'js-free-video-player-container',
+                videoWrapperClassName: 'js-free-video-player',
                 //This is the default video splash image used on videos if no splash image is provided for the asset
                 //when using the load method
                 videoSplashImageUrl:'../images/free-video-player-logo.png',
                 //This is the url used to fetch the iso-639-1 languages and labels used when the subtitles
-                //in streams are added to the DOM and the control structure
+                //in streams are added to the DOM and the control structure. Here we are asuming you have organised
+                //your javascript files into a a /js folder structure and copied over the freevideoplayer folder into your js folder.
                 iso6391Url:'/js/freevideoplayer/subtitles/iso-639-1.json',
                 
                 //This shows the default inner html for the different Video Controls discussed earlier
