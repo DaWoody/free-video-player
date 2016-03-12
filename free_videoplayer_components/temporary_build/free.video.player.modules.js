@@ -657,7 +657,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
         xhr.onload = function(e) {
             if (xhr.status != 200) {
-                alert("Unexpected status code " + xhr.status + " for " + url);
+                messagesModule.printOutWarning("Unexpected status code " + xhr.status + " for " + url);
                 return false;
             }
             callback(new Uint8Array(xhr.response));
@@ -1040,6 +1040,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     };
 
     /**
+     * @name printOutWarning
+     * @description A simple console method to print out a warning with a message, could be switched on and off based on a debug parameter when Free Video Player is instantiated.
+     * @param message {string} - a message string to print out
+     * @public
+     */
+    function printOutWarning(message){
+        if(settingsObject.debugMode){
+            console.warn('Free Video Player - ' + message);
+        }
+    };
+
+    /**
      * @name printOutObject
      * @description A simple console method to print out an object with a message, could be switched on and off based on a debug parameter when Free Video Player is instantiated.
      * @param object {object} - the actual object to print out
@@ -1094,6 +1106,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     that.printOutErrorMessageToConsole  = printOutErrorMessageToConsole;
     that.printOutMessageToConsole = printOutMessageToConsole;
     that.printOutLine = printOutLine;
+    that.printOutWarning = printOutWarning;
     that.printOutObject = printOutObject;
 
     //General
@@ -1285,6 +1298,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         //  #### ADD EVENT LISTENERS ####
         //  #############################
 
+
         videoOverlayPlayPauseIcon.addEventListener('click', _playPauseMethod);
 
         playButton.addEventListener('click', _playPauseMethod);
@@ -1293,15 +1307,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         progressSlider.addEventListener('change', _progressShiftMethod);
         progressSlider.addEventListener('mousedown', _pauseUpdateProgressBar);
         progressSlider.addEventListener('mouseup', _continueUpdateProgressBar);
-
-        //TEST METHOD FOR CHANGING POINTER AT SLIDER
-        //progressSlider.addEventListener('click', function(event){
-        //
-        //    console.log('Ok clicked it..');
-        //    console.log(this);
-        //    console.log(event);
-        //   // that.videoElement.currentTime = 30;
-        //});
 
         volumeIcon.addEventListener('click', _volumeMuteUnmuteMethod);
         volumeIcon.addEventListener('mouseover', _showVolumeSlider);
@@ -1329,7 +1334,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 settingsMenu.appendChild(subtitlesContainer);
             }
         });
-
 
         //  #############################
         //  #### APPEND DOM ELEMENTS ####
@@ -1393,6 +1397,15 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         _createKeyboardListeners();
     };
 
+    /**
+     * @function
+     * @name updateProgressBarWithBufferedData
+     * @description A public method accessible to the adaptive streaming module, so the adaptive streaming methods or a regular load non adaptive content method (from the Free Video Player main class), can fire and update how much buffering of the progress bar has been done.
+     * @param bufferedStart {number} - When buffering started (usually at 0, for VOD etc)
+     * @param bufferedEnd {number} - How much has been buffered so far
+     * @param totalDurationInSeconds {string | number} - The total duration of the media
+     * @public
+     */
     function updateProgressBarWithBufferedData(bufferedStart, bufferedEnd, totalDurationInSeconds){
 
         //lets update the progressBar in the Dom with buffered data
@@ -1406,8 +1419,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         that.currentVideoControlsObject.progressBarBuffered.setAttribute('style', 'width:' + totalBufferedInPercent + '%;');
         that.currentVideoControlsObject.progressBarBuffered.setAttribute('aria-valuenow', totalBufferedInPercent);
     };
-
-
 
     /**
      * @function
@@ -1535,7 +1546,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         }
     };
 
-
     /**
      * @function
      * @name _addPlayIconToControls
@@ -1560,7 +1570,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
 
 
     /**
-     *
+     * @function
+     * @name _pauseUpdateProgressBar
      * @private
      */
     function _pauseUpdateProgressBar(){
@@ -1568,7 +1579,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     };
 
     /**
-     *
+     * @function
+     * @name _continueUpdateProgressBar
      * @private
      */
     function _continueUpdateProgressBar(){
@@ -1959,22 +1971,27 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     function _spaceBarEscKeyPress(event){
 
         var code = event.keyCode ? event.keyCode : event.which;
-        messagesModule.printOutLine('The keyboard code is ' + code);
+        //messagesModule.printOutLine('The keyboard code is ' + code);
 
         //SpaceBar KeyPress
         if (code === videoControlsKeyboardCodes.get('spacebar')) {
             event.preventDefault();
             _playPauseMethod();
         }
-        //Esc KeyPress
-        if (code === videoControlsKeyboardCodes.get('esc')) {
-            event.preventDefault();
-            if(_isFullScreen()){
-                that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
-            } else {
-                that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenCompressIconInnerHtml;
-            }
-        }
+        ////Esc KeyPress
+        //if (code === videoControlsKeyboardCodes.get('esc')) {
+        //    event.preventDefault();
+        //    if(_isFullScreen()){
+        //        that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
+        //    } else {
+        //        that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenCompressIconInnerHtml;
+        //    }
+        //}
+    };
+
+
+    function _contractFullscreenIcon(){
+        that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
     };
 
     /**

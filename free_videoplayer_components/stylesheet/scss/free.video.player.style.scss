@@ -1,7 +1,7 @@
 /**
  * @title FREE VIDEO PLAYER - SCSS - Stylesheet
  * @authors Johan Wedfelt
- * @description This is the SCSS stylesheet for the Free Video Player, this could be changed when/if you want
+ * @description This is the SCSS stylesheet for the Free Video Player, this could be changed when/if you want. Check out more @ http://www.freevideoplayer.org
  * @license GPLv3, see http://www.gnu.org/licenses/gpl-3.0.en.html
 *
 */
@@ -18,7 +18,6 @@ $player-controls-progress-slider-width-large: 400px;
 $player-controls-progress-slider-width-medium: 220px;
 $player-controls-progress-slider-width-small: 140px;
 $player-controls-button-width: 15px;
-
 
 //Icon base64 encoded images
 .free-video-player-paused {
@@ -137,7 +136,7 @@ video::-webkit-media-controls-panel {
   width: 100%;
   height: 50px;
   display: inline-block;
-  opacity: 0;
+  opacity: 1;
   left:0;
   bottom:0;
   color: $player-controls-background-color;
@@ -242,8 +241,6 @@ video::-webkit-media-controls-panel {
       margin-left:10px;
   }
 
-
-
   //####
   //Player controls
   //####
@@ -272,7 +269,8 @@ video::-webkit-media-controls-panel {
     position: absolute;
     background:$player-controls-background-color;
     bottom: 50px;
-    left: 520px;
+    left: auto;
+    right:20px;
     min-width: 165px;
     height:auto;
     color:$player-controls-shadow-color;
@@ -283,10 +281,6 @@ video::-webkit-media-controls-panel {
     -webkit-border-radius:3px;
     -o-border-radius:3px;
     -moz-border-radius: 3px;
-
-
-
-
 
 
     div {
@@ -630,19 +624,7 @@ video::-webkit-media-controls-panel {
       font-size:4em;
     }
   }
-
-  .free-video-player-controls{
-    .free-video-player-controls-settings-menu {
-      left:260px;
-    }
-  }
-
 }
-
-
-
-
-
 
 //Lets change the video player here when its really small(mobile devices and such)
 @media all and (max-width: 450px){
@@ -671,43 +653,5 @@ video::-webkit-media-controls-panel {
       font-size:2.5em;
     }
   }
-
-  .free-video-player-controls{
-    .free-video-player-controls-settings-menu {
-      left:150px;
-    }
-  }
 }
 
-
-
-//Fullscreen styling
-//Not working currently
-:fullscreen,
-:-moz-full-screen,
-:-webkit-full-screen,
-:-ms-fullscreen{
-  .free-video-player-controls {
-    .free-video-player-controls-settings-menu {
-      background: red;
-      //Lets set the position as when fullscreen
-      left:auto !important;
-      right:10px !important;
-    }
-  }
-
-  .free-video-player-controls-settings-menu {
-    background: blue;
-    //Lets set the position as when fullscreen
-    left:auto !important;
-    right:10px !important;
-  }
-}
-
-:fullscreen video {
-  background:red;
-}
-
-:-webkit-full-screen video {
-  background:red;
-}

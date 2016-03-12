@@ -364,7 +364,7 @@ var freeVideoPlayer = function(initiationObject){
 
         xhr.onload = function(e) {
             if (xhr.status != 200) {
-                alert("Unexpected status code " + xhr.status + " for " + url);
+                messagesModule.printOutWarning("Unexpected status code " + xhr.status + " for " + url);
                 return false;
             }
             callback(xhr.response);

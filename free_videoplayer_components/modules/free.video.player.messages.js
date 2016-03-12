@@ -94,6 +94,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     };
 
     /**
+     * @name printOutWarning
+     * @description A simple console method to print out a warning with a message, could be switched on and off based on a debug parameter when Free Video Player is instantiated.
+     * @param message {string} - a message string to print out
+     * @public
+     */
+    function printOutWarning(message){
+        if(settingsObject.debugMode){
+            console.warn('Free Video Player - ' + message);
+        }
+    };
+
+    /**
      * @name printOutObject
      * @description A simple console method to print out an object with a message, could be switched on and off based on a debug parameter when Free Video Player is instantiated.
      * @param object {object} - the actual object to print out
@@ -148,6 +160,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMessages = function(settingsObjec
     that.printOutErrorMessageToConsole  = printOutErrorMessageToConsole;
     that.printOutMessageToConsole = printOutMessageToConsole;
     that.printOutLine = printOutLine;
+    that.printOutWarning = printOutWarning;
     that.printOutObject = printOutObject;
 
     //General

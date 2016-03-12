@@ -1,7 +1,7 @@
 /**
  * @title FREE VIDEO PLAYER - SCSS - Stylesheet
  * @authors Johan Wedfelt
- * @description This is the SCSS stylesheet for the Free Video Player, this could be changed when/if you want
+ * @description This is the SCSS stylesheet for the Free Video Player, this could be changed when/if you want. Check out more @ http://www.freevideoplayer.org
  * @license GPLv3, see http://www.gnu.org/licenses/gpl-3.0.en.html
 *
 */
@@ -97,7 +97,7 @@ video::-webkit-media-controls-panel {
   width: 100%;
   height: 50px;
   display: inline-block;
-  opacity: 0;
+  opacity: 1;
   left: 0;
   bottom: 0;
   color: rgba(176, 228, 255, 0.8);
@@ -182,7 +182,8 @@ video::-webkit-media-controls-panel {
     position: absolute;
     background: rgba(176, 228, 255, 0.8);
     bottom: 50px;
-    left: 520px;
+    left: auto;
+    right: 20px;
     min-width: 165px;
     height: auto;
     color: rgba(12, 16, 18, 0.7);
@@ -425,9 +426,7 @@ video::-webkit-media-controls-panel {
   .free-video-player-controls-overlay-play-pause-icon i {
     font-size: 4em; }
   .free-video-player-controls-overlay-spinner-icon i {
-    font-size: 4em; }
-  .free-video-player-controls .free-video-player-controls-settings-menu {
-    left: 260px; } }
+    font-size: 4em; } }
 
 @media all and (max-width: 450px) {
   .js-free-video-player-style {
@@ -438,28 +437,4 @@ video::-webkit-media-controls-panel {
   .free-video-player-controls-overlay-play-pause-icon i {
     font-size: 2.5em; }
   .free-video-player-controls-overlay-spinner-icon i {
-    font-size: 2.5em; }
-  .free-video-player-controls .free-video-player-controls-settings-menu {
-    left: 150px; } }
-
-:fullscreen .free-video-player-controls .free-video-player-controls-settings-menu,
-:-moz-full-screen .free-video-player-controls .free-video-player-controls-settings-menu,
-:-webkit-full-screen .free-video-player-controls .free-video-player-controls-settings-menu,
-:-ms-fullscreen .free-video-player-controls .free-video-player-controls-settings-menu {
-  background: red;
-  left: auto !important;
-  right: 10px !important; }
-
-:fullscreen .free-video-player-controls-settings-menu,
-:-moz-full-screen .free-video-player-controls-settings-menu,
-:-webkit-full-screen .free-video-player-controls-settings-menu,
-:-ms-fullscreen .free-video-player-controls-settings-menu {
-  background: blue;
-  left: auto !important;
-  right: 10px !important; }
-
-:fullscreen video {
-  background: red; }
-
-:-webkit-full-screen video {
-  background: red; }
+    font-size: 2.5em; } }
