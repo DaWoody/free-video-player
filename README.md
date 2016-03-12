@@ -17,6 +17,9 @@
     * For adaptive DASH content, support for subtitles exists, for non-segmented subtitle VTT files, added as a separate adaptionSet within the mpd
     * For adaptive DASH content, support for both separated video and audio tracks, aswell as muxxed (video and audio combined) exists
     * The release comes with a fully documented version (free.video.player.full.js) and a minified version (free.video.player.minified.js), a css file for player styles (free.video.player.style.css), aswell as base files for SCSS (for web-designers/developers wanting to just style the player a bit), a documentation folder including JSDOC based documentation more explicitly describing the Free Video Player API and more, a subtitles folder with a parsed JSON file including information for subtitle labels which Free Video Player per default utilizes if subtitles are found within a DASH stream, and finally the release also contains both a README and a LICENSE file
+
+***    
+
 ##Introduction
 ***
 Thank you for downloading and using [Free Video Player](http://www.freevideoplayer.org)!
