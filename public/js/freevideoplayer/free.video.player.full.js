@@ -1892,8 +1892,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             // into at least to different parts
             // we should now fetch the first instance
             classString = classString[0].trim();
-        } else {
-            //Do nothing here
         }
         element.setAttribute('class', classString);
     };
@@ -1932,8 +1930,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
     function _createKeyboardListeners(){
         //Lets first add the codes for the different buttons
         _addKeyboardShortCodes();
-        //Add event listener for space button - play/pause
-        _createPlayPauseSpaceBarListener();
+        // Add event listener for different key press situations,
+        // like space button - play/pause
+        _createKeyPressListener();
+        _createFullscreenListener();
     };
 
     /**
@@ -1944,7 +1944,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      */
     function _removeKeyboardListeners(){
         //Remove space bar key listener
-        _removePlayPauseSpaceBarAndEscFullscreenListener();
+        _removeKeyPressListener();
+        _removeFullscreenListener();
     };
 
     /**
@@ -1952,17 +1953,41 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @description A method that enables to play/pause from the keyboard spacebar.
      * @private
      */
-    function _createPlayPauseSpaceBarListener(){
-        document.addEventListener('keypress', _spaceBarEscKeyPress);
+    function _createKeyPressListener(){
+        document.addEventListener('keydown', _keyPress);
+    };
+
+    /**
+     * @name _createFullscreenListener
+     * @description A method hooking on event listeners to the fullscreenchange event, also for vendor/browser specific events
+     * @private
+     */
+    function _createFullscreenListener(){
+        document.addEventListener('webkitfullscreenchange', _contractExpandFullscreenIcon);
+        document.addEventListener('mozfullscreenchange', _contractExpandFullscreenIcon);
+        document.addEventListener('msfullscreenchange', _contractExpandFullscreenIcon);
+        document.addEventListener('fullscreenchange', _contractExpandFullscreenIcon);
+    };
+
+    /**
+     * @name _removeFullscreenListener
+     * @description A method to remove the previously hooked up events for the fullscreenchange events
+     * @private
+     */
+    function _removeFullscreenListener(){
+        document.removeEventListener('webkitfullscreenchange', _contractExpandFullscreenIcon);
+        document.removeEventListener('mozfullscreenchange', _contractExpandFullscreenIcon);
+        document.removeEventListener('msfullscreenchange', _contractExpandFullscreenIcon);
+        document.removeEventListener('fullscreenchange', _contractExpandFullscreenIcon);
     };
 
     /**
      * @description The method that removes the play/pause button from the spacebar.
      * @private
      */
-    function _removePlayPauseSpaceBarAndEscFullscreenListener(){
+    function _removeKeyPressListener(){
         try {
-            document.removeEventListener('keypress', _spaceBarEscKeyPress);
+            document.removeEventListener('keydown', _keyPress);
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not remove play/pause spacebar or esc eventlistener';
@@ -1978,30 +2003,32 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
      * @param event
      * @private
      */
-    function _spaceBarEscKeyPress(event){
-
+    function _keyPress(event){
         var code = event.keyCode ? event.keyCode : event.which;
         //messagesModule.printOutLine('The keyboard code is ' + code);
-
         //SpaceBar KeyPress
         if (code === videoControlsKeyboardCodes.get('spacebar')) {
             event.preventDefault();
             _playPauseMethod();
         }
-        ////Esc KeyPress
-        //if (code === videoControlsKeyboardCodes.get('esc')) {
-        //    event.preventDefault();
-        //    if(_isFullScreen()){
-        //        that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
-        //    } else {
-        //        that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenCompressIconInnerHtml;
-        //    }
-        //}
+
+        if (code === videoControlsKeyboardCodes.get('spacebar')) {
+            event.preventDefault();
+            _playPauseMethod();
+        }
     };
 
-
-    function _contractFullscreenIcon(){
-        that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
+    /**
+     * @name _contractFullscreenIcon
+     * @description A Helper function to modify the GUI of the Video Controls if the user is in fullscreen mode and decides to exit the mode by pressing ESC
+     * @private
+     */
+    function _contractExpandFullscreenIcon(){
+        if(_isFullScreen()){
+            that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenCompressIconInnerHtml;
+        } else {
+            that.currentVideoControlsObject.fullScreenButton.innerHTML = settingsObject.videoControlsInnerHtml.fullscreenExpandIconInnerHtml;
+        }
     };
 
     /**
@@ -2014,6 +2041,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
         videoControlsKeyboardCodes.set('esc', 27);
         videoControlsKeyboardCodes.set('leftArrow', 37);
         videoControlsKeyboardCodes.set('rightArray', 39);
+        videoControlsKeyboardCodes.set('enter', 13);
     };
 
     //  ################################
