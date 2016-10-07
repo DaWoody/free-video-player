@@ -16,10 +16,10 @@ var freeVideoPlayer = function(initiationObject){
     var that = {},
         moduleName = 'FREE VIDEO PLAYER',
         isModuleValue = false,
-        moduleVersion = '0.9.0',
+        moduleVersion = '0.9.1',
         videoPlayerNameCss = 'free-video-player',
         base64encodedImage = freeVideoPlayerModulesNamespace.freeVideoPlayerDefaultSplashImage,
-        xml2json = new X2JS(),
+        xml2json = new freeVideoPlayerModulesNamespace.X2JS(),
         defaultSettingsObject = {
             videoWrapperClassName: 'js-' + videoPlayerNameCss,
             videoWrapperBackgroundColor:  '#292c3c',
@@ -359,7 +359,7 @@ var freeVideoPlayer = function(initiationObject){
             url = settingsObject.iso6391Url;
 
         xhr.open('GET', url, true);
-        xhr.responseType = 'application/json';
+        xhr.responseType = 'json';
         xhr.send();
 
         xhr.onload = function(e) {
