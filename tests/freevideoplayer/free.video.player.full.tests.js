@@ -37,7 +37,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         settingsObject = settingsObject,
         isModuleValue = true,
         moduleName = 'ADAPTIVE STREAMING',
-        moduleVersion = '0.9.0',
+        moduleVersion = '0.9.1',
         currentVideoObject = {},
         adaptiveBitrateAlgorithmValue = new Map();
         currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
@@ -193,7 +193,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     function browserSupportsMediaSource(){
       var browserSupportsMediaSourceExtension = false,
-          mediaSource = new MediaSource() || null;
+          mediaSource = (function(){
+              var returnValue = null;
+                try {
+                    returnValue = new MediaSource();
+                } catch(e){
+                    // We are now not printin anything,
+                    // but the media source is not supported
+                    // console.log(e);
+                }
+                return returnValue;
+          })();
 
         if(mediaSource){
             browserSupportsMediaSourceExtension = true;
@@ -3783,20 +3793,36 @@ var freeVideoPlayer = function(initiationObject){
      * @param callback
      */
     var _getISO_639_1_Json = function(callback){
-        var xhr = new XMLHttpRequest(),
-            url = settingsObject.iso6391Url;
+        var xhr = (function(){
+            var returnObject = null;
+            try {
+                returnObject = new XMLHttpRequest();
+            } catch(e){
 
-        xhr.open('GET', url, true);
-        xhr.responseType = 'json';
-        xhr.send();
-
-        xhr.onload = function(e) {
-            if (xhr.status != 200) {
-                messagesModule.printOutWarning("Unexpected status code " + xhr.status + " for " + url);
-                return false;
             }
-            callback(xhr.response);
-        };
+            return returnObject;
+        })();
+
+        var url = settingsObject.iso6391Url;
+
+        if(xhr){
+            xhr.open('GET', url, true);
+            xhr.responseType = 'json';
+            xhr.send();
+
+            xhr.onload = function(e) {
+                if (xhr.status != 200) {
+                    messagesModule.printOutWarning("Unexpected status code " + xhr.status + " for " + url);
+                    return false;
+                }
+                callback(xhr.response);
+            };
+        } else {
+            //when we don not have access to the browser and its methods.
+            //Lets add a temporary object here, based for testing. This will be the default ISO language object
+            var isoObject = [{"language":"","label":""},{"language":"ab","label":"аҧсуа бызшәа, аҧсшәа"},{"language":"aa","label":"Afaraf"},{"language":"af","label":"Afrikaans"},{"language":"ak","label":"Akan"},{"language":"sq","label":"Shqip"},{"language":"am","label":"አማርኛ"},{"language":"ar","label":"\nالعربية\n"},{"language":"an","label":"aragonés"},{"language":"hy","label":"Հայերեն"},{"language":"as","label":"অসমীয়া"},{"language":"av","label":"авар мацӀ, магӀарул мацӀ"},{"language":"ae","label":"avesta"},{"language":"ay","label":"aymar aru"},{"language":"az","label":"azərbaycan dili"},{"language":"bm","label":"bamanankan"},{"language":"ba","label":"башҡорт теле"},{"language":"eu","label":"euskara, euskera"},{"language":"be","label":"беларуская мова"},{"language":"bn","label":"বাংলা"},{"language":"bh","label":"भोजपुरी"},{"language":"bi","label":"Bislama"},{"language":"bs","label":"bosanski jezik"},{"language":"br","label":"brezhoneg"},{"language":"bg","label":"български език"},{"language":"my","label":"ဗမာစာ"},{"language":"ca","label":"català"},{"language":"ch","label":"Chamoru"},{"language":"ce","label":"нохчийн мотт"},{"language":"ny","label":"chiCheŵa, chinyanja"},{"language":"","label":""},{"language":"cv","label":"чӑваш чӗлхи"},{"language":"kw","label":"Kernewek"},{"language":"co","label":"corsu, lingua corsa"},{"language":"cr","label":"ᓀᐦᐃᔭᐍᐏᐣ"},{"language":"hr","label":"hrvatski jezik"},{"language":"cs","label":"čeština, český jazyk"},{"language":"da","label":"dansk"},{"language":"dv","label":"\nދިވެހި\n"},{"language":"nl","label":"Nederlands, Vlaams"},{"language":"dz","label":"རྫོང་ཁ"},{"language":"en","label":"English"},{"language":"eo","label":"Esperanto"},{"language":"et","label":"eesti, eesti keel"},{"language":"ee","label":"Eʋegbe"},{"language":"fo","label":"føroyskt"},{"language":"fj","label":"vosa Vakaviti"},{"language":"fi","label":"suomi, suomen kieli"},{"language":"fr","label":"français, langue française"},{"language":"ff","label":"Fulfulde, Pulaar, Pular"},{"language":"gl","label":"galego"},{"language":"ka","label":"ქართული"},{"language":"de","label":"Deutsch"},{"language":"el","label":"ελληνικά"},{"language":"gn","label":"Avañe'ẽ"},{"language":"gu","label":"ગુજરાતી"},{"language":"ht","label":"Kreyòl ayisyen"},{"language":"ha","label":"\n(Hausa) هَوُسَ\n"},{"language":"he","label":"\nעברית\n"},{"language":"hz","label":"Otjiherero"},{"language":"hi","label":"हिन्दी, हिंदी"},{"language":"ho","label":"Hiri Motu"},{"language":"hu","label":"magyar"},{"language":"ia","label":"Interlingua"},{"language":"id","label":"Bahasa Indonesia"},{"language":"ie","label":"Originally called Occidental; then Interlingue after WWII"},{"language":"ga","label":"Gaeilge"},{"language":"ig","label":"Asụsụ Igbo"},{"language":"ik","label":"Iñupiaq, Iñupiatun"},{"language":"io","label":"Ido"},{"language":"is","label":"Íslenska"},{"language":"it","label":"italiano"},{"language":"iu","label":"ᐃᓄᒃᑎᑐᑦ"},{"language":"","label":""},{"language":"jv","label":"basa Jawa"},{"language":"kl","label":"kalaallisut, kalaallit oqaasii"},{"language":"kn","label":"ಕನ್ನಡ"},{"language":"kr","label":"Kanuri"},{"language":"","label":""},{"language":"kk","label":"қазақ тілі"},{"language":"km","label":"ខ្មែរ, ខេមរភាសា, ភាសាខ្មែរ"},{"language":"ki","label":"Gĩkũyũ"},{"language":"rw","label":"Ikinyarwanda"},{"language":"ky","label":"Кыргызча, Кыргыз тили"},{"language":"kv","label":"коми кыв"},{"language":"kg","label":"Kikongo"},{"language":"","label":""},{"language":"","label":""},{"language":"kj","label":"Kuanyama"},{"language":"la","label":"latine, lingua latina"},{"language":"lb","label":"Lëtzebuergesch"},{"language":"lg","label":"Luganda"},{"language":"li","label":"Limburgs"},{"language":"ln","label":"Lingála"},{"language":"lo","label":"ພາສາລາວ"},{"language":"lt","label":"lietuvių kalba"},{"language":"","label":""},{"language":"lv","label":"latviešu valoda"},{"language":"gv","label":"Gaelg, Gailck"},{"language":"mk","label":"македонски јазик"},{"language":"mg","label":"fiteny malagasy"},{"language":"","label":""},{"language":"ml","label":"മലയാളം"},{"language":"mt","label":"Malti"},{"language":"mi","label":"te reo Māori"},{"language":"mr","label":"मराठी"},{"language":"mh","label":"Kajin M̧ajeļ"},{"language":"mn","label":"Монгол хэл"},{"language":"na","label":"Ekakairũ Naoero"},{"language":"nv","label":"Diné bizaad"},{"language":"nd","label":"isiNdebele"},{"language":"ne","label":"नेपाली"},{"language":"ng","label":"Owambo"},{"language":"nb","label":"Norsk bokmål"},{"language":"nn","label":"Norsk nynorsk"},{"language":"no","label":"Norsk"},{"language":"ii","label":"ꆈꌠ꒿ Nuosuhxop"},{"language":"nr","label":"isiNdebele"},{"language":"oc","label":"occitan, lenga d'òc"},{"language":"oj","label":"ᐊᓂᔑᓈᐯᒧᐎᓐ"},{"language":"cu","label":"ѩзыкъ словѣньскъ"},{"language":"om","label":"Afaan Oromoo"},{"language":"or","label":"ଓଡ଼ିଆ"},{"language":"os","label":"ирон æвзаг"},{"language":"","label":""},{"language":"pi","label":"पाऴि"},{"language":"fa","label":"\nفارسی\n"},{"language":"pl","label":"język polski, polszczyzna"},{"language":"ps","label":"\nپښتو\n"},{"language":"pt","label":"português"},{"language":"qu","label":"Runa Simi, Kichwa"},{"language":"rm","label":"rumantsch grischun"},{"language":"rn","label":"Ikirundi"},{"language":"ro","label":"limba română"},{"language":"ru","label":"Русский"},{"language":"sa","label":"संस्कृतम्"},{"language":"sc","label":"sardu"},{"language":"","label":""},{"language":"se","label":"Davvisámegiella"},{"language":"sm","label":"gagana fa'a Samoa"},{"language":"sg","label":"yângâ tî sängö"},{"language":"sr","label":"српски језик"},{"language":"gd","label":"Gàidhlig"},{"language":"sn","label":"chiShona"},{"language":"si","label":"සිංහල"},{"language":"sk","label":"slovenčina, slovenský jazyk"},{"language":"sl","label":"slovenski jezik, slovenščina"},{"language":"so","label":"Soomaaliga, af Soomaali"},{"language":"st","label":"Sesotho"},{"language":"es","label":"español"},{"language":"su","label":"Basa Sunda"},{"language":"sw","label":"Kiswahili"},{"language":"ss","label":"SiSwati"},{"language":"sv","label":"svenska"},{"language":"ta","label":"தமிழ்"},{"language":"te","label":"తెలుగు"},{"language":"","label":""},{"language":"th","label":"ไทย"},{"language":"ti","label":"ትግርኛ"},{"language":"bo","label":"བོད་ཡིག"},{"language":"tk","label":"Türkmen, Түркмен"},{"language":"tl","label":"Wikang Tagalog, ᜏᜒᜃᜅ᜔ ᜆᜄᜎᜓᜄ᜔"},{"language":"tn","label":"Setswana"},{"language":"to","label":"faka Tonga"},{"language":"tr","label":"Türkçe"},{"language":"ts","label":"Xitsonga"},{"language":"","label":""},{"language":"tw","label":"Twi"},{"language":"ty","label":"Reo Tahiti"},{"language":"","label":""},{"language":"uk","label":"українська мова"},{"language":"ur","label":"\nاردو\n"},{"language":"","label":""},{"language":"ve","label":"Tshivenḓa"},{"language":"vi","label":"Tiếng Việt"},{"language":"vo","label":"Volapük"},{"language":"wa","label":"walon"},{"language":"cy","label":"Cymraeg"},{"language":"wo","label":"Wollof"},{"language":"fy","label":"Frysk"},{"language":"xh","label":"isiXhosa"},{"language":"yi","label":"\nייִדיש\n"},{"language":"yo","label":"Yorùbá"},{"language":"za","label":"Saɯ cueŋƅ, Saw cuengh"},{"language":"zu","label":"isiZulu"}];
+            callback(JSON.stringify(isoObject));
+        }
     };
 
     //  ####################################

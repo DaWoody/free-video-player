@@ -17,21 +17,37 @@ var freeVideoPlayerFull = require('./../tests/freevideoplayer/free.video.player.
 describe('*** Free Video Player - [TESTING] ***', function(){
     describe('# Test Free Video Player Full -', function(){
 
-        // var configObject = {},
-        //     fullPlayer = freeVideoPlayerFull(configObject);
-
-
 
         //ADD test so we can run the player, maybe in a browser test here
-        it('== Testing the full videoPlayer', function(done){
+        it('== Testing instantiating the free video player in Node environment, some methods might not be working correctly', function(done){
             //Do something here
-            assert.isOk(true, 'Error did not get ok from test');
+            var configObject = {},
+                fullPlayer = freeVideoPlayerFull(configObject);
+
+            assert.isOk(fullPlayer, 'Error did not get ok from when trying to instantiating the Free Video Player');
             done();
         });
 
-        // it('== Testing the test method.. should just return true..', function(done){
+        it('== Trying to test method getName, should just return FREE VIDEO PLAYER', function(done){
+            //Do something here
+
+            var configObject = {},
+                fullPlayer = freeVideoPlayerFull(configObject),
+                name = fullPlayer.getName();
+
+            assert.equal(name, 'FREE VIDEO PLAYER', 'Error did not get ok from test, name is not Free Video Player');
+            done();
+        });
+
+        // it('== Trying to load a url, since the videoObject is not present it should', function(done){
         //     //Do something here
-        //     assert.isOk(movies.test(), 'Error did not get ok from test');
+        //
+        //     var videoUrl = '';
+        //     var configObject = {},
+        //         fullPlayer = freeVideoPlayerFull(configObject);
+        //     var loaded = fullPlayer.load(videoUrl);
+        //
+        //     assert.isOk(loaded, 'Error did not get ok from test');
         //     done();
         // });
     });

@@ -19,7 +19,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         settingsObject = settingsObject,
         isModuleValue = true,
         moduleName = 'ADAPTIVE STREAMING',
-        moduleVersion = '0.9.0',
+        moduleVersion = '0.9.1',
         currentVideoObject = {},
         adaptiveBitrateAlgorithmValue = new Map();
         currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
@@ -175,7 +175,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     function browserSupportsMediaSource(){
       var browserSupportsMediaSourceExtension = false,
-          mediaSource = new MediaSource() || null;
+          mediaSource = (function(){
+              var returnValue = null;
+                try {
+                    returnValue = new MediaSource();
+                } catch(e){
+                    // We are now not printin anything,
+                    // but the media source is not supported
+                    // console.log(e);
+                }
+                return returnValue;
+          })();
 
         if(mediaSource){
             browserSupportsMediaSourceExtension = true;
