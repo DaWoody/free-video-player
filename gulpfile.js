@@ -15,6 +15,7 @@ requireDir('./gulp_tasks');
 gulp.task('build', [
     'build_free_video_player_full_with_modules',
     'build_free_video_player_full_with_modules_min',
+    'build_free_video_player_full_with_modules_for_tests',
     'add_description_to_minified_free_video_player',
     'add_description_to_full_free_videoplayer',
     'build_free_video_player_subtitles_folder',

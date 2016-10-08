@@ -52,16 +52,18 @@
 			</li>
 			
 		</ul>
-		<div class="col-sm-3 col-md-3">
-            <form class="navbar-form" role="search">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        
 	</div>
 
 </div>
@@ -104,7 +106,15 @@
 <p>##Version information</p>
 <hr>
 <ul>
-<li>Version 0.9.0 - ALPHA<ul>
+<li><p>Version 0.9.1 - ALPHA</p>
+<ul>
+<li>Fixed <code>responseType</code> to <code>json</code>. </li>
+<li>included xml2json within the player, not as an external dependency anymore.</li>
+<li>Started to add some <code>mocha</code> tests to test player when <code>npm test</code> is run. Basically the <code>gulp build</code> command is run and then the tests are run.</li>
+</ul>
+</li>
+<li><p>Version 0.9.0 - ALPHA</p>
+<ul>
 <li>Ability to play adaptive VOD content in the form of DASH</li>
 <li>Aswell as regular VOD content with containers such as MP4 and WEBM</li>
 <li>Modularized player code into modules - for better code separation and enabling for a future module based system</li>
@@ -142,24 +152,28 @@ want to make this project better together! :) If you wanna get in contact with u
 through our <a href="https://awesome-ninja-kittens.slack.com">Slack channel</a>, or sometimes we might be @  our <a href="https://www.hipchat.com/gcTxoHaOk">HipChat channel</a></p>
 <p>##Issues / Todo</p>
 <hr>
-<p>To see a list of todos and current issues, see our issue tracker @
-<a href="http://p.freevideoplayer.org/maniphest/query/open/">Issue-section</a>.
-Or check out the <a href="http://p.freevideoplayer.org/project/view/3/">SCRUM-BOARD</a>.</p>
+<p>To see a list of todos and current issues, see our issue tracker in the github repo above.</p>
 <p>##How to build (for developers wanting to contribute)?</p>
 <hr>
-<p>The project is mainly about the Free Video Player library. Now when the repo is downloaded, run <code>npm install</code> (you should get even development dependencies)
-then you can run either <code>npm start</code> to run the local web-server instance with a sample-page displaying the Free Video Player,
-or you can run the production build with the command <code>gulp build</code>,  which will generate new Free Video Player files within both the <em>production</em> folder and the actual
-<em>public</em> folder (used to display the sample application discussed earlier, which is also shown @ http://www.freevideoplayer.org.
-If you just want to build the stylesheet, work on the <em>/free_video_player_components/stylesheet/scss/free.video.player.style.scss</em> and then run <code>gulp watch</code> this will generate a sass watcher on your project.
-The code base and files that generates the file <code>free.video.player.full.js</code>, can be found within the folder <code>free_videoplayer_components/free_video_player/</code>  where you will find the actual free-video-player, and then its corresponding modules (that gets imported through a common namespace) within the folder <code>free_videoplayer_components/modules/</code>.</p>
+<p>The project is mainly about the Free Video Player library. There are a number of different commands that can be run.</p>
+<ul>
+<li><strong>Installing</strong>. Now when the repo is downloaded, run <code>npm install</code> (you should get even development dependencies)</li>
+<li><strong>Start demo web-server</strong>. Then you can run either <code>npm start</code> to run the local web-server instance with a sample-page displaying the Free Video Player</li>
+<li><p><strong>Production build</strong>. Or you can run the production build with the command <code>gulp build</code>,  which will generate new Free Video Player files within both the <em>production</em> folder and the actual
+<em>public</em> folder (used to display the sample application discussed earlier, which is also shown @ http://www.freevideoplayer.org.</p>
+</li>
+<li><p><strong>Stylesheet</strong>. If you just want to build the stylesheet, work on the <em>/free_video_player_components/stylesheet/scss/free.video.player.style.scss</em> and then run <code>gulp watch</code> this will generate a sass watcher on your project.</p>
+</li>
+<li><strong>Testing</strong>. If you run <code>npm test</code> the production build (mentioned with <code>gulp build</code>) will be run and then some <code>mocha</code> tests will be run on top of the newly generated player.</li>
+</ul>
+<p>The code base and files that generates the file <code>free.video.player.full.js</code>, can be found within the folder <code>free_videoplayer_components/free_video_player/</code>  where you will find the actual free-video-player, and then its corresponding modules (that gets imported through a common namespace) within the folder <code>free_videoplayer_components/modules/</code>.</p>
 <p>##Installation</p>
 <hr>
 <p>To use the Free Video Player, firstly you could copy the folder <strong>freevideoplayer</strong> retrieved in the release. (releases found <a href="https://www.github.com/DaWoody/free-video-player/releases/">here</a>), and then copy that into your javascript folder. Per default Free Video Player asumes that your javascript folder is called <em>js</em>. So
 That means you would have something like this in your references <code>&lt;script src=&quot;js/freevideoplayer/free.videoplayer.full.js&quot;</code> and such.  </p>
 <p>You will need to include a reference to the source code provided, meaning one of the javascript files <code>free.video.player.full.js</code>, or alternatively the minified version <code>free.video.player.minified.js</code>.
-Furthermore there are currently three dependencies which also comes bundled within <strong>freevideoplayer</strong>  folder:</p>
-<p>1 The first being the  <em>xml2json</em> javascript library, which uses the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache license</a>, which is being used with a number of different methods utilizing parsing of different manifest structures. 
+Furthermore there are currently <strong>three</strong> dependencies which also comes bundled within <strong>freevideoplayer</strong>  folder:</p>
+<p>//1 The first being the  <em>xml2json</em> javascript library, which uses the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache license</a>, which is being used with a number of different methods utilizing parsing of different manifest structures. 
 2 The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
 but default is that the player will try to look for this <em>json</em> file in the folder <em>subtitles</em> provided with the bundle.
 3 The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of <em>Free Video Player</em>.</p>
@@ -401,28 +415,30 @@ function someFunctionToPlay(){
 </div>
 </div>
 
-<div class="modal fade" id="searchResults">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Search results</h4>
-      </div>
-      <div class="modal-body"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
 
 <footer>
 
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.1</a>
 	
-		on 2016-03-12T18:42:47+01:00
+		on 2016-10-08T13:57:18+02:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
@@ -430,7 +446,9 @@ function someFunctionToPlay(){
 
 <script src="scripts/docstrap.lib.js"></script>
 <script src="scripts/toc.js"></script>
-<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
 
 <script>
 $( function () {
@@ -440,7 +458,7 @@ $( function () {
 		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
 	} );
 
-	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
 		var $this = $( this );
 
 		var example = $this.find( "code" );
@@ -476,8 +494,7 @@ $( function () {
 	} );
 	$( "#toc" ).toc( {
 		anchorName  : function ( i, heading, prefix ) {
-			var id = $( heading ).attr( "id" );
-			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+			return $( heading ).attr( "id" ) || ( prefix + i );
 		},
 		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
 		showAndHide : false,
@@ -503,11 +520,13 @@ $( function () {
 <!--Google Analytics-->
 
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		SearcherDisplay.init();
-	});
-</script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
 
 </body>
 </html>

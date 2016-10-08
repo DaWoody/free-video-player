@@ -18,6 +18,7 @@ gulp.task('build_free_video_player_full_with_modules', ['build_free_video_player
             './free_videoplayer_components/free_video_player/free.video.player.js'])
         .pipe(concat('free.video.player.full.js'))
         .pipe(gulp.dest('./production/freevideoplayer/'))
+        .pipe(gulp.dest('./tests/freevideoplayer/'))
         .pipe(gulp.dest('./public/js/freevideoplayer/'));
     cb(err);
 });
@@ -31,3 +32,4 @@ gulp.task('build_free_video_player_full_with_modules_min', ['build_free_video_pl
         .pipe(gulp.dest('./production/freevideoplayer/'));
     cb(err);
 });
+

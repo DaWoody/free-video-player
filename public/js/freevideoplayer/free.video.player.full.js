@@ -16,6 +16,7 @@
 var freeVideoPlayerModulesNamespace = {};
 
 
+freeVideoPlayerModulesNamespace.X2JS = function(v){var q="1.1.5";v=v||{};h();r();function h(){if(v.escapeMode===undefined){v.escapeMode=true;}v.attributePrefix=v.attributePrefix||"_";v.arrayAccessForm=v.arrayAccessForm||"none";v.emptyNodeForm=v.emptyNodeForm||"text";if(v.enableToStringFunc===undefined){v.enableToStringFunc=true;}v.arrayAccessFormPaths=v.arrayAccessFormPaths||[];if(v.skipEmptyTextNodesForObj===undefined){v.skipEmptyTextNodesForObj=true;}if(v.stripWhitespaces===undefined){v.stripWhitespaces=true;}v.datetimeAccessFormPaths=v.datetimeAccessFormPaths||[];}var g={ELEMENT_NODE:1,TEXT_NODE:3,CDATA_SECTION_NODE:4,COMMENT_NODE:8,DOCUMENT_NODE:9};function r(){function x(z){var y=String(z);if(y.length===1){y="0"+y;}return y;}if(typeof String.prototype.trim!=="function"){String.prototype.trim=function(){return this.replace(/^\s+|^\n+|(\s|\n)+$/g,"");};}if(typeof Date.prototype.toISOString!=="function"){Date.prototype.toISOString=function(){return this.getUTCFullYear()+"-"+x(this.getUTCMonth()+1)+"-"+x(this.getUTCDate())+"T"+x(this.getUTCHours())+":"+x(this.getUTCMinutes())+":"+x(this.getUTCSeconds())+"."+String((this.getUTCMilliseconds()/1000).toFixed(3)).slice(2,5)+"Z";};}}function t(x){var y=x.localName;if(y==null){y=x.baseName;}if(y==null||y==""){y=x.nodeName;}return y;}function o(x){return x.prefix;}function p(x){if(typeof(x)=="string"){return x.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#x27;").replace(/\//g,"&#x2F;");}else{return x;}}function j(x){return x.replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#x27;/g,"'").replace(/&#x2F;/g,"/");}function l(B,y,A){switch(v.arrayAccessForm){case"property":if(!(B[y] instanceof Array)){B[y+"_asArray"]=[B[y]];}else{B[y+"_asArray"]=B[y];}break;}if(!(B[y] instanceof Array)&&v.arrayAccessFormPaths.length>0){var x=0;for(;x<v.arrayAccessFormPaths.length;x++){var z=v.arrayAccessFormPaths[x];if(typeof z==="string"){if(z==A){break;}}else{if(z instanceof RegExp){if(z.test(A)){break;}}else{if(typeof z==="function"){if(z(B,y,A)){break;}}}}}if(x!=v.arrayAccessFormPaths.length){B[y]=[B[y]];}}}function a(C){var A=C.split(/[-T:+Z]/g);var B=new Date(A[0],A[1]-1,A[2]);var z=A[5].split(".");B.setHours(A[3],A[4],z[0]);if(z.length>1){B.setMilliseconds(z[1]);}if(A[6]&&A[7]){var y=A[6]*60+Number(A[7]);var x=/\d\d-\d\d:\d\d$/.test(C)?"-":"+";y=0+(x=="-"?-1*y:y);B.setMinutes(B.getMinutes()-y-B.getTimezoneOffset());}else{if(C.indexOf("Z",C.length-1)!==-1){B=new Date(Date.UTC(B.getFullYear(),B.getMonth(),B.getDate(),B.getHours(),B.getMinutes(),B.getSeconds(),B.getMilliseconds()));}}return B;}function n(A,y,z){if(v.datetimeAccessFormPaths.length>0){var B=z.split(".#")[0];var x=0;for(;x<v.datetimeAccessFormPaths.length;x++){var C=v.datetimeAccessFormPaths[x];if(typeof C==="string"){if(C==B){break;}}else{if(C instanceof RegExp){if(C.test(B)){break;}}else{if(typeof C==="function"){if(C(obj,y,B)){break;}}}}}if(x!=v.datetimeAccessFormPaths.length){return a(A);}else{return A;}}else{return A;}}function w(z,E){if(z.nodeType==g.DOCUMENT_NODE){var F=new Object;var x=z.childNodes;for(var G=0;G<x.length;G++){var y=x.item(G);if(y.nodeType==g.ELEMENT_NODE){var D=t(y);F[D]=w(y,D);}}return F;}else{if(z.nodeType==g.ELEMENT_NODE){var F=new Object;F.__cnt=0;var x=z.childNodes;for(var G=0;G<x.length;G++){var y=x.item(G);var D=t(y);if(y.nodeType!=g.COMMENT_NODE){F.__cnt++;if(F[D]==null){F[D]=w(y,E+"."+D);l(F,D,E+"."+D);}else{if(F[D]!=null){if(!(F[D] instanceof Array)){F[D]=[F[D]];l(F,D,E+"."+D);}}(F[D])[F[D].length]=w(y,E+"."+D);}}}for(var A=0;A<z.attributes.length;A++){var B=z.attributes.item(A);F.__cnt++;F[v.attributePrefix+B.name]=B.value;}var C=o(z);if(C!=null&&C!=""){F.__cnt++;F.__prefix=C;}if(F["#text"]!=null){F.__text=F["#text"];if(F.__text instanceof Array){F.__text=F.__text.join("\n");}if(v.escapeMode){F.__text=j(F.__text);}if(v.stripWhitespaces){F.__text=F.__text.trim();}delete F["#text"];if(v.arrayAccessForm=="property"){delete F["#text_asArray"];}F.__text=n(F.__text,D,E+"."+D);}if(F["#cdata-section"]!=null){F.__cdata=F["#cdata-section"];delete F["#cdata-section"];if(v.arrayAccessForm=="property"){delete F["#cdata-section_asArray"];}}if(F.__cnt==1&&F.__text!=null){F=F.__text;}else{if(F.__cnt==0&&v.emptyNodeForm=="text"){F="";}else{if(F.__cnt>1&&F.__text!=null&&v.skipEmptyTextNodesForObj){if((v.stripWhitespaces&&F.__text=="")||(F.__text.trim()=="")){delete F.__text;}}}}delete F.__cnt;if(v.enableToStringFunc&&(F.__text!=null||F.__cdata!=null)){F.toString=function(){return(this.__text!=null?this.__text:"")+(this.__cdata!=null?this.__cdata:"");};}return F;}else{if(z.nodeType==g.TEXT_NODE||z.nodeType==g.CDATA_SECTION_NODE){return z.nodeValue;}}}}function m(E,B,D,y){var A="<"+((E!=null&&E.__prefix!=null)?(E.__prefix+":"):"")+B;if(D!=null){for(var C=0;C<D.length;C++){var z=D[C];var x=E[z];if(v.escapeMode){x=p(x);}A+=" "+z.substr(v.attributePrefix.length)+"='"+x+"'";}}if(!y){A+=">";}else{A+="/>";}return A;}function i(y,x){return"</"+(y.__prefix!=null?(y.__prefix+":"):"")+x+">";}function s(y,x){return y.indexOf(x,y.length-x.length)!==-1;}function u(y,x){if((v.arrayAccessForm=="property"&&s(x.toString(),("_asArray")))||x.toString().indexOf(v.attributePrefix)==0||x.toString().indexOf("__")==0||(y[x] instanceof Function)){return true;}else{return false;}}function k(z){var y=0;if(z instanceof Object){for(var x in z){if(u(z,x)){continue;}y++;}}return y;}function b(z){var y=[];if(z instanceof Object){for(var x in z){if(x.toString().indexOf("__")==-1&&x.toString().indexOf(v.attributePrefix)==0){y.push(x);}}}return y;}function f(y){var x="";if(y.__cdata!=null){x+="<![CDATA["+y.__cdata+"]]>";}if(y.__text!=null){if(v.escapeMode){x+=p(y.__text);}else{x+=y.__text;}}return x;}function c(y){var x="";if(y instanceof Object){x+=f(y);}else{if(y!=null){if(v.escapeMode){x+=p(y);}else{x+=y;}}}return x;}function e(z,B,A){var x="";if(z.length==0){x+=m(z,B,A,true);}else{for(var y=0;y<z.length;y++){x+=m(z[y],B,b(z[y]),false);x+=d(z[y]);x+=i(z[y],B);}}return x;}function d(D){var x="";var B=k(D);if(B>0){for(var A in D){if(u(D,A)){continue;}var z=D[A];var C=b(z);if(z==null||z==undefined){x+=m(z,A,C,true);}else{if(z instanceof Object){if(z instanceof Array){x+=e(z,A,C);}else{if(z instanceof Date){x+=m(z,A,C,false);x+=z.toISOString();x+=i(z,A);}else{var y=k(z);if(y>0||z.__text!=null||z.__cdata!=null){x+=m(z,A,C,false);x+=d(z);x+=i(z,A);}else{x+=m(z,A,C,true);}}}}else{x+=m(z,A,C,false);x+=c(z);x+=i(z,A);}}}}x+=c(D);return x;}this.parseXmlString=function(z){var B=window.ActiveXObject||"ActiveXObject" in window;if(z===undefined){return null;}var A;if(window.DOMParser){var C=new window.DOMParser();var x=null;if(!B){try{x=C.parseFromString("INVALID","text/xml").childNodes[0].namespaceURI;}catch(y){x=null;}}try{A=C.parseFromString(z,"text/xml");if(x!=null&&A.getElementsByTagNameNS(x,"parsererror").length>0){A=null;}}catch(y){A=null;}}else{if(z.indexOf("<?")==0){z=z.substr(z.indexOf("?>")+2);}A=new ActiveXObject("Microsoft.XMLDOM");A.async="false";A.loadXML(z);}return A;};this.asArray=function(x){if(x instanceof Array){return x;}else{return[x];}};this.toXmlDateTime=function(x){if(x instanceof Date){return x.toISOString();}else{if(typeof(x)==="number"){return new Date(x).toISOString();}else{return null;}}};this.asDateTime=function(x){if(typeof(x)=="string"){return a(x);}else{return x;}};this.xml2json=function(x){return w(x);};this.xml_str2json=function(x){var y=this.parseXmlString(x);if(y!=null){return this.xml2json(y);}else{return null;}};this.json2xml_str=function(x){return d(x);};this.json2xml=function(y){var x=this.json2xml_str(y);return this.parseXmlString(x);};this.getVersion=function(){return q;};}
 // * @title FREE VIDEO PLAYER - SPLASH IMAGE
 // * @authors Johan Wedfelt
 // * @license GPLv3, see http://www.gnu.org/licenses/gpl-3.0.en.html
@@ -46,7 +47,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         settingsObject = settingsObject,
         isModuleValue = true,
         moduleName = 'ADAPTIVE STREAMING',
-        moduleVersion = '0.9.0',
+        moduleVersion = '0.9.1',
         currentVideoObject = {},
         adaptiveBitrateAlgorithmValue = new Map();
         currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
@@ -202,7 +203,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     function browserSupportsMediaSource(){
       var browserSupportsMediaSourceExtension = false,
-          mediaSource = new MediaSource() || null;
+          mediaSource = (function(){
+              var returnValue = null;
+                try {
+                    returnValue = new MediaSource();
+                } catch(e){
+                    // We are now not printin anything,
+                    // but the media source is not supported
+                    // console.log(e);
+                }
+                return returnValue;
+          })();
 
         if(mediaSource){
             browserSupportsMediaSourceExtension = true;
@@ -3453,10 +3464,10 @@ var freeVideoPlayer = function(initiationObject){
     var that = {},
         moduleName = 'FREE VIDEO PLAYER',
         isModuleValue = false,
-        moduleVersion = '0.9.0',
+        moduleVersion = '0.9.1',
         videoPlayerNameCss = 'free-video-player',
         base64encodedImage = freeVideoPlayerModulesNamespace.freeVideoPlayerDefaultSplashImage,
-        xml2json = new X2JS(),
+        xml2json = new freeVideoPlayerModulesNamespace.X2JS(),
         defaultSettingsObject = {
             videoWrapperClassName: 'js-' + videoPlayerNameCss,
             videoWrapperBackgroundColor:  '#292c3c',
@@ -3792,20 +3803,36 @@ var freeVideoPlayer = function(initiationObject){
      * @param callback
      */
     var _getISO_639_1_Json = function(callback){
-        var xhr = new XMLHttpRequest(),
-            url = settingsObject.iso6391Url;
+        var xhr = (function(){
+            var returnObject = null;
+            try {
+                returnObject = new XMLHttpRequest();
+            } catch(e){
 
-        xhr.open('GET', url, true);
-        xhr.responseType = 'application/json';
-        xhr.send();
-
-        xhr.onload = function(e) {
-            if (xhr.status != 200) {
-                messagesModule.printOutWarning("Unexpected status code " + xhr.status + " for " + url);
-                return false;
             }
-            callback(xhr.response);
-        };
+            return returnObject;
+        })();
+
+        var url = settingsObject.iso6391Url;
+
+        if(xhr){
+            xhr.open('GET', url, true);
+            xhr.responseType = 'json';
+            xhr.send();
+
+            xhr.onload = function(e) {
+                if (xhr.status != 200) {
+                    messagesModule.printOutWarning("Unexpected status code " + xhr.status + " for " + url);
+                    return false;
+                }
+                callback(xhr.response);
+            };
+        } else {
+            //when we don not have access to the browser and its methods.
+            //Lets add a temporary object here, based for testing. This will be the default ISO language object
+            var isoObject = [{"language":"","label":""},{"language":"ab","label":"аҧсуа бызшәа, аҧсшәа"},{"language":"aa","label":"Afaraf"},{"language":"af","label":"Afrikaans"},{"language":"ak","label":"Akan"},{"language":"sq","label":"Shqip"},{"language":"am","label":"አማርኛ"},{"language":"ar","label":"\nالعربية\n"},{"language":"an","label":"aragonés"},{"language":"hy","label":"Հայերեն"},{"language":"as","label":"অসমীয়া"},{"language":"av","label":"авар мацӀ, магӀарул мацӀ"},{"language":"ae","label":"avesta"},{"language":"ay","label":"aymar aru"},{"language":"az","label":"azərbaycan dili"},{"language":"bm","label":"bamanankan"},{"language":"ba","label":"башҡорт теле"},{"language":"eu","label":"euskara, euskera"},{"language":"be","label":"беларуская мова"},{"language":"bn","label":"বাংলা"},{"language":"bh","label":"भोजपुरी"},{"language":"bi","label":"Bislama"},{"language":"bs","label":"bosanski jezik"},{"language":"br","label":"brezhoneg"},{"language":"bg","label":"български език"},{"language":"my","label":"ဗမာစာ"},{"language":"ca","label":"català"},{"language":"ch","label":"Chamoru"},{"language":"ce","label":"нохчийн мотт"},{"language":"ny","label":"chiCheŵa, chinyanja"},{"language":"","label":""},{"language":"cv","label":"чӑваш чӗлхи"},{"language":"kw","label":"Kernewek"},{"language":"co","label":"corsu, lingua corsa"},{"language":"cr","label":"ᓀᐦᐃᔭᐍᐏᐣ"},{"language":"hr","label":"hrvatski jezik"},{"language":"cs","label":"čeština, český jazyk"},{"language":"da","label":"dansk"},{"language":"dv","label":"\nދިވެހި\n"},{"language":"nl","label":"Nederlands, Vlaams"},{"language":"dz","label":"རྫོང་ཁ"},{"language":"en","label":"English"},{"language":"eo","label":"Esperanto"},{"language":"et","label":"eesti, eesti keel"},{"language":"ee","label":"Eʋegbe"},{"language":"fo","label":"føroyskt"},{"language":"fj","label":"vosa Vakaviti"},{"language":"fi","label":"suomi, suomen kieli"},{"language":"fr","label":"français, langue française"},{"language":"ff","label":"Fulfulde, Pulaar, Pular"},{"language":"gl","label":"galego"},{"language":"ka","label":"ქართული"},{"language":"de","label":"Deutsch"},{"language":"el","label":"ελληνικά"},{"language":"gn","label":"Avañe'ẽ"},{"language":"gu","label":"ગુજરાતી"},{"language":"ht","label":"Kreyòl ayisyen"},{"language":"ha","label":"\n(Hausa) هَوُسَ\n"},{"language":"he","label":"\nעברית\n"},{"language":"hz","label":"Otjiherero"},{"language":"hi","label":"हिन्दी, हिंदी"},{"language":"ho","label":"Hiri Motu"},{"language":"hu","label":"magyar"},{"language":"ia","label":"Interlingua"},{"language":"id","label":"Bahasa Indonesia"},{"language":"ie","label":"Originally called Occidental; then Interlingue after WWII"},{"language":"ga","label":"Gaeilge"},{"language":"ig","label":"Asụsụ Igbo"},{"language":"ik","label":"Iñupiaq, Iñupiatun"},{"language":"io","label":"Ido"},{"language":"is","label":"Íslenska"},{"language":"it","label":"italiano"},{"language":"iu","label":"ᐃᓄᒃᑎᑐᑦ"},{"language":"","label":""},{"language":"jv","label":"basa Jawa"},{"language":"kl","label":"kalaallisut, kalaallit oqaasii"},{"language":"kn","label":"ಕನ್ನಡ"},{"language":"kr","label":"Kanuri"},{"language":"","label":""},{"language":"kk","label":"қазақ тілі"},{"language":"km","label":"ខ្មែរ, ខេមរភាសា, ភាសាខ្មែរ"},{"language":"ki","label":"Gĩkũyũ"},{"language":"rw","label":"Ikinyarwanda"},{"language":"ky","label":"Кыргызча, Кыргыз тили"},{"language":"kv","label":"коми кыв"},{"language":"kg","label":"Kikongo"},{"language":"","label":""},{"language":"","label":""},{"language":"kj","label":"Kuanyama"},{"language":"la","label":"latine, lingua latina"},{"language":"lb","label":"Lëtzebuergesch"},{"language":"lg","label":"Luganda"},{"language":"li","label":"Limburgs"},{"language":"ln","label":"Lingála"},{"language":"lo","label":"ພາສາລາວ"},{"language":"lt","label":"lietuvių kalba"},{"language":"","label":""},{"language":"lv","label":"latviešu valoda"},{"language":"gv","label":"Gaelg, Gailck"},{"language":"mk","label":"македонски јазик"},{"language":"mg","label":"fiteny malagasy"},{"language":"","label":""},{"language":"ml","label":"മലയാളം"},{"language":"mt","label":"Malti"},{"language":"mi","label":"te reo Māori"},{"language":"mr","label":"मराठी"},{"language":"mh","label":"Kajin M̧ajeļ"},{"language":"mn","label":"Монгол хэл"},{"language":"na","label":"Ekakairũ Naoero"},{"language":"nv","label":"Diné bizaad"},{"language":"nd","label":"isiNdebele"},{"language":"ne","label":"नेपाली"},{"language":"ng","label":"Owambo"},{"language":"nb","label":"Norsk bokmål"},{"language":"nn","label":"Norsk nynorsk"},{"language":"no","label":"Norsk"},{"language":"ii","label":"ꆈꌠ꒿ Nuosuhxop"},{"language":"nr","label":"isiNdebele"},{"language":"oc","label":"occitan, lenga d'òc"},{"language":"oj","label":"ᐊᓂᔑᓈᐯᒧᐎᓐ"},{"language":"cu","label":"ѩзыкъ словѣньскъ"},{"language":"om","label":"Afaan Oromoo"},{"language":"or","label":"ଓଡ଼ିଆ"},{"language":"os","label":"ирон æвзаг"},{"language":"","label":""},{"language":"pi","label":"पाऴि"},{"language":"fa","label":"\nفارسی\n"},{"language":"pl","label":"język polski, polszczyzna"},{"language":"ps","label":"\nپښتو\n"},{"language":"pt","label":"português"},{"language":"qu","label":"Runa Simi, Kichwa"},{"language":"rm","label":"rumantsch grischun"},{"language":"rn","label":"Ikirundi"},{"language":"ro","label":"limba română"},{"language":"ru","label":"Русский"},{"language":"sa","label":"संस्कृतम्"},{"language":"sc","label":"sardu"},{"language":"","label":""},{"language":"se","label":"Davvisámegiella"},{"language":"sm","label":"gagana fa'a Samoa"},{"language":"sg","label":"yângâ tî sängö"},{"language":"sr","label":"српски језик"},{"language":"gd","label":"Gàidhlig"},{"language":"sn","label":"chiShona"},{"language":"si","label":"සිංහල"},{"language":"sk","label":"slovenčina, slovenský jazyk"},{"language":"sl","label":"slovenski jezik, slovenščina"},{"language":"so","label":"Soomaaliga, af Soomaali"},{"language":"st","label":"Sesotho"},{"language":"es","label":"español"},{"language":"su","label":"Basa Sunda"},{"language":"sw","label":"Kiswahili"},{"language":"ss","label":"SiSwati"},{"language":"sv","label":"svenska"},{"language":"ta","label":"தமிழ்"},{"language":"te","label":"తెలుగు"},{"language":"","label":""},{"language":"th","label":"ไทย"},{"language":"ti","label":"ትግርኛ"},{"language":"bo","label":"བོད་ཡིག"},{"language":"tk","label":"Türkmen, Түркмен"},{"language":"tl","label":"Wikang Tagalog, ᜏᜒᜃᜅ᜔ ᜆᜄᜎᜓᜄ᜔"},{"language":"tn","label":"Setswana"},{"language":"to","label":"faka Tonga"},{"language":"tr","label":"Türkçe"},{"language":"ts","label":"Xitsonga"},{"language":"","label":""},{"language":"tw","label":"Twi"},{"language":"ty","label":"Reo Tahiti"},{"language":"","label":""},{"language":"uk","label":"українська мова"},{"language":"ur","label":"\nاردو\n"},{"language":"","label":""},{"language":"ve","label":"Tshivenḓa"},{"language":"vi","label":"Tiếng Việt"},{"language":"vo","label":"Volapük"},{"language":"wa","label":"walon"},{"language":"cy","label":"Cymraeg"},{"language":"wo","label":"Wollof"},{"language":"fy","label":"Frysk"},{"language":"xh","label":"isiXhosa"},{"language":"yi","label":"\nייִדיש\n"},{"language":"yo","label":"Yorùbá"},{"language":"za","label":"Saɯ cueŋƅ, Saw cuengh"},{"language":"zu","label":"isiZulu"}];
+            callback(JSON.stringify(isoObject));
+        }
     };
 
     //  ####################################

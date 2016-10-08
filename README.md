@@ -4,6 +4,11 @@
 ##Version information
 ***
 
+* Version 0.9.1 - ALPHA
+    * Fixed ```responseType``` to ```json```. 
+    * included xml2json within the player, not as an external dependency anymore.
+    * Started to add some ```mocha``` tests to test player when ```npm test``` is run. Basically the ```gulp build``` command is run and then the tests are run.
+
 * Version 0.9.0 - ALPHA
     * Ability to play adaptive VOD content in the form of DASH
     * Aswell as regular VOD content with containers such as MP4 and WEBM
@@ -17,7 +22,6 @@
     * For adaptive DASH content, support for subtitles exists, for non-segmented subtitle VTT files, added as a separate adaptionSet within the mpd
     * For adaptive DASH content, support for both separated video and audio tracks, aswell as muxxed (video and audio combined) exists
     * The release comes with a fully documented version (free.video.player.full.js) and a minified version (free.video.player.minified.js), a css file for player styles (free.video.player.style.css), aswell as base files for SCSS (for web-designers/developers wanting to just style the player a bit), a documentation folder including JSDOC based documentation more explicitly describing the Free Video Player API and more, a subtitles folder with a parsed JSON file including information for subtitle labels which Free Video Player per default utilizes if subtitles are found within a DASH stream, and finally the release also contains both a README and a LICENSE file
-
 ***    
 
 ##Introduction
@@ -45,17 +49,20 @@ through our [Slack channel](https://awesome-ninja-kittens.slack.com), or sometim
 
 ##Issues / Todo
 ***
-To see a list of todos and current issues, see our issue tracker @
-[Issue-section](http://p.freevideoplayer.org/maniphest/query/open/).
-Or check out the [SCRUM-BOARD](http://p.freevideoplayer.org/project/view/3/).
+To see a list of todos and current issues, see our issue tracker in the github repo above.
 
 ##How to build (for developers wanting to contribute)?
 ***
-The project is mainly about the Free Video Player library. Now when the repo is downloaded, run ```npm install``` (you should get even development dependencies)
-then you can run either ```npm start``` to run the local web-server instance with a sample-page displaying the Free Video Player,
-or you can run the production build with the command ```gulp build```,  which will generate new Free Video Player files within both the *production* folder and the actual
+The project is mainly about the Free Video Player library. There are a number of different commands that can be run.
+
+* **Installing**. Now when the repo is downloaded, run ```npm install``` (you should get even development dependencies)
+* **Start demo web-server**. Then you can run either ```npm start``` to run the local web-server instance with a sample-page displaying the Free Video Player
+* **Production build**. Or you can run the production build with the command ```gulp build```,  which will generate new Free Video Player files within both the *production* folder and the actual
 *public* folder (used to display the sample application discussed earlier, which is also shown @ http://www.freevideoplayer.org.
-If you just want to build the stylesheet, work on the */free_video_player_components/stylesheet/scss/free.video.player.style.scss* and then run ```gulp watch``` this will generate a sass watcher on your project.
+
+* **Stylesheet**. If you just want to build the stylesheet, work on the */free_video_player_components/stylesheet/scss/free.video.player.style.scss* and then run ```gulp watch``` this will generate a sass watcher on your project.
+* **Testing**. If you run ```npm test``` the production build (mentioned with ```gulp build```) will be run and then some ```mocha``` tests will be run on top of the newly generated player.
+
 The code base and files that generates the file ```free.video.player.full.js```, can be found within the folder ```free_videoplayer_components/free_video_player/```  where you will find the actual free-video-player, and then its corresponding modules (that gets imported through a common namespace) within the folder ```free_videoplayer_components/modules/```.
 
 ##Installation
@@ -64,9 +71,9 @@ To use the Free Video Player, firstly you could copy the folder **freevideoplaye
 That means you would have something like this in your references ```<script src="js/freevideoplayer/free.videoplayer.full.js"``` and such.  
 
 You will need to include a reference to the source code provided, meaning one of the javascript files ```free.video.player.full.js```, or alternatively the minified version ```free.video.player.minified.js```.
-Furthermore there are currently three dependencies which also comes bundled within **freevideoplayer**  folder:
+Furthermore there are currently **three** dependencies which also comes bundled within **freevideoplayer**  folder:
 
-1 The first being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. 
+//1 The first being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. 
 2 The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
 but default is that the player will try to look for this *json* file in the folder *subtitles* provided with the bundle.
 3 The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of *Free Video Player*.
