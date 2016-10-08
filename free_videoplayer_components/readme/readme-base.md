@@ -39,10 +39,6 @@ The project is mainly about the Free Video Player library. There are a number of
 
 The code base and files that generates the file ```free.video.player.full.js```, can be found within the folder ```free_videoplayer_components/free_video_player/```  where you will find the actual free-video-player, and then its corresponding modules (that gets imported through a common namespace) within the folder ```free_videoplayer_components/modules/```.
 
-##Tests
-***
-
-
 ##Installation
 ***
 To use the Free Video Player, firstly you could copy the folder **freevideoplayer** retrieved in the release. (releases found [here](https://www.github.com/DaWoody/free-video-player/releases/)), and then copy that into your javascript folder. Per default Free Video Player asumes that your javascript folder is called *js*. So

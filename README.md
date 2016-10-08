@@ -53,11 +53,16 @@ To see a list of todos and current issues, see our issue tracker in the github r
 
 ##How to build (for developers wanting to contribute)?
 ***
-The project is mainly about the Free Video Player library. Now when the repo is downloaded, run ```npm install``` (you should get even development dependencies)
-then you can run either ```npm start``` to run the local web-server instance with a sample-page displaying the Free Video Player,
-or you can run the production build with the command ```gulp build```,  which will generate new Free Video Player files within both the *production* folder and the actual
+The project is mainly about the Free Video Player library. There are a number of different commands that can be run.
+
+* **Installing**. Now when the repo is downloaded, run ```npm install``` (you should get even development dependencies)
+* **Start demo web-server**. Then you can run either ```npm start``` to run the local web-server instance with a sample-page displaying the Free Video Player
+* **Production build**. Or you can run the production build with the command ```gulp build```,  which will generate new Free Video Player files within both the *production* folder and the actual
 *public* folder (used to display the sample application discussed earlier, which is also shown @ http://www.freevideoplayer.org.
-If you just want to build the stylesheet, work on the */free_video_player_components/stylesheet/scss/free.video.player.style.scss* and then run ```gulp watch``` this will generate a sass watcher on your project.
+
+* **Stylesheet**. If you just want to build the stylesheet, work on the */free_video_player_components/stylesheet/scss/free.video.player.style.scss* and then run ```gulp watch``` this will generate a sass watcher on your project.
+* **Testing**. If you run ```npm test``` the production build (mentioned with ```gulp build```) will be run and then some ```mocha``` tests will be run on top of the newly generated player.
+
 The code base and files that generates the file ```free.video.player.full.js```, can be found within the folder ```free_videoplayer_components/free_video_player/```  where you will find the actual free-video-player, and then its corresponding modules (that gets imported through a common namespace) within the folder ```free_videoplayer_components/modules/```.
 
 ##Installation
