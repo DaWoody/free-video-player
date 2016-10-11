@@ -108,7 +108,6 @@ h4 {
   }
 }
 
-
 .menu {
   border-bottom:1px solid $header-color;
   li {
@@ -158,6 +157,13 @@ h4 {
   padding-top:20px;
   text-transform: uppercase;
 }
+
+//Free video player, container etc
+.video-wrapper {
+  width:700px;
+  height:340px;
+}
+
 
 .video-bullet-list{
   //max-width:400px;
@@ -223,9 +229,15 @@ h4 {
   -o-box-shadow: inset 1px -6px 22px -2px #ABABAB;
 }
 
-
 @media all and (max-width: 450px){
   .free-video-player-logo{
     font-size:1.9em;
   }
+  //Free video player, container etc
+  .video-wrapper {
+    width:100%;
+    height:auto;
+  }
+
+
 }

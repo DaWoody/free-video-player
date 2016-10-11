@@ -13,8 +13,6 @@
 .js-free-video-player-style {
   display: block;
   margin: 0 auto 40px auto;
-  width: 700px;
-  height: 393px;
   position: relative; }
   .js-free-video-player-style video {
     width: 100%;
@@ -418,9 +416,6 @@ video::-webkit-media-controls-panel {
   height: 100%; }
 
 @media all and (max-width: 700px) {
-  .js-free-video-player-style {
-    width: 450px;
-    height: 252px; }
   .free-video-player-controls-progress-timer span {
     font-size: 0.8em; }
   .free-video-player-controls-overlay-play-pause-icon i {
@@ -429,9 +424,6 @@ video::-webkit-media-controls-panel {
     font-size: 4em; } }
 
 @media all and (max-width: 450px) {
-  .js-free-video-player-style {
-    width: 320px;
-    height: 180px; }
   .free-video-player-controls-progress-timer span {
     font-size: 0.7em; }
   .free-video-player-controls-overlay-play-pause-icon i {

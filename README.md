@@ -1,4 +1,5 @@
 #FREE VIDEO PLAYER - THE FREE HTML5 VIDEO PLAYER - README
+[ ![Codeship Status for AwesomeNinjaKittens/free-video-player](https://app.codeship.com/projects/513c0de0-71c5-0134-5ca3-7ead778a38d2/status?branch=master)](https://app.codeship.com/projects/178423)
 ***
 ![Free Video Player - The Free HTML5 Video Player](http://www.freevideoplayer.org/images/free-video-player-logo.png)
 ##Version information
@@ -6,7 +7,8 @@
 
 * Version 0.9.1 - ALPHA
     * Fixed ```responseType``` to ```json```. 
-    * included xml2json within the player, not as an external dependency anymore.
+    * Included ```xml2json``` within the player, not as an external dependency anymore.
+    * Fixed a bug with *subtitles*, the label / subtitles file was not being parsed correctly on load, making the choices become ```undefined``` in FVP when an asset with subs was loaded.
     * Started to add some ```mocha``` tests to test player when ```npm test``` is run. Basically the ```gulp build``` command is run and then the tests are run.
 
 * Version 0.9.0 - ALPHA
@@ -71,12 +73,13 @@ To use the Free Video Player, firstly you could copy the folder **freevideoplaye
 That means you would have something like this in your references ```<script src="js/freevideoplayer/free.videoplayer.full.js"``` and such.  
 
 You will need to include a reference to the source code provided, meaning one of the javascript files ```free.video.player.full.js```, or alternatively the minified version ```free.video.player.minified.js```.
-Furthermore there are currently **three** dependencies which also comes bundled within **freevideoplayer**  folder:
+Furthermore there are currently **3** dependencies which also comes bundled within **freevideoplayer**  folder:
 
-//1 The first being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. 
-2 The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
-but default is that the player will try to look for this *json* file in the folder *subtitles* provided with the bundle.
-3 The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of *Free Video Player*.
+
+1. The first being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. But this has since ```0.9.1``` been included in the player, so don't need to do anything there.
+2. The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
+but default is that the player will try to look for this *json* file in the folder *subtitles* provided with the bundle, or for testing purposes (like with NODE) loads a default object.
+3. The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of *Free Video Player*.
 
 Basically, if you just copy the **freevideoplayer** folder and put it inside your javascript (js) folder and reference it correctly from your html, it should work.
 

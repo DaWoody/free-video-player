@@ -30,8 +30,8 @@ $player-controls-button-width: 15px;
 .js-free-video-player-style {
   display:block;
   margin:0 auto 40px auto;
-  width:700px;
-  height:393px;
+  //width:700px;
+  //height:393px;
   position:relative;
   //clear:both;
   video {
@@ -602,10 +602,10 @@ video::-webkit-media-controls-panel {
 //Lets make this mid-size
 @media all and (max-width: 700px) {
   //Add css for the actual video control wrapper
-  .js-free-video-player-style{
-    width:450px;
-    height:252px;
-  }
+  //.js-free-video-player-style{
+  //  width:450px;
+  //  height:252px;
+  //}
 
   .free-video-player-controls-progress-timer {
     span {
@@ -628,13 +628,10 @@ video::-webkit-media-controls-panel {
 
 //Lets change the video player here when its really small(mobile devices and such)
 @media all and (max-width: 450px){
-  .js-free-video-player-style{
-    width:320px;
-    height:180px;
-    div {
-
-    }
-  }
+  //.js-free-video-player-style{
+  //  width:320px;
+  //  height:180px;
+  //}
 
   .free-video-player-controls-progress-timer {
     span {

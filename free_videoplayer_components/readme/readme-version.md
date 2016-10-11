@@ -3,7 +3,8 @@
 
 * Version 0.9.1 - ALPHA
     * Fixed ```responseType``` to ```json```. 
-    * included xml2json within the player, not as an external dependency anymore.
+    * Included ```xml2json``` within the player, not as an external dependency anymore.
+    * Fixed a bug with *subtitles*, the label / subtitles file was not being parsed correctly on load, making the choices become ```undefined``` in FVP when an asset with subs was loaded.
     * Started to add some ```mocha``` tests to test player when ```npm test``` is run. Basically the ```gulp build``` command is run and then the tests are run.
 
 * Version 0.9.0 - ALPHA
