@@ -23,19 +23,19 @@ var gulp = require('gulp'),
 //     cb(err);
 // });
 
+//
+// gulp.task('build_free_video_player_full_with_modules_for_tests_xml2json', ['build_free_video_player_full_with_modules'], function(cb) {
+//     // place code for your default task here
+//     return gulp.src([
+//         './free_videoplayer_components/dependencies/xml2.json.min.js',
+//         './free_videoplayer_components/modules/free.video.player.module.exports.js'])
+//         .pipe(concat('xml2.json.min.js'))
+//         .pipe(gulp.dest('./tests/freevideoplayer/'));
+//     cb(err);
+// });
 
-gulp.task('build_free_video_player_full_with_modules_for_tests_xml2json', ['build_free_video_player_full_with_modules'], function(cb) {
-    // place code for your default task here
-    return gulp.src([
-        './free_videoplayer_components/dependencies/xml2.json.min.js',
-        './free_videoplayer_components/modules/free.video.player.module.exports.js'])
-        .pipe(concat('xml2.json.min.js'))
-        .pipe(gulp.dest('./tests/freevideoplayer/'));
-    cb(err);
-});
 
-
-gulp.task('build_free_video_player_full_with_modules_for_tests', ['build_free_video_player_full_with_modules_for_tests_xml2json'], function(cb) {
+gulp.task('build_free_video_player_full_with_modules_for_tests', ['build_free_video_player_full_with_modules'], function(cb) {
     // place code for your default task here
     return gulp.src([
         './tests/freevideoplayer/free.video.player.full.js',

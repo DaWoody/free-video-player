@@ -100,7 +100,8 @@
 
 
     <section class="readme-section">
-        <article><p>#FREE VIDEO PLAYER - THE FREE HTML5 VIDEO PLAYER - README</p>
+        <article><p>#FREE VIDEO PLAYER - THE FREE HTML5 VIDEO PLAYER - README
+<a href="https://app.codeship.com/projects/178423"> <img src="https://app.codeship.com/projects/513c0de0-71c5-0134-5ca3-7ead778a38d2/status?branch=master" alt="Codeship Status for AwesomeNinjaKittens/free-video-player"></a></p>
 <hr>
 <p><img src="http://www.freevideoplayer.org/images/free-video-player-logo.png" alt="Free Video Player - The Free HTML5 Video Player"></p>
 <p>##Version information</p>
@@ -109,7 +110,8 @@
 <li><p>Version 0.9.1 - ALPHA</p>
 <ul>
 <li>Fixed <code>responseType</code> to <code>json</code>. </li>
-<li>included xml2json within the player, not as an external dependency anymore.</li>
+<li>Included <code>xml2json</code> within the player, not as an external dependency anymore.</li>
+<li>Fixed a bug with <em>subtitles</em>, the label / subtitles file was not being parsed correctly on load, making the choices become <code>undefined</code> in FVP when an asset with subs was loaded.</li>
 <li>Started to add some <code>mocha</code> tests to test player when <code>npm test</code> is run. Basically the <code>gulp build</code> command is run and then the tests are run.</li>
 </ul>
 </li>
@@ -172,11 +174,13 @@ through our <a href="https://awesome-ninja-kittens.slack.com">Slack channel</a>,
 <p>To use the Free Video Player, firstly you could copy the folder <strong>freevideoplayer</strong> retrieved in the release. (releases found <a href="https://www.github.com/DaWoody/free-video-player/releases/">here</a>), and then copy that into your javascript folder. Per default Free Video Player asumes that your javascript folder is called <em>js</em>. So
 That means you would have something like this in your references <code>&lt;script src=&quot;js/freevideoplayer/free.videoplayer.full.js&quot;</code> and such.  </p>
 <p>You will need to include a reference to the source code provided, meaning one of the javascript files <code>free.video.player.full.js</code>, or alternatively the minified version <code>free.video.player.minified.js</code>.
-Furthermore there are currently <strong>three</strong> dependencies which also comes bundled within <strong>freevideoplayer</strong>  folder:</p>
-<p>//1 The first being the  <em>xml2json</em> javascript library, which uses the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache license</a>, which is being used with a number of different methods utilizing parsing of different manifest structures. 
-2 The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
-but default is that the player will try to look for this <em>json</em> file in the folder <em>subtitles</em> provided with the bundle.
-3 The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of <em>Free Video Player</em>.</p>
+Furthermore there are currently <strong>3</strong> dependencies which also comes bundled within <strong>freevideoplayer</strong>  folder:</p>
+<ol>
+<li>The first being the  <em>xml2json</em> javascript library, which uses the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache license</a>, which is being used with a number of different methods utilizing parsing of different manifest structures. But this has since <code>0.9.1</code> been included in the player, so don't need to do anything there.</li>
+<li>The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
+but default is that the player will try to look for this <em>json</em> file in the folder <em>subtitles</em> provided with the bundle, or for testing purposes (like with NODE) loads a default object.</li>
+<li>The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of <em>Free Video Player</em>.</li>
+</ol>
 <p>Basically, if you just copy the <strong>freevideoplayer</strong> folder and put it inside your javascript (js) folder and reference it correctly from your html, it should work.</p>
 <p>Currently there is also one external dependency with <a href="https://fortawesome.github.io/Font-Awesome/">Font Awesome</a>, which the player uses for current icon implementation within the video controls.</p>
 <p>This is usually done in the top or the bottom of your html page. An example of how this could be implemented and inserted within
@@ -438,7 +442,7 @@ function someFunctionToPlay(){
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.1</a>
 	
-		on 2016-10-09T13:58:14+02:00
+		on 2016-10-11T13:57:03+02:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
