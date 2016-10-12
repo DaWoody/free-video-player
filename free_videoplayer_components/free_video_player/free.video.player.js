@@ -679,6 +679,7 @@ var freeVideoPlayer = function(initiationObject){
     that.play = play;
     that.seek = seek;
     that.setVolume = setVolume;
+    that.getVolume = getVolume;
     that.fullscreen = fullscreen;
 
     //General Methods
