@@ -3454,7 +3454,7 @@ var freeVideoPlayer = function(initiationObject){
     var that = {},
         moduleName = 'FREE VIDEO PLAYER',
         isModuleValue = false,
-        moduleVersion = '0.9.1',
+        moduleVersion = '0.9.2',
         videoPlayerNameCss = 'free-video-player',
         base64encodedImage = freeVideoPlayerModulesNamespace.freeVideoPlayerDefaultSplashImage,
         xml2json = new freeVideoPlayerModulesNamespace.X2JS(),
@@ -3816,7 +3816,6 @@ var freeVideoPlayer = function(initiationObject){
                     messagesModule.printOutWarning("Could not fetch the ISO6391 file, using fallback");
                     messagesModule.printOutWarning("Unexpected status code " + xhr.status + " for " + url);
                     callback(isoArray);
-                    //return false;
                 }
                 callback(xhr.response);
             };

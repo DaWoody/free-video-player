@@ -1,6 +1,9 @@
 ##Version information
 ***
 
+* Version 0.9.2 - ALPHA
+    * Fixed ISO fallback, if we cannot find the ```subs/label``` path, the fvp player will load a fallback object instead
+
 * Version 0.9.1 - ALPHA
     * Fixed ```responseType``` to ```json```. 
     * Included ```xml2json``` within the player, not as an external dependency anymore.
