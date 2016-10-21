@@ -3454,7 +3454,7 @@ var freeVideoPlayer = function(initiationObject){
     var that = {},
         moduleName = 'FREE VIDEO PLAYER',
         isModuleValue = false,
-        moduleVersion = '0.9.2',
+        moduleVersion = '0.9.3',
         videoPlayerNameCss = 'free-video-player',
         base64encodedImage = freeVideoPlayerModulesNamespace.freeVideoPlayerDefaultSplashImage,
         xml2json = new freeVideoPlayerModulesNamespace.X2JS(),
@@ -4144,3 +4144,9 @@ var freeVideoPlayer = function(initiationObject){
 
 
 
+
+/**
+ * Created by johanwedfelt on 2016-10-08.
+ */
+
+module.exports = freeVideoPlayer;
