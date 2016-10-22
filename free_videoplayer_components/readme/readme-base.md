@@ -25,6 +25,49 @@ through our [Slack channel](https://awesome-ninja-kittens.slack.com), or sometim
 ***
 To see a list of todos and current issues, see our issue tracker in the github repo above.
 
+##Installation
+***
+To use the Free Video Player, you could either download it from <a href="https://nodejs.org/en/"><img src="https://www.npmjs.com/static/npm.png" width="65"></a> with **npm install free-video-player** if you are running something like *Wepback*, or other buildtools with [Node.js](https://nodejs.org/en/),
+then you could either use something like
+
+```javascript
+
+import freeVideoPlayer from 'free-video-player';
+
+//or..
+ 
+var freeVideoPlayer = require('free-video-player');
+
+//Now within your application the variable freeVideoPlayer is your instantiated player, so now you can call methods such as freeVideoPlayer.load(url, configObject) for instance.
+
+//And currently we need to add the stylesheets also and this is done by typing
+require('free-video-player/free.video.player.style.css');
+
+```
+
+..or if you are using the *Free Video Player* without [Node.js](https://nodejs.org/en/) you could just use the files **free.videoplayer.full.js** or **free.videoplayer.minified.js** found within the folder aswell as the accompanying css file **free.video.player.style.css** and include them within your webpage. 
+Theses files are found within the releases, which are found [here](https://www.github.com/DaWoody/free-video-player/releases/)), and then copy that into your javascript folder. Per default Free Video Player asumes that your javascript folder is called *js*. So
+That means you would have something like this in your references ```<script src="js/freevideoplayer/free.videoplayer.full.js"``` and such.  
+
+You will need to include a reference to the source code provided, meaning one of the javascript files ```free.video.player.full.js```, or alternatively the minified version ```free.video.player.minified.js```.
+Furthermore there are currently **3** dependencies which also comes bundled within **freevideoplayer**  folder:
+
+
+1. The first being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. But this has since ```0.9.1``` been included in the player, so don't need to do anything there.
+2. The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
+but default is that the player will try to look for this *json* file in the folder *subtitles* provided with the bundle, or for testing purposes (like with NODE) loads a default object.
+3. The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of *Free Video Player*.
+
+Basically, if you just copy one of the ```javascript``` files, *free.video.player.full.js* or *free.video.player.minified.js* and put it inside your javascript (js) folder and reference it correctly from your html, it should work.
+Currently there is also one external dependency with [Font Awesome](https://fortawesome.github.io/Font-Awesome/), which the player uses for current icon implementation within the video controls.
+
+This is usually done in the top or the bottom of your html page. An example of how this could be implemented and inserted within
+your html, check the *Example of implementation* section below.
+
+Then when the references to the files are there, either within your html within ```<script> ... </script>``` tags or through a
+separate javascript file reference, you can instantiate the Free Video Player.
+This is done by calling the method ```freeVideoPlayer(optionalConfigurationObject)```. An example of this is provided in the section *Example of implementation* below.
+
 ##How to build (for developers wanting to contribute)?
 ***
 The project is mainly about the Free Video Player library. There are a number of different commands that can be run.
@@ -39,30 +82,6 @@ The project is mainly about the Free Video Player library. There are a number of
 
 The code base and files that generates the file ```free.video.player.full.js```, can be found within the folder ```free_videoplayer_components/free_video_player/```  where you will find the actual free-video-player, and then its corresponding modules (that gets imported through a common namespace) within the folder ```free_videoplayer_components/modules/```.
 
-##Installation
-***
-To use the Free Video Player, firstly you could copy the folder **freevideoplayer** retrieved in the release. (releases found [here](https://www.github.com/DaWoody/free-video-player/releases/)), and then copy that into your javascript folder. Per default Free Video Player asumes that your javascript folder is called *js*. So
-That means you would have something like this in your references ```<script src="js/freevideoplayer/free.videoplayer.full.js"``` and such.  
-
-You will need to include a reference to the source code provided, meaning one of the javascript files ```free.video.player.full.js```, or alternatively the minified version ```free.video.player.minified.js```.
-Furthermore there are currently **3** dependencies which also comes bundled within **freevideoplayer**  folder:
-
-
-1. The first being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. But this has since ```0.9.1``` been included in the player, so don't need to do anything there.
-2. The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
-but default is that the player will try to look for this *json* file in the folder *subtitles* provided with the bundle, or for testing purposes (like with NODE) loads a default object.
-3. The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of *Free Video Player*.
-
-Basically, if you just copy the **freevideoplayer** folder and put it inside your javascript (js) folder and reference it correctly from your html, it should work.
-
-Currently there is also one external dependency with [Font Awesome](https://fortawesome.github.io/Font-Awesome/), which the player uses for current icon implementation within the video controls.
-
-This is usually done in the top or the bottom of your html page. An example of how this could be implemented and inserted within
-your html, check the *Example of implementation* section below.
-
-Then when the references to the files are there, either within your html within ```<script> ... </script>``` tags or through a
-separate javascript file reference, you can instantiate the Free Video Player.
-This is done by calling the method ```freeVideoPlayer(optionalConfigurationObject)```. An example of this is provided in the section *Example of implementation* below.
 
 ##How to configure the Free Video Player
 ***
