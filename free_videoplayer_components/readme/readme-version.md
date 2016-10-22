@@ -1,6 +1,18 @@
 ##Version information
 ***
 
+* Version 0.9.6 - ALPHA
+    * Fixes with documentation a bit and README.
+
+* Version 0.9.5 - ALPHA
+    * Minor bug fixes with Subtitle/labels still, now loading internal subtitle/label object per default, added a configuration object property called ```fetchExternalSubtitleLabels``` set to *false* that can be overwritten. Updated path in ```package.json``` in production folder for making npm work.
+
+* Version 0.9.4 - ALPHA
+    * Solved minor bugs with ISO fallback path
+
+* Version 0.9.3 - ALPHA
+    * Some minor restructuring of folders and build jobs, now bundling ```README``` , ```LICENSE```and a ```package.json``` file in the production folder, this so Free Video Player can be deployed to *npm*. This is my first try lets see how it goes. :)
+
 * Version 0.9.2 - ALPHA
     * Fixed ISO fallback, if we cannot find the ```subs/label``` path, the fvp player will load a fallback object instead
 

@@ -1,9 +1,26 @@
-#FREE VIDEO PLAYER - THE FREE HTML5 VIDEO PLAYER - README
+#FREE VIDEO PLAYER - THE FREE HTML5 VIDEO PLAYER
 [ ![Codeship Status for AwesomeNinjaKittens/free-video-player](https://app.codeship.com/projects/513c0de0-71c5-0134-5ca3-7ead778a38d2/status?branch=master)](https://app.codeship.com/projects/178423)
 ***
 ![Free Video Player - The Free HTML5 Video Player](http://www.freevideoplayer.org/images/free-video-player-logo.png)
+***
+### Now on <img src="https://www.npmjs.com/static/npm.png" width="75"> 
+***
+```npm install free-video-player```
+***
 ##Version information
 ***
+
+* Version 0.9.6 - ALPHA
+    * Fixes with documentation a bit and README.
+
+* Version 0.9.5 - ALPHA
+    * Minor bug fixes with Subtitle/labels still, now loading internal subtitle/label object per default, added a configuration object property called ```fetchExternalSubtitleLabels``` set to *false* that can be overwritten. Updated path in ```package.json``` in production folder for making npm work.
+
+* Version 0.9.4 - ALPHA
+    * Solved minor bugs with ISO fallback path
+
+* Version 0.9.3 - ALPHA
+    * Some minor restructuring of folders and build jobs, now bundling ```README``` , ```LICENSE```and a ```package.json``` file in the production folder, this so Free Video Player can be deployed to *npm*. This is my first try lets see how it goes. :)
 
 * Version 0.9.2 - ALPHA
     * Fixed ISO fallback, if we cannot find the ```subs/label``` path, the fvp player will load a fallback object instead
@@ -56,6 +73,49 @@ through our [Slack channel](https://awesome-ninja-kittens.slack.com), or sometim
 ***
 To see a list of todos and current issues, see our issue tracker in the github repo above.
 
+##Installation
+***
+To use the Free Video Player, you could either download it from <a href="https://nodejs.org/en/"><img src="https://www.npmjs.com/static/npm.png" width="75"></a> with **npm install free-video-player** if you are running something like *Wepback*, or other buildtools with [Node.js](https://nodejs.org/en/),
+then you could either use something like
+
+```javascript
+
+import freeVideoPlayer from 'free-video-player';
+
+//or..
+ 
+var freeVideoPlayer = require('free-video-player');
+
+//Now within your application the variable freeVideoPlayer is your instantiated player, so now you can call methods such as freeVideoPlayer.load(url, configObject) for instance.
+
+//And currently we need to add the stylesheets also and this is done by typing
+require('free-video-player/free.video.player.style.css');
+
+```
+
+..or if you are using the *Free Video Player* without [Node.js](https://nodejs.org/en/) you could just use the files **free.videoplayer.full.js** or **free.videoplayer.minified.js** found within the folder aswell as the accompanying css file **free.video.player.style.css** and include them within your webpage. 
+Theses files are found within the releases, which are found [here](https://www.github.com/DaWoody/free-video-player/releases/)), and then copy that into your javascript folder. Per default Free Video Player asumes that your javascript folder is called *js*. So
+That means you would have something like this in your references ```<script src="js/freevideoplayer/free.videoplayer.full.js"``` and such.  
+
+You will need to include a reference to the source code provided, meaning one of the javascript files ```free.video.player.full.js```, or alternatively the minified version ```free.video.player.minified.js```.
+Furthermore there are currently **3** dependencies which also comes bundled within **freevideoplayer**  folder:
+
+
+1. The first being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. But this has since ```0.9.1``` been included in the player, so don't need to do anything there.
+2. The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
+but default is that the player will try to look for this *json* file in the folder *subtitles* provided with the bundle, or for testing purposes (like with NODE) loads a default object.
+3. The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of *Free Video Player*.
+
+Basically, if you just copy one of the ```javascript``` files, *free.video.player.full.js* or *free.video.player.minified.js* and put it inside your javascript (js) folder and reference it correctly from your html, it should work.
+Currently there is also one external dependency with [Font Awesome](https://fortawesome.github.io/Font-Awesome/), which the player uses for current icon implementation within the video controls.
+
+This is usually done in the top or the bottom of your html page. An example of how this could be implemented and inserted within
+your html, check the *Example of implementation* section below.
+
+Then when the references to the files are there, either within your html within ```<script> ... </script>``` tags or through a
+separate javascript file reference, you can instantiate the Free Video Player.
+This is done by calling the method ```freeVideoPlayer(optionalConfigurationObject)```. An example of this is provided in the section *Example of implementation* below.
+
 ##How to build (for developers wanting to contribute)?
 ***
 The project is mainly about the Free Video Player library. There are a number of different commands that can be run.
@@ -70,30 +130,6 @@ The project is mainly about the Free Video Player library. There are a number of
 
 The code base and files that generates the file ```free.video.player.full.js```, can be found within the folder ```free_videoplayer_components/free_video_player/```  where you will find the actual free-video-player, and then its corresponding modules (that gets imported through a common namespace) within the folder ```free_videoplayer_components/modules/```.
 
-##Installation
-***
-To use the Free Video Player, firstly you could copy the folder **freevideoplayer** retrieved in the release. (releases found [here](https://www.github.com/DaWoody/free-video-player/releases/)), and then copy that into your javascript folder. Per default Free Video Player asumes that your javascript folder is called *js*. So
-That means you would have something like this in your references ```<script src="js/freevideoplayer/free.videoplayer.full.js"``` and such.  
-
-You will need to include a reference to the source code provided, meaning one of the javascript files ```free.video.player.full.js```, or alternatively the minified version ```free.video.player.minified.js```.
-Furthermore there are currently **3** dependencies which also comes bundled within **freevideoplayer**  folder:
-
-
-1. The first being the  *xml2json* javascript library, which uses the [Apache license](http://www.apache.org/licenses/LICENSE-2.0), which is being used with a number of different methods utilizing parsing of different manifest structures. But this has since ```0.9.1``` been included in the player, so don't need to do anything there.
-2. The second one is a json file containing information on how to translate subtitle iso language convention information to regular language, which in turn is used when the subtitle labels are printed out on the video controls. How to access this data can be overidden in the configuration parameters when the Free Video Player gets instantiated,
-but default is that the player will try to look for this *json* file in the folder *subtitles* provided with the bundle, or for testing purposes (like with NODE) loads a default object.
-3. The third being the Free Video Player stylesheet, which you should reference to utilize the default styles of *Free Video Player*.
-
-Basically, if you just copy the **freevideoplayer** folder and put it inside your javascript (js) folder and reference it correctly from your html, it should work.
-
-Currently there is also one external dependency with [Font Awesome](https://fortawesome.github.io/Font-Awesome/), which the player uses for current icon implementation within the video controls.
-
-This is usually done in the top or the bottom of your html page. An example of how this could be implemented and inserted within
-your html, check the *Example of implementation* section below.
-
-Then when the references to the files are there, either within your html within ```<script> ... </script>``` tags or through a
-separate javascript file reference, you can instantiate the Free Video Player.
-This is done by calling the method ```freeVideoPlayer(optionalConfigurationObject)```. An example of this is provided in the section *Example of implementation* below.
 
 ##How to configure the Free Video Player
 ***
@@ -109,24 +145,25 @@ to make the Free Video Player behave as you want.
 
 ```javascript
 
-//Some examples of the optional configuration object
-//If no configuration object is added on instantiation, the default values will be used
+// Some examples of the optional configuration object
+// If no configuration object is added on instantiation, the default values will be used
 var freeVideoPlayerOptionalConfigurationObject = {
     
-                //Add this parameter if you want to change the actual js class name that the Free Video Player uses
-                //as a target to instantiate the player, the default value is js-free-video-player-container.
+                // Add this parameter if you want to change the actual js class name that the Free Video Player uses
+                // as a target to instantiate the player, the default value is js-free-video-player-container.
                 videoWrapperClassName: 'js-free-video-player',
-                //This is the default video splash image used on videos if no splash image is provided for the asset
-                //when using the load method
+                // This is the default video splash image used on videos if no splash image is provided for the asset
+                // when using the load method
                 videoSplashImageUrl:'../images/free-video-player-logo.png',
-                //This is the url used to fetch the iso-639-1 languages and labels used when the subtitles
-                //in streams are added to the DOM and the control structure. Here we are asuming you have organised
-                //your javascript files into a a /js folder structure and copied over the freevideoplayer folder into your js folder.
+                // This is the url used to fetch the iso-639-1 languages and labels used when the subtitles
+                // in streams are added to the DOM and the control structure. Here we are asuming you have organised
+                // your javascript files into a a /js folder structure and copied over the freevideoplayer folder into your js folder.
+                // if the property fetchExternalSubtitleLabels below is set to true, the player will try requesting the subtitle/label information from the url
+                // which this property is set to
                 iso6391Url:'/js/freevideoplayer/subtitles/iso-639-1.json',
-                
-                //This shows the default inner html for the different Video Controls discussed earlier
-                //When one of the values are overwritten all is overwritten, so if you want to
-                //overwrite the current setup make sure you fill in all values here below to your liking
+                // This shows the default inner html for the different Video Controls discussed earlier
+                // When one of the values are overwritten all is overwritten, so if you want to
+                // overwrite the current setup make sure you fill in all values here below to your liking
                 videoControlsInnerHtml : {
                     playIconInnerHtml:'<i class="fa fa-play"></i>',
                     pauseIconInnerHtml:'<i class="fa fa-pause"></i>',
@@ -142,10 +179,10 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     subtitlesMenuOffButtonInnerHtml:'Off',
                     
                 },
-                //This object shows the different css classes that are being applied to the different video control
-                //elements, and as described above if you want to customize one property all need to be changed or modified
-                //since all will be overwritten once one of these sub-properties. The default value for the variable videoPlayerNameCss is free-video-player,
-                //so for instance the videoControlsClass would generate the css class: free-video-player-controls
+                // This object shows the different css classes that are being applied to the different video control
+                // elements, and as described above if you want to customize one property all need to be changed or modified
+                // since all will be overwritten once one of these sub-properties. The default value for the variable videoPlayerNameCss is free-video-player,
+                // so for instance the videoControlsClass would generate the css class: free-video-player-controls
                 videoControlsCssClasses: {
                     hideControlClass: 'free-video-player-controls-hide',
                     displayControlClass: 'free-video-player-controls-display',
@@ -169,9 +206,9 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     videoOverlaySpinnerIconClass: 'free-video-player-controls-overlay-spinner-icon',
                     displayNoneClass: 'free-video-player-controls-display-none'
                 },
-                //These sub properties decides which of the video controls that should be generated to the DOM,
-                //same procedure as the above properties, if one is changed all need to be added to not make them "undefined"
-                //which in turn results in a falsy value and not displaying the rest of the controls that have not been defined.
+                // These sub properties decides which of the video controls that should be generated to the DOM,
+                // same procedure as the above properties, if one is changed all need to be added to not make them "undefined"
+                // which in turn results in a falsy value and not displaying the rest of the controls that have not been defined.
                 videoControlsDisplay: {
                     showPlayPauseButton: true,
                     showProgressSlider: true,
@@ -181,18 +218,21 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     showSubtitlesMenu: true,
                     showFullScreenButton: true
                 },
-                //Optional values to add percentage values from when the volume icon button should display
-                //the icon for full volume, middle volume and no volume.
+                // Optional values to add percentage values from when the volume icon button should display
+                // the icon for full volume, middle volume and no volume.
                 videoControlsVolumeTresholdValues: {
                     volumeHighStart:40,
                     volumeLowEnd:10
                 },
-                //Add this to generate debug messages to the console
+                // Add this to generate debug messages to the console
                 debugMode:true,
-                //This parameter decides if the Video Controls should be generated to the DOM
-                //if not there is a public API that the Free Video Player also has which can be used 
-                //with direct interaction with the instantiated Free Video Player, see the API section
-                //for more information.
+                // This parameter decides if Free Video Player will try fetching external information 
+                // about how to map the subtitles and their labels. This is done through making a http request.
+                fetchExternalSubtitleLabels:false,
+                // This parameter decides if the Video Controls should be generated to the DOM
+                // if not there is a public API that the Free Video Player also has which can be used 
+                // with direct interaction with the instantiated Free Video Player, see the API section
+                // for more information.
                 createControls:true
             };
 };

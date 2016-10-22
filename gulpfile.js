@@ -23,6 +23,7 @@ gulp.task('build', [
     'build_free_video_player_readme',
     'build_free_video_player_license',
     'build_free_video_player_stylesheet',
+    'build_free_video_player_npm_package_json',
     'run_jsdoc_free_video_player_sample_page',
     'run_jsdoc_free_video_player_production'
 ]);
