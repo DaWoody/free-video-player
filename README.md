@@ -8,6 +8,9 @@
 ##Version information
 ***
 
+* Version 0.9.4 - ALPHA
+    * Solved minor bugs with ISO fallback path
+
 * Version 0.9.3 - ALPHA
     * Some minor restructuring of folders and build jobs, now bundling ```README``` , ```LICENSE```and a ```package.json``` file in the production folder, this so Free Video Player can be deployed to *npm*. This is my first try lets see how it goes. :)
 
@@ -115,24 +118,25 @@ to make the Free Video Player behave as you want.
 
 ```javascript
 
-//Some examples of the optional configuration object
-//If no configuration object is added on instantiation, the default values will be used
+// Some examples of the optional configuration object
+// If no configuration object is added on instantiation, the default values will be used
 var freeVideoPlayerOptionalConfigurationObject = {
     
-                //Add this parameter if you want to change the actual js class name that the Free Video Player uses
-                //as a target to instantiate the player, the default value is js-free-video-player-container.
+                // Add this parameter if you want to change the actual js class name that the Free Video Player uses
+                // as a target to instantiate the player, the default value is js-free-video-player-container.
                 videoWrapperClassName: 'js-free-video-player',
-                //This is the default video splash image used on videos if no splash image is provided for the asset
-                //when using the load method
+                // This is the default video splash image used on videos if no splash image is provided for the asset
+                // when using the load method
                 videoSplashImageUrl:'../images/free-video-player-logo.png',
-                //This is the url used to fetch the iso-639-1 languages and labels used when the subtitles
-                //in streams are added to the DOM and the control structure. Here we are asuming you have organised
-                //your javascript files into a a /js folder structure and copied over the freevideoplayer folder into your js folder.
+                // This is the url used to fetch the iso-639-1 languages and labels used when the subtitles
+                // in streams are added to the DOM and the control structure. Here we are asuming you have organised
+                // your javascript files into a a /js folder structure and copied over the freevideoplayer folder into your js folder.
+                // if the property fetchExternalSubtitleLabels below is set to true, the player will try requesting the subtitle/label information from the url
+                // which this property is set to
                 iso6391Url:'/js/freevideoplayer/subtitles/iso-639-1.json',
-                
-                //This shows the default inner html for the different Video Controls discussed earlier
-                //When one of the values are overwritten all is overwritten, so if you want to
-                //overwrite the current setup make sure you fill in all values here below to your liking
+                // This shows the default inner html for the different Video Controls discussed earlier
+                // When one of the values are overwritten all is overwritten, so if you want to
+                // overwrite the current setup make sure you fill in all values here below to your liking
                 videoControlsInnerHtml : {
                     playIconInnerHtml:'<i class="fa fa-play"></i>',
                     pauseIconInnerHtml:'<i class="fa fa-pause"></i>',
@@ -148,10 +152,10 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     subtitlesMenuOffButtonInnerHtml:'Off',
                     
                 },
-                //This object shows the different css classes that are being applied to the different video control
-                //elements, and as described above if you want to customize one property all need to be changed or modified
-                //since all will be overwritten once one of these sub-properties. The default value for the variable videoPlayerNameCss is free-video-player,
-                //so for instance the videoControlsClass would generate the css class: free-video-player-controls
+                // This object shows the different css classes that are being applied to the different video control
+                // elements, and as described above if you want to customize one property all need to be changed or modified
+                // since all will be overwritten once one of these sub-properties. The default value for the variable videoPlayerNameCss is free-video-player,
+                // so for instance the videoControlsClass would generate the css class: free-video-player-controls
                 videoControlsCssClasses: {
                     hideControlClass: 'free-video-player-controls-hide',
                     displayControlClass: 'free-video-player-controls-display',
@@ -175,9 +179,9 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     videoOverlaySpinnerIconClass: 'free-video-player-controls-overlay-spinner-icon',
                     displayNoneClass: 'free-video-player-controls-display-none'
                 },
-                //These sub properties decides which of the video controls that should be generated to the DOM,
-                //same procedure as the above properties, if one is changed all need to be added to not make them "undefined"
-                //which in turn results in a falsy value and not displaying the rest of the controls that have not been defined.
+                // These sub properties decides which of the video controls that should be generated to the DOM,
+                // same procedure as the above properties, if one is changed all need to be added to not make them "undefined"
+                // which in turn results in a falsy value and not displaying the rest of the controls that have not been defined.
                 videoControlsDisplay: {
                     showPlayPauseButton: true,
                     showProgressSlider: true,
@@ -187,18 +191,21 @@ var freeVideoPlayerOptionalConfigurationObject = {
                     showSubtitlesMenu: true,
                     showFullScreenButton: true
                 },
-                //Optional values to add percentage values from when the volume icon button should display
-                //the icon for full volume, middle volume and no volume.
+                // Optional values to add percentage values from when the volume icon button should display
+                // the icon for full volume, middle volume and no volume.
                 videoControlsVolumeTresholdValues: {
                     volumeHighStart:40,
                     volumeLowEnd:10
                 },
-                //Add this to generate debug messages to the console
+                // Add this to generate debug messages to the console
                 debugMode:true,
-                //This parameter decides if the Video Controls should be generated to the DOM
-                //if not there is a public API that the Free Video Player also has which can be used 
-                //with direct interaction with the instantiated Free Video Player, see the API section
-                //for more information.
+                // This parameter decides if Free Video Player will try fetching external information 
+                // about how to map the subtitles and their labels. This is done through making a http request.
+                fetchExternalSubtitleLabels:false,
+                // This parameter decides if the Video Controls should be generated to the DOM
+                // if not there is a public API that the Free Video Player also has which can be used 
+                // with direct interaction with the instantiated Free Video Player, see the API section
+                // for more information.
                 createControls:true
             };
 };

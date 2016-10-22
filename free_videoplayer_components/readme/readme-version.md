@@ -1,6 +1,9 @@
 ##Version information
 ***
 
+* Version 0.9.4 - ALPHA
+    * Solved minor bugs with ISO fallback path
+
 * Version 0.9.3 - ALPHA
     * Some minor restructuring of folders and build jobs, now bundling ```README``` , ```LICENSE```and a ```package.json``` file in the production folder, this so Free Video Player can be deployed to *npm*. This is my first try lets see how it goes. :)
 
