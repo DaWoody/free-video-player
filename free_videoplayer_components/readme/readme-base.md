@@ -27,7 +27,7 @@ To see a list of todos and current issues, see our issue tracker in the github r
 
 ##Installation
 ***
-To use the Free Video Player, you could either download it from <a href="https://nodejs.org/en/"><img src="https://www.npmjs.com/static/npm.png" width="75"></a> with **npm install free-video-player** if you are running something like *Wepback*, or other buildtools with [Node.js](https://nodejs.org/en/),
+To use the Free Video Player, you could either download it from <a href="https://www.npmjs.com/package/free-video-player"><img src="https://www.npmjs.com/static/npm.png" width="75"></a> with **npm install free-video-player** if you are running something like *Wepback*, or other buildtools with [Node.js](https://nodejs.org/en/),
 then you could either use something like
 
 ```javascript

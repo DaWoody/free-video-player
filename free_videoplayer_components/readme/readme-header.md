@@ -3,7 +3,7 @@
 ***
 ![Free Video Player - The Free HTML5 Video Player](http://www.freevideoplayer.org/images/free-video-player-logo.png)
 ***
-### Now on <img src="https://www.npmjs.com/static/npm.png" width="75"> 
+### Now on <a href="https://www.npmjs.com/package/free-video-player"><img src="https://www.npmjs.com/static/npm.png" width="75"></a> 
 ***
 ```npm install free-video-player```
 ***
