@@ -250,7 +250,9 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * This method loads the mpd and then utilizes a set of methods to parse through the MPD, adding data to
+     * @function
+     * @name _loadMpd
+     * @description This method loads the mpd and then utilizes a set of methods to parse through the MPD, adding data to
      * a scoped variable called currentVideoObject and then also firing away and starts the video
      * @private
      * @param {string} mpdUrl
@@ -332,6 +334,18 @@ var freeVideoPlayer = function(initiationObject){
                 messagesModule.printOutErrorMessageToConsole(messageObject, e);
             }
         });
+    };
+
+    /**
+     * @function
+     * @description This is the main unload method, it calls the internal method _unload to stop videos, clear containers etc
+     * @name unload
+     * @public
+     */
+    var unload = function(){
+        console.log('Cleared the video?');
+        //Lets clear the video container first
+        _clearVideo();
     };
 
     /**
@@ -674,6 +688,7 @@ var freeVideoPlayer = function(initiationObject){
 
     //Loading
     that.load = load;
+    that.unload = unload;
 
     //Player methods
     that.pause = pause;
