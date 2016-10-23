@@ -3,7 +3,6 @@
  * @author Johan Wedfelt
  * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
  * @description A cool open source html5 video library to use when want to play both regular HTML5 content such as mp4, webm but also for adaptive streaming formats such as DASH for instance, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
- * @version 0.9.0
  * @param {object} initiationObject - The initiation object containing information about how to configure the Free Video Player
  */
 var freeVideoPlayer = function(initiationObject){
@@ -16,7 +15,7 @@ var freeVideoPlayer = function(initiationObject){
     var that = {},
         moduleName = 'FREE VIDEO PLAYER',
         isModuleValue = false,
-        moduleVersion = '0.9.6',
+        moduleVersion = '0.9.7',
         videoPlayerNameCss = 'free-video-player',
         base64encodedImage = freeVideoPlayerModulesNamespace.freeVideoPlayerDefaultSplashImage,
         xml2json = new freeVideoPlayerModulesNamespace.X2JS(),
@@ -130,14 +129,20 @@ var freeVideoPlayer = function(initiationObject){
      */
     var load = function(videoUrl, optionalConfigurationObject){
         //This method will understand
-        var streamType = _returnStreamTypeBasedOnVideoUrl(videoUrl);
+        var streamType = videoUrl ? _returnStreamTypeBasedOnVideoUrl(videoUrl) : 'not-a-valid-video-url';
         //Lets clear the video container first
         _clearVideo();
 
         //Lets set background of videoPlayer instance
         //and make it sweet ;)
         that._videoWrapper = document.querySelector('.' + videoWrapperClassName);
-        that._videoWrapper.setAttribute('style', 'background:' + settingsObject.videoWrapperBackgroundColor + ';');
+        //Lets create a style string so we can show the background and default image in case we can not load and asset
+        var styleString =   'background-image:url("' +  base64encodedImage + '");' +
+                            'background-color:' + settingsObject.videoWrapperBackgroundColor + ';' +
+                            'background-repeat:no-repeat;' +
+                            'background-position: center;';
+
+        that._videoWrapper.setAttribute('style', styleString);
 
         //var className = that._videoWrapper.getAttribute('class');
         //that._videoWrapper.setAttribute('class', className + ' free-video-player-paused');
@@ -250,7 +255,9 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * This method loads the mpd and then utilizes a set of methods to parse through the MPD, adding data to
+     * @function
+     * @name _loadMpd
+     * @description This method loads the mpd and then utilizes a set of methods to parse through the MPD, adding data to
      * a scoped variable called currentVideoObject and then also firing away and starts the video
      * @private
      * @param {string} mpdUrl
@@ -332,6 +339,18 @@ var freeVideoPlayer = function(initiationObject){
                 messagesModule.printOutErrorMessageToConsole(messageObject, e);
             }
         });
+    };
+
+    /**
+     * @function
+     * @description This is the main unload method, it calls the internal method _unload to stop videos, clear containers etc
+     * @name unload
+     * @public
+     */
+    var unload = function(){
+        console.log('Cleared the video?');
+        //Lets clear the video container first
+        _clearVideo();
     };
 
     /**
@@ -674,6 +693,7 @@ var freeVideoPlayer = function(initiationObject){
 
     //Loading
     that.load = load;
+    that.unload = unload;
 
     //Player methods
     that.pause = pause;

@@ -37,7 +37,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         settingsObject = settingsObject,
         isModuleValue = true,
         moduleName = 'ADAPTIVE STREAMING',
-        moduleVersion = '0.9.1',
+        moduleVersion = '0.9.2',
         currentVideoObject = {},
         adaptiveBitrateAlgorithmValue = new Map();
         currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
@@ -143,6 +143,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             var sourceCloseEvent = new Event('sourceclose', {"bubbles":false, "cancelable":false});
             that._mediaSource.dispatch(sourceCloseEvent);
             //currentVideoObject.streamObject.sourceBuffers = [];
+
+            //Also lets set the key to not keeping appending data here,
+            //This is done finally after we done the proper methods and callback according to the MSE object
+            _setVideoStreamShouldAppend(false);
+
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not abort source buffers, check accessibility';
@@ -234,7 +239,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         mpdObject ?  currentVideoObject.streamObject.mpdObject = mpdObject : adaptiveVideoObject.mpdObject = {};
         hlsObject ?  currentVideoObject.streamObject.hlsObject = hlsObject : adaptiveVideoObject.hlsObject = {};
 
+        //Set current video stream state to true so segments can append
+        //when we have created the videoElements and the segment queu being appended.
+        _setVideoStreamShouldAppend(true);
+        //Lets initiate the media source
         _initiateMediaSource();
+        //Lets create the video element and append it to the wrapper
         _createVideoElementAndAppendToWrapper(videoWrapperClassName, optionalConfigurationObject);
         _createMediaSourceStream(currentVideoObject.streamObject.streamBaseUrl, optionalConfigurationObject);
         _addEventListenersToMediaSource();
@@ -517,18 +527,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                         messagesModule.printOutLine('THE BASE URL SET BY THE ALGORITHM IS THIS..' + baseUrl + ' .. with type ' + typeOfStream);
                     }
 
-                    setTimeout(function(){
-                        _appendData(sourceBuffer,
-                            currentVideoObject.streamObject.streamBaseUrl +
-                            baseUrl +
-                            segmentPrefix +
-                            sourceCount +
-                            segmentEnding,
-                            mimeType);
-                    }, sourceBufferWaitBeforeNewAppendInMiliseconds);
+                    if(videoStreamShouldAppend()){
+                        setTimeout(function(){
+                            _appendData(sourceBuffer,
+                                currentVideoObject.streamObject.streamBaseUrl +
+                                baseUrl +
+                                segmentPrefix +
+                                sourceCount +
+                                segmentEnding,
+                                mimeType);
+                        }, sourceBufferWaitBeforeNewAppendInMiliseconds);
 
-                    _checkBuffers(streamDurationInSeconds);
-
+                        //Here we are checking the buffers
+                        _checkBuffers(streamDurationInSeconds);
+                    }
                 });
 
                 console.log('source buffer ' + index + ' mode: ' + sourceBuffer.mode );
@@ -550,6 +562,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         //    setMediaSourceDuration(arrayOfSourceBuffers);
         //}, 2000);
     };
+
+
+
+
+
+
 
     //  ########################
     //  #### BUFFER METHODS ####
@@ -734,7 +752,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * A method to return a resetd currentVideoStreamObject, new parameters, cleared and such
+     * @function
+     * @name _returnClearCurrentVideoStreamObject
+     * @description A method to return a resetd currentVideoStreamObject, new parameters, cleared and such
      * @returns {{bitrateSwitchTimerSegmentAppendTime: number, currentVideoBitrateIndex: number, sourceBuffers: Array, mpdObject: {}, hlsObject: {}, adaptiveStreamBitrateObjectMap: Map, currentVideoBaseUrl: string, streamBaseUrl: string}}
      * @private
      */
@@ -748,9 +768,32 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             adaptiveStreamBitrateObjectMap: new Map(),
             //used for the adaptive bitrate algo, should probably be refactored later
             currentVideoBaseUrl:'auto',
-            streamBaseUrl:''
+            streamBaseUrl:'',
+            streamShouldAppend:false
         };
         return returnObject;
+    }
+
+    /**
+     * @function
+     * @name videoStreamShouldAppend
+     * @description This method returns the state of the current stream, is the stream active and appending segments or not
+     * @returns {boolean}
+     * @public
+     */
+    function videoStreamShouldAppend(){
+        return currentVideoObject.streamObject.streamShouldAppend;
+    }
+
+    /**
+     * @function
+     * @name _setVideoStreamShouldAppend
+     * @description This method sets the current stream state, when set this can be used to stop segments being added to a appending method for segments
+     * @private
+     */
+    function _setVideoStreamShouldAppend(boolean){
+        currentVideoObject.streamObject.streamShouldAppend = boolean;
+        return true;
     }
 
     //  #########################
@@ -944,6 +987,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //currentVideoObject methods
     that.addStreamBaseUrl = addStreamBaseUrl;
     that.clearCurrentVideoStreamObject = clearCurrentVideoStreamObject;
+    that.videoStreamShouldAppend = videoStreamShouldAppend;
+    //that.setCurrentVideoStreamState = setCurrentVideoStreamState;
 
     //Media Source Extension methods
     that.loadDashMediaWithMediaSourceExtension = loadDashMediaWithMediaSourceExtension;
@@ -3441,7 +3486,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
  * @author Johan Wedfelt
  * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
  * @description A cool open source html5 video library to use when want to play both regular HTML5 content such as mp4, webm but also for adaptive streaming formats such as DASH for instance, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
- * @version 0.9.0
  * @param {object} initiationObject - The initiation object containing information about how to configure the Free Video Player
  */
 var freeVideoPlayer = function(initiationObject){
@@ -3454,7 +3498,7 @@ var freeVideoPlayer = function(initiationObject){
     var that = {},
         moduleName = 'FREE VIDEO PLAYER',
         isModuleValue = false,
-        moduleVersion = '0.9.6',
+        moduleVersion = '0.9.7',
         videoPlayerNameCss = 'free-video-player',
         base64encodedImage = freeVideoPlayerModulesNamespace.freeVideoPlayerDefaultSplashImage,
         xml2json = new freeVideoPlayerModulesNamespace.X2JS(),
@@ -3568,14 +3612,20 @@ var freeVideoPlayer = function(initiationObject){
      */
     var load = function(videoUrl, optionalConfigurationObject){
         //This method will understand
-        var streamType = _returnStreamTypeBasedOnVideoUrl(videoUrl);
+        var streamType = videoUrl ? _returnStreamTypeBasedOnVideoUrl(videoUrl) : 'not-a-valid-video-url';
         //Lets clear the video container first
         _clearVideo();
 
         //Lets set background of videoPlayer instance
         //and make it sweet ;)
         that._videoWrapper = document.querySelector('.' + videoWrapperClassName);
-        that._videoWrapper.setAttribute('style', 'background:' + settingsObject.videoWrapperBackgroundColor + ';');
+        //Lets create a style string so we can show the background and default image in case we can not load and asset
+        var styleString =   'background-image:url("' +  base64encodedImage + '");' +
+                            'background-color:' + settingsObject.videoWrapperBackgroundColor + ';' +
+                            'background-repeat:no-repeat;' +
+                            'background-position: center;';
+
+        that._videoWrapper.setAttribute('style', styleString);
 
         //var className = that._videoWrapper.getAttribute('class');
         //that._videoWrapper.setAttribute('class', className + ' free-video-player-paused');
@@ -3688,7 +3738,9 @@ var freeVideoPlayer = function(initiationObject){
     };
 
     /**
-     * This method loads the mpd and then utilizes a set of methods to parse through the MPD, adding data to
+     * @function
+     * @name _loadMpd
+     * @description This method loads the mpd and then utilizes a set of methods to parse through the MPD, adding data to
      * a scoped variable called currentVideoObject and then also firing away and starts the video
      * @private
      * @param {string} mpdUrl
@@ -3770,6 +3822,18 @@ var freeVideoPlayer = function(initiationObject){
                 messagesModule.printOutErrorMessageToConsole(messageObject, e);
             }
         });
+    };
+
+    /**
+     * @function
+     * @description This is the main unload method, it calls the internal method _unload to stop videos, clear containers etc
+     * @name unload
+     * @public
+     */
+    var unload = function(){
+        console.log('Cleared the video?');
+        //Lets clear the video container first
+        _clearVideo();
     };
 
     /**
@@ -4112,6 +4176,7 @@ var freeVideoPlayer = function(initiationObject){
 
     //Loading
     that.load = load;
+    that.unload = unload;
 
     //Player methods
     that.pause = pause;

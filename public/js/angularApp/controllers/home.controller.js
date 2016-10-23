@@ -27,6 +27,11 @@ angular.module('freeVideoPlayerApp')
         var ulList = document.getElementById('asset-list'),
             listItemsList = ulList.getElementsByTagName('div');
 
+        var unloadButton = document.getElementById('unload');
+        unloadButton.addEventListener('click', function(){
+            videoPlayer.unload();
+        });
+
         for(var i = 0; i < listItemsList.length; i++){
             listItemsList[i].addEventListener('click', function(){
                 var image = this.querySelector('img'),
@@ -34,7 +39,6 @@ angular.module('freeVideoPlayerApp')
                 videoPlayer.load(mediaUrl);
             });
         }
-
         //Lets start the video player by loading an example of Big Buck Bunny when the page is loaded
         videoPlayer.load('/assets/localNonAdaptiveStreams/big_buck_bunny.mp4');
     }]);

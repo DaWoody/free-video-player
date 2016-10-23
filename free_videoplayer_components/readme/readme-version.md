@@ -1,6 +1,9 @@
 ##Version information
 ***
 
+* Version 0.9.7 - ALPHA
+    * Added ```API``` call ```unload``` which unloads an asset and aborts buffering of streams and such, also updated and fixed splash image and background of player when unloading or when try calling the ```load``` method with a non valid url value.
+
 * Version 0.9.6 - ALPHA
     * Fixes with documentation a bit and README.
 
