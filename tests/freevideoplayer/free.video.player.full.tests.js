@@ -251,7 +251,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * This method initiates the media source extension and creates a video element aswell.
+     * @name _initiateMediaSource
+     * @description This method initiates the media source extension and creates a video element aswell.
      * @private
      */
     function _initiateMediaSource(){
@@ -260,7 +261,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * This method creates the media source stream
+     * @function
+     * @name _createMediaSourceStream
+     * @description This method creates the media source stream
      * @private
      * @param baseUrl
      */
@@ -282,7 +285,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * Creates a video elementloadDashMediaWithMediaSourceExtension
+     * @function
+     * @name _createVideoElementAndAppendToWrapper
+     * @desription Creates a video elementloadDashMediaWithMediaSourceExtension
      * @param that
      * @param videoWrapperClassName
      * @returns {*}
@@ -326,12 +331,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * This is the main media method for adpative bitrate content when the video and mediasource object are ready,
+     * @name _videoReady
+     * @description This is the main media method for adpative bitrate content when the video and mediasource object are ready,
      * this is currently used in conjunction with the mpdParserModule and the DASH format for streaming content.
      * @private
      * @param e
      */
-     function _videoready (e) {
+     function _videoReady (e) {
 
         var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
             representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
@@ -708,8 +714,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     function _addEventListenersToMediaSource(){
         //  ### EVENT LISTENERS ###
-        that._mediaSource.addEventListener('sourceopen', _videoready, false);
-        that._mediaSource.addEventListener('webkitsourceopen', _videoready, false);
+        that._mediaSource.addEventListener('sourceopen', _videoReady, false);
+        that._mediaSource.addEventListener('webkitsourceopen', _videoReady, false);
         that._mediaSource.addEventListener('webkitsourceended', function(e) {
             messagesModule.printOutLine('mediaSource readyState: ' + this.readyState);
         }, false);
@@ -3484,6 +3490,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
 /**
  * @name FREE VIDEO PLAYER
  * @author Johan Wedfelt
+ * @authorUrl https://github.com/DaWoody
  * @license GPLv3, see  {@link http://www.gnu.org/licenses/gpl-3.0.en.html| http://www.gnu.org/licenses/gpl-3.0.en.html}
  * @description A cool open source html5 video library to use when want to play both regular HTML5 content such as mp4, webm but also for adaptive streaming formats such as DASH for instance, Requires the xml2json library to work. Check out more @ {@link http://www.freevideoplayer.org| FreeVideoPlayer.org}
  * @param {object} initiationObject - The initiation object containing information about how to configure the Free Video Player

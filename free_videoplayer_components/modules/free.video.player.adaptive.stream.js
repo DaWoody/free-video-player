@@ -233,7 +233,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * This method initiates the media source extension and creates a video element aswell.
+     * @name _initiateMediaSource
+     * @description This method initiates the media source extension and creates a video element aswell.
      * @private
      */
     function _initiateMediaSource(){
@@ -242,7 +243,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * This method creates the media source stream
+     * @function
+     * @name _createMediaSourceStream
+     * @description This method creates the media source stream
      * @private
      * @param baseUrl
      */
@@ -264,7 +267,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * Creates a video elementloadDashMediaWithMediaSourceExtension
+     * @function
+     * @name _createVideoElementAndAppendToWrapper
+     * @desription Creates a video elementloadDashMediaWithMediaSourceExtension
      * @param that
      * @param videoWrapperClassName
      * @returns {*}
@@ -308,12 +313,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * This is the main media method for adpative bitrate content when the video and mediasource object are ready,
+     * @name _videoReady
+     * @description This is the main media method for adpative bitrate content when the video and mediasource object are ready,
      * this is currently used in conjunction with the mpdParserModule and the DASH format for streaming content.
      * @private
      * @param e
      */
-     function _videoready (e) {
+     function _videoReady (e) {
 
         var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
             representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
@@ -690,8 +696,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     function _addEventListenersToMediaSource(){
         //  ### EVENT LISTENERS ###
-        that._mediaSource.addEventListener('sourceopen', _videoready, false);
-        that._mediaSource.addEventListener('webkitsourceopen', _videoready, false);
+        that._mediaSource.addEventListener('sourceopen', _videoReady, false);
+        that._mediaSource.addEventListener('webkitsourceopen', _videoReady, false);
         that._mediaSource.addEventListener('webkitsourceended', function(e) {
             messagesModule.printOutLine('mediaSource readyState: ' + this.readyState);
         }, false);
