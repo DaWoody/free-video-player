@@ -47,9 +47,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         settingsObject = settingsObject,
         isModuleValue = true,
         moduleName = 'ADAPTIVE STREAMING',
-        moduleVersion = '0.9.2',
+        moduleVersion = '0.9.3',
         currentVideoObject = {},
-        adaptiveBitrateAlgorithmValue = new Map();
+        adaptiveBitrateAlgorithmValue = new Map(),
+        streamingOrderMap = new Map();
         currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
 
     //Import dependencies and modules
@@ -58,13 +59,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         videoControlsModule = videoControlsModule || null,
         hlsParserModule = 'Add HLS PARSER HERE...';
 
-    //Populate value in map, used for adaptive bitrate algorithm,
-    //these values are used for threshold values in miliseconds,
-    //when a switch shold occur.
-    adaptiveBitrateAlgorithmValue.set('lowest', 1500);
-    adaptiveBitrateAlgorithmValue.set('secondLowest', 2500);
-    adaptiveBitrateAlgorithmValue.set('middle', 3500);
-    adaptiveBitrateAlgorithmValue.set('highest', 6000);
+
 
     //Create methods here
     //Some methods we will be using for the player here. We will write them like the way we do. Just the way it should be.
@@ -73,7 +68,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### INITIATION METHODS ####
     //  ############################
     /**
-     * A startup method to show startup messages when the module is started
+     * @function
+     * @name printOutOnStartup
+     * @description A startup method to show startup messages when the module is started
      * @public
      */
     function printOutOnStartup(){
@@ -96,9 +93,29 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         }
     };
 
+
+    /**
+     * @function
+     * @name _initiateAdaptiveBitrateAlgorithmValue
+     * @description Sets initial values, limts and border values for the adaptive bitrate algorithm
+     * @param adaptiveBitrateAlgorithmValue
+     * @private
+     */
+    function _initiateAdaptiveBitrateAlgorithmValue(adaptiveBitrateAlgorithmValue){
+        //Populate value in map, used for adaptive bitrate algorithm,
+        //these values are used for threshold values in miliseconds,
+        //when a switch shold occur.
+        adaptiveBitrateAlgorithmValue.set('lowest', 1500);
+        adaptiveBitrateAlgorithmValue.set('secondLowest', 2500);
+        adaptiveBitrateAlgorithmValue.set('middle', 3500);
+        adaptiveBitrateAlgorithmValue.set('highest', 6000);
+    }
+
     //Initiation method
     /**
-     * The initiation method starts up the module with other methods
+     * @function
+     * @name _initiate
+     * @description initiation method starts up the module with other methods
      * @private
      */
     function _initiate(){
@@ -109,7 +126,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### SOURCE BUFFER METHODS ####
     //  ###############################
     /**
-     * This method abort the source buffers, can be used when reloading/loading an asset.
+     * @function
+     * @name abortSourceBuffers
+     * @description This method abort the source buffers, can be used when reloading/loading an asset.
      * @private
      */
     function abortSourceBuffers(currentVideoObject){
@@ -174,7 +193,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### BITRATE METHODS ####
     //  #########################
     /**
-     * Returns the baseUrl that the users stored from the video controls menu
+     * @function
+     * @name _returnBaseUrlBasedOnStoredUserSettings
+     * @description Returns the baseUrl that the users stored from the video controls menu
      * @returns {string}
      * @private
      */
@@ -185,7 +206,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
-     * Checks if the bitrate is set to auto, this can be used as a flag to determine if the user wants
+     * @function
+     * @name _isBitrateAuto
+     * @description Checks if the bitrate is set to auto, this can be used as a flag to determine if the user wants
      * to overwrite the automagic bitrate algorithm
      * @returns {boolean}
      * @private
@@ -203,7 +226,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  #### MEDIA SOURCE EXTENSION METHODS ####
     //  ########################################
     /**
-     * Checks if the browser supports this media source
+     * @function
+     * @name browserSupportsMediaSource
+     * @description Checks if the browser supports this media source
      * @returns {boolean}
      */
     function browserSupportsMediaSource(){
@@ -249,6 +274,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         mpdObject ?  currentVideoObject.streamObject.mpdObject = mpdObject : adaptiveVideoObject.mpdObject = {};
         hlsObject ?  currentVideoObject.streamObject.hlsObject = hlsObject : adaptiveVideoObject.hlsObject = {};
 
+        _generateVideoObjectMap(currentVideoObject.streamObject.mpdObject);
+
         //Set current video stream state to true so segments can append
         //when we have created the videoElements and the segment queu being appended.
         _setVideoStreamShouldAppend(true);
@@ -261,6 +288,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     };
 
     /**
+     * @function
      * @name _initiateMediaSource
      * @description This method initiates the media source extension and creates a video element aswell.
      * @private
@@ -340,6 +368,174 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
       return currentVideoObject.streamObject.streamBaseUrl;
     };
 
+    function _generateVideoObjectMap(mpdObject){
+
+        var returnVideoMapObject = new Map();
+
+        var periods = mpdParserModule.returnArrayOfPeriodsFromMpdObject(mpdObject),
+            periodsMaxSegmentDuration = mpdParserModule.returnMaxSegmentDurationFromMpdObject(mpdObject),
+            periodsAverageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject(mpdObject),
+            mediaDurationInSeconds = mpdParserModule.returnMediaDurationInSecondsFromMpdObject(mpdObject),
+            mediaTypeLiveOrStatic = mpdParserModule.returnMediaTypeFromMpdObject(mpdObject),
+            streamBaseUrl = _getStreamBaseUrl();
+
+        //first lets return the map from
+        console.log('!!!Reached the _generateVideoObjectMap method');
+        console.log('Periods..');
+        console.log(periods);
+
+
+        returnVideoMapObject.set('mediaTypeIs', mediaTypeLiveOrStatic);
+        returnVideoMapObject.set('amountOfPeriods', periods.length);
+        returnVideoMapObject.set('maxSegmentDuration', periodsMaxSegmentDuration);
+        returnVideoMapObject.set('averageSegmentDuration', periodsAverageSegmentDuration);
+        returnVideoMapObject.set('mediaDurationInSeconds', mediaDurationInSeconds);
+        returnVideoMapObject.set('streamBaseUrl', streamBaseUrl);
+
+        var streamArray = [];
+
+
+
+        var videoMapIterator = returnVideoMapObject.keys();
+
+        console.log(videoMapIterator.next().value); // "0"
+        console.log(videoMapIterator.next().value); // 1
+        console.log(videoMapIterator.next().value); // Object
+        console.log(videoMapIterator.next().value); // Object
+        console.log(videoMapIterator.next().value); // Object
+
+
+        periods.forEach(function(periodObject, index, array){
+
+            var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromPeriodObject(periodObject);
+
+            adaptionSets.forEach(function(currentAdaptionSet, index){
+
+                var startRepresentationIndex = 0,
+                    adaptionSetMimeType = mpdParserModule.returnMimeTypeFromAdaptionSet(currentAdaptionSet),
+                    arrayOfRepresentationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet),
+                    mimeType = adaptionSetMimeType ? adaptionSetMimeType : mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
+                    segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
+                    initializationFile = null,
+                    mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
+                    startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
+                    segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
+                    segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
+                    mediaDurationInSeconds = returnVideoMapObject.get('mediaDurationInSeconds'),
+                    averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
+                    codecs = '',
+                    baseUrl = '',
+                    baseUrlObjectArray = [],
+                    isVideoStream = false,
+                    isVideoAndAudioStream = false,
+                    isAudioStream = false,
+                    isSubtitleTrack = false,
+                    typeOfStream = 'video',
+                    sourceBuffer = null,
+                    sourceCount = 0,
+                    contentComponentArray = [],
+                    contentComponentArrayLength = 0,
+                    sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
+
+                    //Lets set the contentComponent length, this will decide if the stream is a muxxed (video and audio) stream
+                    contentComponentArray = mpdParserModule.returnArrayOfContentComponentsFromAdaptionSet(currentAdaptionSet);
+                    contentComponentArrayLength = contentComponentArray.length;
+
+                    //Lets fix codecs here
+                    codecs = mpdParserModule.returnCodecsFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
+                    //Lets find out the baseUrl here
+                    baseUrl = mpdParserModule.returnBaseUrlFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
+
+                    //Generate a stream object for the actual stream
+                    var streamObject = {};
+
+                    //Lets check what type of stream we are loading.
+                    //Video
+                    if(mimeType.indexOf('video') > -1
+                        && contentComponentArrayLength == 0) {
+                        streamObject = {
+                            type:'video',
+                            mimeType: mimeType,
+                            content:[]
+                        }
+                    }
+
+                    //Video & Audio
+                    if(mimeType.indexOf('video') > -1
+                        && contentComponentArrayLength > 0) {
+                        streamObject = {
+                            type:'videoAndAudio',
+                            mimeType: mimeType,
+                            content:[]
+                        }
+                    }
+
+                    //Audio
+                    if(mimeType.indexOf('audio') > -1){
+                        streamObject = {
+                            type:'audio',
+                            mimeType: mimeType,
+                            content:[]
+                        }
+                    }
+
+                    //Subtitles
+                    if(mimeType.indexOf('vtt') > -1){
+                        streamObject = {
+                            type:'subtitles',
+                            mimeType: mimeType,
+                            content:[]
+                        }
+                    }
+
+
+                    //Lets now fill the content array within the streamObject with
+                    //Information about each segment etc
+
+
+                console.log('mediaDurationInSeconds' + mediaDurationInSeconds);
+                console.log('averageSegmentDuration' + averageSegmentDuration);
+
+                    var amountOfSegments = Math.round(mediaDurationInSeconds/averageSegmentDuration);
+
+                console.log('Amountof segments..' + amountOfSegments);
+
+                    for(var segmentIndex = 0; segmentIndex < amountOfSegments; segmentIndex++){
+                        //lets create the url and push it to the current content array
+
+                        console.log('Yo.. ')
+
+                        var urlString = returnVideoMapObject.get('streamBaseUrl') +
+                                baseUrl +
+                                segmentPrefix +
+                                segmentIndex +
+                                segmentEnding;
+
+                        streamObject.content.push(urlString);
+                    }
+
+                    //Push the streamObject to the streamArray
+                    streamArray.push(streamObject);
+            });
+
+
+            returnVideoMapObject.set('streamArray', streamArray);
+
+            console.log('Showing array..');
+            console.log(returnVideoMapObject.get('streamArray'));
+
+            console.log('Logging the adaptionSets here..');
+            console.log(adaptionSets);
+        });
+
+        // var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
+        //     representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
+        //     videoBufferAdded = false,
+        //     audioBufferAdded = false,
+        //     streamBaseUrl = _getStreamBaseUrl(),
+        //     arrayOfSourceBuffers = [];
+    };
+
     /**
      * @name _videoReady
      * @description This is the main media method for adpative bitrate content when the video and mediasource object are ready,
@@ -349,7 +545,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
      function _videoReady (e) {
 
-        var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
+        var periods = mpdParserModule.returnArrayOfPeriodsFromMpdObject(currentVideoObject.streamObject.mpdObject),
+            adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
             representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
             videoBufferAdded = false,
             audioBufferAdded = false,
@@ -579,11 +776,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         //}, 2000);
     };
 
+   function _generateAdaptiveStreamObject(){
+       //Generate an adaptiveStreamObject that be used to generate the buffers when we want to play a video
+       //This adaptive stream object should be able to categorize how the actual video playlist should be generated
 
-
-
-
-
+   };
 
     //  ########################
     //  #### BUFFER METHODS ####
@@ -1019,8 +1216,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     that.isModule = isModule;
     that.getVideoElement = getVideoElement;
 
-    //Lets run this method on startup
+    //Lets run this methods on startup
     _initiate();
+    _initiateAdaptiveBitrateAlgorithmValue(adaptiveBitrateAlgorithmValue);
 
     //Lets return our object
     return that;
@@ -2540,7 +2738,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     var currentVideoObject = {},
         that = {},
         moduleName = 'MPD PARSER',
-        moduleVersion = '0.9.0',
+        moduleVersion = '0.9.8',
         isModuleValue = true,
         defaultObject = {
             debugMode:true
@@ -2617,6 +2815,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         }
         return segmentDuration;
     };
+
+
+
 
     /**
      * @function
@@ -2721,7 +2922,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
 
         try {
             mpdObject = mpdObject || currentVideoObject.mpdObject;
-            adaptionSetTemporary = mpdObject.Period.AdaptationSet;
+            adaptionSetTemporary =  mpdObject.Period.AdaptationSet;
+
             if(Object.prototype.toString.call( adaptionSetTemporary) === '[object Array]' ){
                 returnArray = adaptionSetTemporary
             } else {
@@ -2740,6 +2942,32 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         }
         return returnArray;
     };
+
+    function returnArrayOfPeriodsFromMpdObject(mpdObject){
+        var returnArray = [],
+            periodSetTemporary = [];
+        try {
+            mpdObject = mpdObject || currentVideoObject.mpdObject;
+            periodSetTemporary = mpdObject.Period;
+
+            if(Object.prototype.toString.call(periodSetTemporary ) === '[object Array]' ){
+                returnArray = periodSetTemporary
+            } else {
+                returnArray.push(periodSetTemporary);
+            }
+
+        } catch(e){
+            var messageObject = {};
+            messageObject.message = 'Could not parse mdpObject.Period';
+            messageObject.methodName = 'returnPeriodsFromMpdObject';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return returnArray;
+    };
+
 
     /**
      * @function
@@ -2831,6 +3059,136 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
                 returnBoolean = false;
             }
         return returnBoolean;
+    };
+
+    //  #############################
+    //  #### PERIOD METHODS ####
+    //  #############################
+    /**
+     * @function
+     * @name returnArrayOfSubtitlesFromPeriodAndBaseUrl
+     * @description Returns an array of subtitles from the period and the baseurl
+     * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
+     * @param {string} baseUrl - The baseUrl for the media, needed to create correct subtitle paths
+     * @returns {Array} - An array of subtitle objects packed into an array.
+     */
+    function returnArrayOfSubtitlesFromPeriodObjectAndBaseUrl(period, baseUrl){
+        //Should utilize low level methods to parse through and get the
+        //subtitles that we need
+
+        var arrayOfAdaptionSets = returnArrayOfAdaptionSetsFromPeriodObject(period),
+            returnArrayOfSubtitles = [],
+            firstRepresentation = {},
+            mimeType = '',
+            subtitleId = 1;
+
+        try {
+            arrayOfAdaptionSets.forEach(function(currentAdaptionSet, index, adaptionSetArray){
+
+                var arrayOfRepresentations = returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet);
+
+                firstRepresentation = arrayOfRepresentations[0];
+                mimeType = returnMimeTypeFromRepresentation(firstRepresentation);
+
+                if(mimeType.indexOf('vtt') > -1){
+                    var subtitleTrackObject = {};
+                    //Now its confirmed that the adaptionSet actually contains a webvtt file
+                    //Lets build our subtitleTrackObjects
+
+                    //Lets find out if the subtitle url is dynamic or static
+                    //if dynamic we should add the base url otherwise not
+
+
+
+                    var subtitleUrl = _subtitleBaseUrlIsDynamic(returnBaseUrlFromRepresentation(firstRepresentation)) ? baseUrl + returnBaseUrlFromRepresentation(firstRepresentation) : returnBaseUrlFromRepresentation(firstRepresentation);
+
+                    subtitleTrackObject.subtitleUrl = subtitleUrl;
+                    subtitleTrackObject.subtitleLanguage = returnSubtitleLanguageFromAdaptionSet(currentAdaptionSet);
+                    subtitleTrackObject.subtitleId = subtitleId;
+                    //Lets add a tick to our subtitleId counter
+                    subtitleId++;
+                    returnArrayOfSubtitles.push(subtitleTrackObject);
+                }
+            });
+        } catch(e){
+            var messageObject = {};
+            messageObject.message = 'Could not return array of subtitles, check method';
+            messageObject.methodName = 'returnArrayOfSubtitlesFromMpdObjectAndBaseUrl';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return returnArrayOfSubtitles;
+    };
+
+    /**
+     * @function
+     * @name returnArrayOfAdaptionSetsFromPeriodObject
+     * @description Returns an array of adaptionSets from the period object
+     * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
+     * @returns {Array} - And array of adaptionsets from the MPD object
+     */
+    function returnArrayOfAdaptionSetsFromPeriodObject(periodObject){
+        var returnArray = [],
+            adaptionSetTemporary = [];
+
+        try {
+            adaptionSetTemporary =  periodObject.AdaptationSet;
+
+            if(Object.prototype.toString.call( adaptionSetTemporary) === '[object Array]' ){
+                returnArray = adaptionSetTemporary
+            } else {
+                returnArray.push(adaptionSetTemporary);
+            }
+
+        } catch(e){
+            var messageObject = {};
+            messageObject.message = 'Could not parse periodObject.AdapationSet';
+            messageObject.methodName = 'returnArrayOfAdaptionSetsFromPeriodObject';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+
+        }
+        return returnArray;
+    };
+
+    /**
+     * @function
+     * @name returnArrayOfAdaptionSetsFromPeriod
+     * @description Returns an array of adaptionSets from the MPD object
+     * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
+     * @returns {Array} - And array of adaptionsets from the MPD object
+     */
+    function returnArrayOfAdaptionSetsFromPeriod(period){
+        var returnArray = [],
+            adaptionSetTemporary = [];
+
+        try {
+            adaptionSetTemporary =  period.AdaptationSet;
+
+            if(Object.prototype.toString.call( adaptionSetTemporary) === '[object Array]' ){
+                returnArray = adaptionSetTemporary
+            } else {
+                returnArray.push(adaptionSetTemporary);
+            }
+
+        } catch(e){
+            var messageObject = {};
+            messageObject.message = 'Could not parse period.AdapationSet';
+            messageObject.methodName = 'returnArrayOfAdaptionSetsFromPeriod';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+
+        }
+        return returnArray;
     };
 
     //  #############################
@@ -3465,6 +3823,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.returnTypeFromMimeTypeAndCodecString = returnTypeFromMimeTypeAndCodecString;
     that.returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate = returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate;
     that.returnBaseUrlFromMpdUrl = returnBaseUrlFromMpdUrl;
+
+    //Period methods
+    that.returnArrayOfPeriodsFromMpdObject = returnArrayOfPeriodsFromMpdObject;
+    that.returnArrayOfAdaptionSetsFromPeriodObject = returnArrayOfAdaptionSetsFromPeriodObject;
+    that.returnArrayOfSubtitlesFromPeriodObjectAndBaseUrl = returnArrayOfSubtitlesFromPeriodObjectAndBaseUrl;
 
     //AdapationSet methods
     that.returnMimeTypeFromAdaptionSet = returnMimeTypeFromAdaptionSet;
