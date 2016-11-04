@@ -468,17 +468,30 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 console.log('Amountof segments..' + amountOfSegments);
 
                     for(var segmentIndex = 0; segmentIndex < amountOfSegments; segmentIndex++){
-                        //lets create the url and push it to the current content array
-                        var urlString = returnVideoMapObject.get('streamBaseUrl') +
+
+                        //Lets create the url string based on the resource is a vtt file or not,
+                        //if the current segment is a vtt segment, the full url will be displayed within
+                        //the baseUrl field, and thus we will not need to build up a full url before saving
+                        //it to our returnVideoObjectMap
+
+                        var urlString = '';
+
+                        if(streamObject['type'] === 'subtitles'){
+                            //If we have a subtitle segment, we should just save it as the baseUrl
+                            urlString = baseUrl;
+                        } else {
+                            //Its an audio or video segment, lets build the full url
+                            urlString = returnVideoMapObject.get('streamBaseUrl') +
                                 baseUrl +
                                 segmentPrefix +
                                 segmentIndex +
                                 segmentEnding;
-
-                        var streamTypeExists = false;
+                        }
+                        //lets create the url and push it to the current content array
+                        var streamTypeExists = false,
+                            subtitleUrlExists = false;
 
                         //Lets see if we already have a saved array with this specific content
-
                         for(var j=0, streamArrayLength = streamArray.length; j < streamArrayLength; j++){
                             //Lets see if we already have the stream type saved, if that is the case we should just keep iterating
                             //and pushing to the array of possible segments. Currently one period is stacked ontop of the next period
@@ -487,8 +500,19 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                             if(streamArray[j]['type'] === streamObject['type']){
                                 //The type has already been added
                                 streamTypeExists = true;
+                                subtitleUrlExists = false;
+                                //lets check to see if the object type is vtt,
+                                // if that is the case we should not add doubles
+                                if(streamArray[j]['type'] === 'subtitles'){
+                                    //Lets check and see if the url is the same as before
+                                    for(var k = 0, subtitlesArrayLength = streamArray[j].content.length; k < subtitlesArrayLength; k++){
+                                        subtitleUrlExists = streamArray[j].content[k] === urlString ? true : false;
+                                    }
+                                }
                                 //Lets add the url string to the already added stream type
-                                streamArray[j].content.push(urlString);
+                                if(!subtitleUrlExists){
+                                    streamArray[j].content.push(urlString);
+                                }
                             }
                         }
                         //If we have not already added the content to an exisiting streamtype, we should add a new one
@@ -498,7 +522,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                             streamArray.push(streamObject);
                         }
                     }
-
                 console.log('Stream Array');
                 console.log(streamArray);
             });
