@@ -246,7 +246,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         mpdObject ?  currentVideoObject.streamObject.mpdObject = mpdObject : adaptiveVideoObject.mpdObject = {};
         hlsObject ?  currentVideoObject.streamObject.hlsObject = hlsObject : adaptiveVideoObject.hlsObject = {};
 
-        _generateVideoObjectMap(currentVideoObject.streamObject.mpdObject);
+        var videoObjectMap = _generateAndReturnVideoObjectMapFromMpdObject(currentVideoObject.streamObject.mpdObject);
 
         //Set current video stream state to true so segments can append
         //when we have created the videoElements and the segment queu being appended.
@@ -356,7 +356,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         console.log('Periods..');
         console.log(periods);
 
-
         returnVideoMapObject.set('mediaTypeIs', mediaTypeLiveOrStatic);
         returnVideoMapObject.set('amountOfPeriods', periods.length);
         returnVideoMapObject.set('maxSegmentDuration', periodsMaxSegmentDuration);
@@ -364,18 +363,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         returnVideoMapObject.set('mediaDurationInSeconds', mediaDurationInSeconds);
         returnVideoMapObject.set('streamBaseUrl', streamBaseUrl);
 
-        var streamArray = [];
-
-
-
-        var videoMapIterator = returnVideoMapObject.keys();
-
-        console.log(videoMapIterator.next().value); // "0"
-        console.log(videoMapIterator.next().value); // 1
-        console.log(videoMapIterator.next().value); // Object
-        console.log(videoMapIterator.next().value); // Object
-        console.log(videoMapIterator.next().value); // Object
-
+        var streamArray = [],
+            videoMapIterator = returnVideoMapObject.keys();
 
         periods.forEach(function(periodObject, index, array){
 
@@ -469,11 +458,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                         }
                     }
 
-
                     //Lets now fill the content array within the streamObject with
                     //Information about each segment etc
-
-
                 console.log('mediaDurationInSeconds' + mediaDurationInSeconds);
                 console.log('averageSegmentDuration' + averageSegmentDuration);
 
@@ -489,11 +475,32 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                                 segmentIndex +
                                 segmentEnding;
 
-                        streamObject.content.push(urlString);
+                        var streamTypeExists = false;
+
+                        //Lets see if we already have a saved array with this specific content
+
+                        for(var j=0, streamArrayLength = streamArray.length; j < streamArrayLength; j++){
+                            //Lets see if we already have the stream type saved, if that is the case we should just keep iterating
+                            //and pushing to the array of possible segments. Currently one period is stacked ontop of the next period
+                            //so the first period will play, then the second, then the third etc..
+
+                            if(streamArray[j]['type'] === streamObject['type']){
+                                //The type has already been added
+                                streamTypeExists = true;
+                                //Lets add the url string to the already added stream type
+                                streamArray[j].content.push(urlString);
+                            }
+                        }
+                        //If we have not already added the content to an exisiting streamtype, we should add a new one
+                        if(!streamTypeExists){
+                            streamObject.content.push(urlString);
+                            //Push the streamObject to the streamArray
+                            streamArray.push(streamObject);
+                        }
                     }
 
-                    //Push the streamObject to the streamArray
-                    streamArray.push(streamObject);
+                console.log('Stream Array');
+                console.log(streamArray);
             });
 
             //CREATE MORE LOGIC HERE SO WE CAN KEEP ADDING MORE STUFF TO THE STREAM
@@ -505,13 +512,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         console.log('Showing array..');
         console.log(returnVideoMapObject.get('streamArray'));
 
-
-        // var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
-        //     representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
-        //     videoBufferAdded = false,
-        //     audioBufferAdded = false,
-        //     streamBaseUrl = _getStreamBaseUrl(),
-        //     arrayOfSourceBuffers = [];
     };
 
     /**
