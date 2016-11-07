@@ -16,6 +16,7 @@ gulp.task('build_free_video_player_modules', function(cb) {
             './free_videoplayer_components/modules/free.video.player.namespace.js',
             './free_videoplayer_components/modules/free.video.player.xml2.json.js',
             './free_videoplayer_components/modules/free.video.player.splash.image.js',
+            './free_videoplayer_components/modules/free.video.player.adaptive.stream.object.creation.js',
             './free_videoplayer_components/modules/free.video.player.adaptive.stream.js',
             './free_videoplayer_components/modules/free.video.player.messages.js',
             './free_videoplayer_components/modules/free.video.player.controls.js',

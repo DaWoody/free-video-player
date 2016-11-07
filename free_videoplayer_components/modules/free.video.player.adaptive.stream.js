@@ -8,7 +8,7 @@
  * @param moduleVersion {string} - The videoControlsModule that the Free Video Player uses
  * @returns {{}}
  */
-freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(settingsObject, videoControlsModule){
+freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(settingsObject, videoControlsModule, adaptiveStreamObjectCreationModule){
     //Add stuff here and refactor so we gather adaptive streaming stuff in one module
 
     //SEEMS TO BE NEEDING MediaSource, VideoElement, VideoWrapper, CurrentVideoObject
@@ -19,18 +19,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         settingsObject = settingsObject,
         isModuleValue = true,
         moduleName = 'ADAPTIVE STREAMING',
-        moduleVersion = '0.9.3',
+        moduleVersion = '0.9.8',
         currentVideoObject = {},
         adaptiveBitrateAlgorithmValue = new Map(),
+        streamObjectCreationModule = adaptiveStreamObjectCreationModule,
         streamingOrderMap = new Map();
+
         currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
+
 
     //Import dependencies and modules
     var mpdParserModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser(),
         messagesModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion),
         videoControlsModule = videoControlsModule || null,
         hlsParserModule = 'Add HLS PARSER HERE...';
-
 
 
     //Create methods here
@@ -246,8 +248,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         mpdObject ?  currentVideoObject.streamObject.mpdObject = mpdObject : adaptiveVideoObject.mpdObject = {};
         hlsObject ?  currentVideoObject.streamObject.hlsObject = hlsObject : adaptiveVideoObject.hlsObject = {};
 
-        var videoObjectMap = _generateAndReturnVideoObjectMapFromMpdObject(currentVideoObject.streamObject.mpdObject);
-
         //Set current video stream state to true so segments can append
         //when we have created the videoElements and the segment queu being appended.
         _setVideoStreamShouldAppend(true);
@@ -340,202 +340,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
       return currentVideoObject.streamObject.streamBaseUrl;
     };
 
-    function _generateAndReturnVideoObjectMapFromMpdObject(mpdObject){
-
-        var returnVideoMapObject = new Map();
-
-        var periods = mpdParserModule.returnArrayOfPeriodsFromMpdObject(mpdObject),
-            periodsMaxSegmentDuration = mpdParserModule.returnMaxSegmentDurationFromMpdObject(mpdObject),
-            periodsAverageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject(mpdObject),
-            mediaDurationInSeconds = mpdParserModule.returnMediaDurationInSecondsFromMpdObject(mpdObject),
-            mediaTypeLiveOrStatic = mpdParserModule.returnMediaTypeFromMpdObject(mpdObject),
-            streamBaseUrl = _getStreamBaseUrl();
-
-        //first lets return the map from
-        console.log('!!!Reached the _generateVideoObjectMap method');
-        console.log('Periods..');
-        console.log(periods);
-
-        returnVideoMapObject.set('mediaTypeIs', mediaTypeLiveOrStatic);
-        returnVideoMapObject.set('amountOfPeriods', periods.length);
-        returnVideoMapObject.set('maxSegmentDuration', periodsMaxSegmentDuration);
-        returnVideoMapObject.set('averageSegmentDuration', periodsAverageSegmentDuration);
-        returnVideoMapObject.set('mediaDurationInSeconds', mediaDurationInSeconds);
-        returnVideoMapObject.set('streamBaseUrl', streamBaseUrl);
-
-        var streamArray = [],
-            videoMapIterator = returnVideoMapObject.keys();
-
-        periods.forEach(function(periodObject, index, array){
-
-            var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromPeriodObject(periodObject);
-
-            adaptionSets.forEach(function(currentAdaptionSet, index){
-
-                var startRepresentationIndex = 0,
-                    adaptionSetMimeType = mpdParserModule.returnMimeTypeFromAdaptionSet(currentAdaptionSet),
-                    arrayOfRepresentationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet),
-                    mimeType = adaptionSetMimeType ? adaptionSetMimeType : mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
-                    segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
-                    initializationFile = null,
-                    mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
-                    startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
-                    segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
-                    segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
-                    mediaDurationInSeconds = returnVideoMapObject.get('mediaDurationInSeconds'),
-                    averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
-                    codecs = '',
-                    baseUrl = '',
-                    baseUrlObjectArray = [],
-                    typeOfStream = 'video',
-                    sourceBuffer = null,
-                    sourceCount = 0,
-                    contentComponentArray = [],
-                    contentComponentArrayLength = 0,
-                    sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
-
-                    //Lets set the contentComponent length, this will decide if the stream is a muxxed (video and audio) stream
-                    contentComponentArray = mpdParserModule.returnArrayOfContentComponentsFromAdaptionSet(currentAdaptionSet);
-                    contentComponentArrayLength = contentComponentArray.length;
-
-                    //Lets fix codecs here
-                    codecs = mpdParserModule.returnCodecsFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
-                    //Lets find out the baseUrl here
-                    baseUrl = mpdParserModule.returnBaseUrlFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
-
-                    //Generate a stream object for the actual stream
-                    var streamObject = {},
-                        codecString = mimeType + '; codecs="' + codecs + '"';
-
-                    //Lets check what type of stream we are loading.
-                    //Video
-                    if(mimeType.indexOf('video') > -1
-                        && contentComponentArrayLength == 0) {
-                        streamObject = {
-                            type:'video',
-                            mimeType: mimeType,
-                            codec: codecs,
-                            sourceBufferCodecString: codecString,
-                            sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
-                            content:[]
-                        }
-                    }
-
-                    //Video & Audio
-                    if(mimeType.indexOf('video') > -1
-                        && contentComponentArrayLength > 0) {
-                        streamObject = {
-                            type:'videoAndAudio',
-                            mimeType: mimeType,
-                            codec: codecs,
-                            sourceBufferCodecString: codecString,
-                            sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
-                            content:[]
-                        }
-                    }
-
-                    //Audio
-                    if(mimeType.indexOf('audio') > -1){
-                        streamObject = {
-                            type:'audio',
-                            mimeType: mimeType,
-                            codec: codecs,
-                            sourceBufferCodecString: codecString,
-                            sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
-                            content:[]
-                        }
-                    }
-
-                    //Subtitles
-                    if(mimeType.indexOf('vtt') > -1){
-                        streamObject = {
-                            type:'subtitles',
-                            mimeType: mimeType,
-                            codec: codecs,
-                            sourceBufferCodecString: codecString,
-                            sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
-                            content:[]
-                        }
-                    }
-
-                    //Lets now fill the content array within the streamObject with
-                    //Information about each segment etc
-                console.log('mediaDurationInSeconds' + mediaDurationInSeconds);
-                console.log('averageSegmentDuration' + averageSegmentDuration);
-
-                    var amountOfSegments = Math.round(mediaDurationInSeconds/averageSegmentDuration);
-
-                console.log('Amountof segments..' + amountOfSegments);
-
-                    for(var segmentIndex = 0; segmentIndex < amountOfSegments; segmentIndex++){
-
-                        //Lets create the url string based on the resource is a vtt file or not,
-                        //if the current segment is a vtt segment, the full url will be displayed within
-                        //the baseUrl field, and thus we will not need to build up a full url before saving
-                        //it to our returnVideoObjectMap
-
-                        var urlString = '';
-
-                        if(streamObject['type'] === 'subtitles'){
-                            //If we have a subtitle segment, we should just save it as the baseUrl
-                            urlString = baseUrl;
-                        } else {
-                            //Its an audio or video segment, lets build the full url
-                            urlString = returnVideoMapObject.get('streamBaseUrl') +
-                                baseUrl +
-                                segmentPrefix +
-                                segmentIndex +
-                                segmentEnding;
-                        }
-                        //lets create the url and push it to the current content array
-                        var streamTypeExists = false,
-                            subtitleUrlExists = false;
-
-                        //Lets see if we already have a saved array with this specific content
-                        for(var j=0, streamArrayLength = streamArray.length; j < streamArrayLength; j++){
-                            //Lets see if we already have the stream type saved, if that is the case we should just keep iterating
-                            //and pushing to the array of possible segments. Currently one period is stacked ontop of the next period
-                            //so the first period will play, then the second, then the third etc..
-
-                            if(streamArray[j]['type'] === streamObject['type']){
-                                //The type has already been added
-                                streamTypeExists = true;
-                                subtitleUrlExists = false;
-                                //lets check to see if the object type is vtt,
-                                // if that is the case we should not add doubles
-                                if(streamArray[j]['type'] === 'subtitles'){
-                                    //Lets check and see if the url is the same as before
-                                    for(var k = 0, subtitlesArrayLength = streamArray[j].content.length; k < subtitlesArrayLength; k++){
-                                        subtitleUrlExists = streamArray[j].content[k] === urlString ? true : false;
-                                    }
-                                }
-                                //Lets add the url string to the already added stream type
-                                if(!subtitleUrlExists){
-                                    streamArray[j].content.push(urlString);
-                                }
-                            }
-                        }
-                        //If we have not already added the content to an exisiting streamtype, we should add a new one
-                        if(!streamTypeExists){
-                            streamObject.content.push(urlString);
-                            //Push the streamObject to the streamArray
-                            streamArray.push(streamObject);
-                        }
-                    }
-                console.log('Stream Array');
-                console.log(streamArray);
-            });
-
-            //CREATE MORE LOGIC HERE SO WE CAN KEEP ADDING MORE STUFF TO THE STREAM
-            //HAVE MULTIPLE STREAMS AND SUCH :)
-        });
-
-        returnVideoMapObject.set('streamArray', streamArray);
-
-        console.log('Showing array..');
-        console.log(returnVideoMapObject.get('streamArray'));
-
-    };
 
     /**
      * @name _videoReady
@@ -544,7 +348,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      * @private
      * @param e
      */
-     function _videoReady (e) {
+     function _videoReady () {
 
         var periods = mpdParserModule.returnArrayOfPeriodsFromMpdObject(currentVideoObject.streamObject.mpdObject),
             adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
@@ -553,6 +357,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             audioBufferAdded = false,
             streamBaseUrl = _getStreamBaseUrl(),
             arrayOfSourceBuffers = [];
+
+        var videoObjectMap = streamObjectCreationModule.generateAndReturnVideoObjectMapFromMpdObjectAndStreamBaseUrl(currentVideoObject.streamObject.mpdObject, currentVideoObject.streamObject.streamBaseUrl)
+
+        console.log('The video Object');
+        console.log(videoObjectMap);
+
 
         messagesModule.printOutLine('The adaptionsets are:');
         messagesModule.printOutObject(adaptionSets);
@@ -1145,7 +955,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     //  ################################
     //  #### ADD DEPENDENCY METHODS ####
     //  ################################
-
 
     //  #########################
     //  #### GENERAL METHODS ####

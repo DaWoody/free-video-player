@@ -112,9 +112,14 @@ var freeVideoPlayer = function(initiationObject){
     //Add references to helper libraries
     var messagesModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion),
         mpdParserModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser(),
-        videoControlsModule = freeVideoPlayerModulesNamespace.freeVideoPlayerControls(settingsObject, videoPlayerNameCss),
-        adaptiveStreamingModule = freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream(settingsObject, videoControlsModule),
-        hlsParserModule = 'Add HLS PARSER HERE...';
+        hlsParserModule = 'Add HLS PARSER HERE...',
+        adaptiveStreamingObjectCreationModule = freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation();
+        adaptiveStreamingObjectCreationModule.addMpdParserModule(mpdParserModule),
+        adaptiveStreamingObjectCreationModule.addHlsParserModule(hlsParserModule);
+
+    var videoControlsModule = freeVideoPlayerModulesNamespace.freeVideoPlayerControls(settingsObject, videoPlayerNameCss),
+        adaptiveStreamingModule = freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream(settingsObject, videoControlsModule, adaptiveStreamingObjectCreationModule);
+
 
     //  ######################
     //  #### LOAD METHODS ####
@@ -281,10 +286,12 @@ var freeVideoPlayer = function(initiationObject){
                 //mpdObject = mpdParserModule.returnMpdObjectWithAddedBaseUrl(mpdObject, mediaBaseUrl);
                 mpdParserModule.setMpdObject(responseObject.MPD);
 
+
                 currentVideoObject.mediaType = mpdParserModule.returnMediaTypeFromMpdObject(mpdObject);
                 currentVideoObject.averageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject(mpdObject);
                 currentVideoObject.maxSegmentDuration = mpdParserModule.returnMaxSegmentDurationFromMpdObject(mpdObject);
                 currentVideoObject.mediaDurationInSeconds = mpdParserModule.returnMediaDurationInSecondsFromMpdObject(mpdObject);
+
 
                 //Lets set the videoFormat on our current asset on the currentVideoObject so this can be
                 //be used within the video player controls for instance
