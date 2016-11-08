@@ -57,8 +57,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
             returnVideoMapObject.set('amountOfSegments', amountOfSegments);
             returnVideoMapObject.set('streamBaseUrl', streamBaseUrl);
 
-            var streamArray = [],
-                videoMapIterator = returnVideoMapObject.keys();
+            var streamArray = [];
 
             periods.forEach(function(periodObject, periodIndex, array){
 
@@ -67,13 +66,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
 
                 adaptionSets.forEach(function(currentAdaptionSet, adaptionSetIndex){
 
+                    console.log('REACHED ADPATIONSET..');
+                    console.log('The adaptionSet..');
+                    console.log(currentAdaptionSet);
+
                     var startRepresentationIndex = 0,
                         adaptionSetMimeType = mpdParserModule.returnMimeTypeFromAdaptionSet(currentAdaptionSet),
                         arrayOfRepresentationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet),
                         mimeType = adaptionSetMimeType ? adaptionSetMimeType : mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
                         segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
-                        initializationFile = null,
                         mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
+                        initializationFile =  mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate) ?  mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate) : null,
+                        baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets) ? mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets) : [],
                         startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
                         segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
                         segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
@@ -81,12 +85,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
                         codecs = '',
                         baseUrl = '',
-                        baseUrlObjectArray = [],
+                        baseUrlArray = [],
                         typeOfStream = 'video',
                         sourceBuffer = null,
                         sourceCount = 0,
                         contentComponentArray = [],
                         contentComponentArrayLength = 0,
+                        representationSetArray = [],
+                        representationSetArrayLength = 0,
                         sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
 
                     //Lets set the contentComponent length, this will decide if the stream is a muxxed (video and audio) stream
@@ -97,6 +103,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     codecs = mpdParserModule.returnCodecsFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
                     //Lets find out the baseUrl here
                     baseUrl = mpdParserModule.returnBaseUrlFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
+
+                    //Lets see how many representationSets we do have within the adaptionSet
+                    arrayOfRepresentationSets.forEach(function(representationSet, representationSetIndex){
+
+                        console.log('The representation set..');
+                        console.log(arrayOfRepresentationSets);
+                        console.log(representationSet);
+
+                        //var baseUrlPush = representationSet['BaseURL'] ? representationSet['BaseURL'] : baseUrl;
+                        //baseUrlArray.push(baseUrlPush);
+                    });
 
                     //Generate a stream object for the actual stream
                     var streamObject = {},
@@ -109,6 +126,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         streamObject = {
                             type:'video',
                             mimeType: mimeType,
+                            initializationFile: initializationFile,
+                            baseUrlArray: baseUrlArray,
                             codec: codecs,
                             sourceBufferCodecString: codecString,
                             sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
@@ -122,6 +141,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         streamObject = {
                             type:'videoAndAudio',
                             mimeType: mimeType,
+                            initializationFile: initializationFile,
+                            baseUrlArray: baseUrlArray,
                             codec: codecs,
                             sourceBufferCodecString: codecString,
                             sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
@@ -134,6 +155,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         streamObject = {
                             type:'audio',
                             mimeType: mimeType,
+                            initializationFile: initializationFile,
+                            baseUrlArray: baseUrlArray,
                             codec: codecs,
                             sourceBufferCodecString: codecString,
                             sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
@@ -147,6 +170,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         streamObject = {
                             type:'subtitles',
                             mimeType: mimeType,
+                            initializationFile: initializationFile,
+                            baseUrlArray: baseUrlArray,
                             codec: codecs,
                             sourceBufferCodecString: codecString,
                             sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
@@ -173,11 +198,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                             contentObject.urlString = baseUrl;
                         } else {
                             //Its an audio or video segment, lets build the full url
-                            contentObject.urlString = returnVideoMapObject.get('streamBaseUrl') +
-                                baseUrl +
-                                segmentPrefix +
-                                segmentIndex +
-                                segmentEnding;
+                            contentObject.urlString = '';
+                            contentObject.streamBaseUrl = returnVideoMapObject.get('streamBaseUrl');
+                            contentObject.segmentPrefix = segmentPrefix;
+                            contentObject.segmentIndex = segmentIndex;
+                            contentObject.segmentEnding = segmentEnding;
                         }
                         //lets create the url and push it to the current content array
                         var streamTypeExists = false,
@@ -200,6 +225,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                                     for(var k = 0, subtitlesArrayLength = streamArray[j].content.length; k < subtitlesArrayLength; k++){
                                         subtitleUrlExists = streamArray[j].content[k] === contentObject.urlString ? true : false;
                                     }
+                                    //NOT REALLY WORKING THIS::: CHECK THIS:::
                                 }
                                 //Lets add the url string to the already added stream type
                                 if(!subtitleUrlExists){
@@ -214,8 +240,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                             streamArray.push(streamObject);
                         }
                     }
-                    console.log('Stream Array');
-                    console.log(streamArray);
+                     console.log('Stream Array');
+                     console.log(streamArray);
                 });
 
                 //CREATE MORE LOGIC HERE SO WE CAN KEEP ADDING MORE STUFF TO THE STREAM
@@ -228,6 +254,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
         } else {
             console.log('Could not generate VideoObjectMap from mpdObject since we are missing the mpdParser module, or we do not have a valid streamBaseUrl');
         }
+
+        //return our video object
+        return returnVideoMapObject;
     };
 
     //  #########################
@@ -676,163 +705,51 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
 
     /**
-     * @name _videoReady
-     * @description This is the main media method for adpative bitrate content when the video and mediasource object are ready,
-     * this is currently used in conjunction with the mpdParserModule and the DASH format for streaming content.
+     * @function
+     * @name _createAndReturnSourceBuffer
+     * @description A private method adding a source buffer
+     * @param streamObject
      * @private
-     * @param e
      */
-     function _videoReady () {
-
-        var periods = mpdParserModule.returnArrayOfPeriodsFromMpdObject(currentVideoObject.streamObject.mpdObject),
-            adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
-            representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
-            videoBufferAdded = false,
-            audioBufferAdded = false,
-            streamBaseUrl = _getStreamBaseUrl(),
-            arrayOfSourceBuffers = [];
-
-        var videoObjectMap = streamObjectCreationModule.generateAndReturnVideoObjectMapFromMpdObjectAndStreamBaseUrl(currentVideoObject.streamObject.mpdObject, currentVideoObject.streamObject.streamBaseUrl)
-
-        console.log('The video Object');
-        console.log(videoObjectMap);
+    function _createAndReturnSourceBuffer(streamObject){
+        var sourceBuffer = that._mediaSource.addSourceBuffer(streamObject.sourceBufferCodecString);
+        //Lets save our sourceBuffer to temporary storage
+        currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
+        messagesModule.printOutLine('Adding a ' + streamObject.type + ' stream!');
+        return sourceBuffer;
+    }
 
 
-        messagesModule.printOutLine('The adaptionsets are:');
-        messagesModule.printOutObject(adaptionSets);
+    /**
+     * @function
+     * @name _setDefaultBitrate
+     * @description A method that sets the default bitrate, either to index 0 if we do not have multiple qualites, or setting the highest value.
+     * @param streamObject
+     * @private
+     */
+    //MAYBE SHOULD SET LOWEST TO START WITH FOR FASTER SEGMENT LOADING AT START..?
+    function _setDefaultBitrate(streamObject){
+        if(streamObject.baseUrlObjectArray.length > 0){
+            //Setting this value so it can be used within the bitrate switch calculations
+            var baseUrlObjectsArrayLength = streamObject.baseUrlObjectArray.length,
+                baseUrlObjectsArrayHighestIndex = baseUrlObjectsArrayLength - 1;
 
-        //lets set a start number so we actually do not currently add more than just one video and audio buffer
-        adaptionSets.forEach(function(currentAdaptionSet, index, adaptionSetArray){
+            messagesModule.printOutLine('The stream we have is..' + streamObject.type);
 
-            var startRepresentationIndex = 0,
-                adaptionSetMimeType = mpdParserModule.returnMimeTypeFromAdaptionSet(currentAdaptionSet),
-                arrayOfRepresentationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet),
-                mimeType = adaptionSetMimeType ? adaptionSetMimeType : mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
-                segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
-                initializationFile = null,
-                mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
-                streamDurationInSeconds =  mpdParserModule.returnMediaDurationInSecondsFromMpdObject(currentVideoObject.streamObject.mpdObject),
-                startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
-                segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
-                segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
-                averageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject(currentVideoObject.streamObject.mpdObject),
-                codecs = '',
-                baseUrl = '',
-                baseUrlObjectArray = [],
-                isVideoStream = false,
-                isVideoAndAudioStream = false,
-                isAudioStream = false,
-                isSubtitleTrack = false,
-                typeOfStream = 'video',
-                sourceBuffer = null,
-                sourceCount = 0,
-                contentComponentArray = [],
-                contentComponentArrayLength = 0,
-                sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
+            currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(streamObject.type + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
+        } else {
+            currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(streamObject.type + '_baseUrlHighestIndex', 0);
+        }
+    }
 
-            messagesModule.printOutLine('The mimeType we find is ' + mimeType);
-            //Lets use the contentComponent to find out if we have a muxxed stream or not
+    function _modifyAndStartSourceBuffer(sourceBuffer, streamObject){
 
-            messagesModule.printOutLine('The representation sets are: ');
-            messagesModule.printOutObject(arrayOfRepresentationSets);
-
-            //Lets set the contentComponent length, this will decide if the stream is a muxxed (video and audio) stream
-            contentComponentArray = mpdParserModule.returnArrayOfContentComponentsFromAdaptionSet(currentAdaptionSet);
-            contentComponentArrayLength = contentComponentArray.length;
-
-            //Lets fix codecs here
-            codecs = mpdParserModule.returnCodecsFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
-            //Lets find out the baseUrl here
-            baseUrl = mpdParserModule.returnBaseUrlFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
-
-            //Lets check what type of stream we are loading.
-            //Video
-            if(mimeType.indexOf('video') > -1
-                && contentComponentArrayLength == 0) {
-                isVideoStream = true;
-            }
-
-            //Video & Audio
-            if(mimeType.indexOf('video') > -1
-                && contentComponentArrayLength > 0) {
-                isVideoAndAudioStream = true;
-            }
-
-            //Audio
-            if(mimeType.indexOf('audio') > -1){
-                isAudioStream = true;
-            }
-
-            //Subtitles
-            if(mimeType.indexOf('vtt') > -1){
-                isSubtitleTrack = true;
-            }
-
-            //Now lets add sourceBuffers to the streams if we already have not added the video or the audio stream
-            //Video stream
-            if(!videoBufferAdded
-                && isVideoStream
-                && !isSubtitleTrack){
-                sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
-                //Lets save our sourceBuffer to temporary storage
-                currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
-                messagesModule.printOutLine('Adding a video stream!');
-                //Do more stuff here and add markers for the video Stream, where should we save?
-                videoBufferAdded = true;
-                typeOfStream = 'video';
-            }
-
-            //Audio stream
-            if(!audioBufferAdded
-                && isAudioStream
-                && !isSubtitleTrack){
-                sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
-                //Lets save our sourceBuffer to temporary storage
-                currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
-                messagesModule.printOutLine('Adding a audio stream!');
-                //Do more stuff here and add markers for the audio Stream, where should we save?
-                audioBufferAdded = true;
-                typeOfStream = 'audio';
-            }
-
-            //Muxxed stream
-            if(!videoBufferAdded
-                && isVideoAndAudioStream
-                && !isSubtitleTrack){
-                sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
-                //Lets save our sourceBuffer to temporary storage
-                currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
-                messagesModule.printOutLine('Adding a video and audio stream!');
-                //Do more stuff here and add markers for the video & audio Stream, where should we save?
-                videoBufferAdded = true;
-                audioBufferAdded = true;
-                typeOfStream = 'videoAndAudio';
-            }
-
-            // If we have multiple representations within the current,
-            // which means that the stream we have is either video or audio,
-            // since there is only one representation set if the track is a subtitle track.
-            if(arrayOfRepresentationSets.length > 0){
-                baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets);
-                
-                //Setting this value so it can be used within the bitrate switch calculations
-                var baseUrlObjectsArrayLength = baseUrlObjectArray.length,
-                    baseUrlObjectsArrayHighestIndex = baseUrlObjectsArrayLength - 1;
-
-                messagesModule.printOutLine('The stream we have is..' + typeOfStream);
-
-                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
-            } else {
-                currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex', 0);
-            }
-
-            if(!isSubtitleTrack){
-
-                initializationFile = mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate);
+                var initializationFile = streamObject.initializationFile,
+                    amountOfSegments = streamObject.amountOfSegments;
 
                 var bitrateSettingObject = {};
-                bitrateSettingObject.baseUrlObjectArray = baseUrlObjectArray;
-                bitrateSettingObject.typeOfStream = typeOfStream;
+                bitrateSettingObject.baseUrlObjectArray = streamObject.baseUrlObjectArray;
+                bitrateSettingObject.typeOfStream = streamObject.type;
 
                 //Lets try updating our videoControls
                 _updateVideoControlsWithBitrateSettings(bitrateSettingObject);
@@ -850,10 +767,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
                 //When we are done updating
                 sourceBuffer.addEventListener('updateend', function() {
-                    if(that._videoElement.error)
+                    if(that._videoElement.error) {
                         messagesModule.printOutObject(that._videoElement.error);
-                    if( sourceBuffer.buffered.length > 0 )
+                    }
+
+                    if( sourceBuffer.buffered.length > 0 ) {
                         messagesModule.printOutLine(mimeType + ' buffer timerange start=' + sourceBuffer.buffered.start(0) + ' / end=' + sourceBuffer.buffered.end(0));
+                    }
+
                     sourceCount++;
 
                     messagesModule.printOutLine('The stream duration is.. ' + streamDurationInSeconds);
@@ -862,7 +783,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
                     messagesModule.printOutLine('The amount of segments should be around.. ' + amountOfSegments);
 
-                    if( sourceCount > amountOfSegments
+                    if( streamObject.amountOfSegments > amountOfSegments
                         && MediaSource.readyState == 'open') {
                         //Lets end stream when we have reached the end of our stream count
                         that._mediaSource.endOfStream();
@@ -907,8 +828,294 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 //Lets push this sourceBuffer to the arrays of source buffers so we can use this
                 //with our interval method and set media source duration
                 arrayOfSourceBuffers.push(sourceBuffer);
+
+    }
+
+
+    /**
+     * @name _videoReady
+     * @description This is the main media method for adpative bitrate content when the video and mediasource object are ready,
+     * this is currently used in conjunction with the mpdParserModule and the DASH format for streaming content.
+     * @private
+     * @param e
+     */
+     function _videoReady () {
+
+        var periods = mpdParserModule.returnArrayOfPeriodsFromMpdObject(currentVideoObject.streamObject.mpdObject),
+            adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromMpdObject(currentVideoObject.streamObject.mpdObject),
+            representationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(adaptionSets[0]),
+            videoBufferAdded = false,
+            audioBufferAdded = false,
+            streamBaseUrl = _getStreamBaseUrl(),
+            arrayOfSourceBuffers = [];
+
+        var videoObjectMap = streamObjectCreationModule.generateAndReturnVideoObjectMapFromMpdObjectAndStreamBaseUrl(currentVideoObject.streamObject.mpdObject, currentVideoObject.streamObject.streamBaseUrl)
+
+        console.log('The video Object');
+        console.log(videoObjectMap);
+
+        //
+        //  OK LETS START REWRITING THIS METHOD SO WE USE THE OBJECT WE CREATED INSTEAD
+        //
+        var videoObjectMapKeys = videoObjectMap.keys();
+        console.log(videoObjectMapKeys);
+
+        var streamArray = videoObjectMap.get('streamArray'),
+            videoStreamAdded = false,
+            audioStreamAdded = false;
+
+        streamArray.forEach(function(stream, streamIndex, currentStreamArray){
+
+            var sourceBuffer = null;
+
+            switch(stream.type){
+                case 'video':
+                    if(!videoStreamAdded){
+                        sourceBuffer = _createAndReturnSourceBuffer(stream);
+                        _setDefaultBitrate(stream);
+                        videoStreamAdded = true;
+                    }
+                    break;
+
+                case 'videoAndAudio':
+                    if(!videoStreamAdded){
+                        sourceBuffer = _createAndReturnSourceBuffer(stream);
+                        _setDefaultBitrate(stream);
+                        videoStreamAdded = true;
+                        audioStreamAdded = true;
+                    }
+                    break;
+
+                case 'audio':
+                    if(!audioStreamAdded){
+                        sourceBuffer = _createAndReturnSourceBuffer(stream);
+                        _setDefaultBitrate(stream);
+                        audioStreamAdded = true;
+                    }
+                    break;
+
+
+                case 'subtitles':
+
+                    break;
+
+                default:
+
+
             }
         });
+
+        // messagesModule.printOutLine('The adaptionsets are:');
+        // messagesModule.printOutObject(adaptionSets);
+        //
+        // //lets set a start number so we actually do not currently add more than just one video and audio buffer
+        // adaptionSets.forEach(function(currentAdaptionSet, index, adaptionSetArray){
+        //
+        //     var startRepresentationIndex = 0,
+        //         adaptionSetMimeType = mpdParserModule.returnMimeTypeFromAdaptionSet(currentAdaptionSet),
+        //         arrayOfRepresentationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet),
+        //         mimeType = adaptionSetMimeType ? adaptionSetMimeType : mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
+        //         segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
+        //         initializationFile = null,
+        //         mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
+        //         streamDurationInSeconds =  mpdParserModule.returnMediaDurationInSecondsFromMpdObject(currentVideoObject.streamObject.mpdObject),
+        //         startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
+        //         segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
+        //         segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
+        //         averageSegmentDuration = mpdParserModule.returnAverageSegmentDurationFromMpdObject(currentVideoObject.streamObject.mpdObject),
+        //         codecs = '',
+        //         baseUrl = '',
+        //         baseUrlObjectArray = [],
+        //         isVideoStream = false,
+        //         isVideoAndAudioStream = false,
+        //         isAudioStream = false,
+        //         isSubtitleTrack = false,
+        //         typeOfStream = 'video',
+        //         sourceBuffer = null,
+        //         sourceCount = 0,
+        //         contentComponentArray = [],
+        //         contentComponentArrayLength = 0,
+        //         sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
+        //
+        //     messagesModule.printOutLine('The mimeType we find is ' + mimeType);
+        //     //Lets use the contentComponent to find out if we have a muxxed stream or not
+        //
+        //     messagesModule.printOutLine('The representation sets are: ');
+        //     messagesModule.printOutObject(arrayOfRepresentationSets);
+        //
+        //     //Lets set the contentComponent length, this will decide if the stream is a muxxed (video and audio) stream
+        //     contentComponentArray = mpdParserModule.returnArrayOfContentComponentsFromAdaptionSet(currentAdaptionSet);
+        //     contentComponentArrayLength = contentComponentArray.length;
+        //
+        //     //Lets fix codecs here
+        //     codecs = mpdParserModule.returnCodecsFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
+        //     //Lets find out the baseUrl here
+        //     baseUrl = mpdParserModule.returnBaseUrlFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
+        //
+        //     //Lets check what type of stream we are loading.
+        //     //Video
+        //     if(mimeType.indexOf('video') > -1
+        //         && contentComponentArrayLength == 0) {
+        //         isVideoStream = true;
+        //     }
+        //
+        //     //Video & Audio
+        //     if(mimeType.indexOf('video') > -1
+        //         && contentComponentArrayLength > 0) {
+        //         isVideoAndAudioStream = true;
+        //     }
+        //
+        //     //Audio
+        //     if(mimeType.indexOf('audio') > -1){
+        //         isAudioStream = true;
+        //     }
+        //
+        //     //Subtitles
+        //     if(mimeType.indexOf('vtt') > -1){
+        //         isSubtitleTrack = true;
+        //     }
+        //
+        //     //Now lets add sourceBuffers to the streams if we already have not added the video or the audio stream
+        //     //Video stream
+        //     if(!videoBufferAdded
+        //         && isVideoStream
+        //         && !isSubtitleTrack){
+        //         sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
+        //         //Lets save our sourceBuffer to temporary storage
+        //         currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
+        //         messagesModule.printOutLine('Adding a video stream!');
+        //         //Do more stuff here and add markers for the video Stream, where should we save?
+        //         videoBufferAdded = true;
+        //         typeOfStream = 'video';
+        //     }
+        //
+        //     //Audio stream
+        //     if(!audioBufferAdded
+        //         && isAudioStream
+        //         && !isSubtitleTrack){
+        //         sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
+        //         //Lets save our sourceBuffer to temporary storage
+        //         currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
+        //         messagesModule.printOutLine('Adding a audio stream!');
+        //         //Do more stuff here and add markers for the audio Stream, where should we save?
+        //         audioBufferAdded = true;
+        //         typeOfStream = 'audio';
+        //     }
+        //
+        //     //Muxxed stream
+        //     if(!videoBufferAdded
+        //         && isVideoAndAudioStream
+        //         && !isSubtitleTrack){
+        //         sourceBuffer = that._mediaSource.addSourceBuffer(mimeType + '; codecs="' + codecs + '"');
+        //         //Lets save our sourceBuffer to temporary storage
+        //         currentVideoObject.streamObject.sourceBuffers.push(sourceBuffer);
+        //         messagesModule.printOutLine('Adding a video and audio stream!');
+        //         //Do more stuff here and add markers for the video & audio Stream, where should we save?
+        //         videoBufferAdded = true;
+        //         audioBufferAdded = true;
+        //         typeOfStream = 'videoAndAudio';
+        //     }
+        //
+        //     // If we have multiple representations within the current,
+        //     // which means that the stream we have is either video or audio,
+        //     // since there is only one representation set if the track is a subtitle track.
+        //     if(arrayOfRepresentationSets.length > 0){
+        //         baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets);
+        //
+        //         //Setting this value so it can be used within the bitrate switch calculations
+        //         var baseUrlObjectsArrayLength = baseUrlObjectArray.length,
+        //             baseUrlObjectsArrayHighestIndex = baseUrlObjectsArrayLength - 1;
+        //
+        //         messagesModule.printOutLine('The stream we have is..' + typeOfStream);
+        //
+        //         currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex' , baseUrlObjectsArrayHighestIndex);
+        //     } else {
+        //         currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlHighestIndex', 0);
+        //     }
+        //
+        //     if(!isSubtitleTrack){
+        //
+        //         initializationFile = mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate);
+        //
+        //         var bitrateSettingObject = {};
+        //         bitrateSettingObject.baseUrlObjectArray = baseUrlObjectArray;
+        //         bitrateSettingObject.typeOfStream = typeOfStream;
+        //
+        //         //Lets try updating our videoControls
+        //         _updateVideoControlsWithBitrateSettings(bitrateSettingObject);
+        //
+        //         //These two following should probably be rewritten and changed
+        //         sourceBuffer.addEventListener('updatestart', function(){
+        //             messagesModule.printOutLine('Should start with update... sourceBuffer.updating should be true..' + sourceBuffer.updating);
+        //             //videoControlsModule.addSpinnerIconToVideoOverlay();
+        //         });
+        //
+        //         sourceBuffer.addEventListener('update', function(){
+        //             messagesModule.printOutLine('Should be done with update... sourceBuffer.updating should be false..' + sourceBuffer.updating);
+        //             //videoControlsModule.removeSpinnerIconFromVideoOverlay();
+        //         });
+        //
+        //         //When we are done updating
+        //         sourceBuffer.addEventListener('updateend', function() {
+        //             if(that._videoElement.error)
+        //                 messagesModule.printOutObject(that._videoElement.error);
+        //             if( sourceBuffer.buffered.length > 0 )
+        //                 messagesModule.printOutLine(mimeType + ' buffer timerange start=' + sourceBuffer.buffered.start(0) + ' / end=' + sourceBuffer.buffered.end(0));
+        //             sourceCount++;
+        //
+        //             messagesModule.printOutLine('The stream duration is.. ' + streamDurationInSeconds);
+        //             messagesModule.printOutLine('The average segment length is ' + averageSegmentDuration);
+        //             var amountOfSegments = Math.round(streamDurationInSeconds/averageSegmentDuration);
+        //
+        //             messagesModule.printOutLine('The amount of segments should be around.. ' + amountOfSegments);
+        //
+        //             if( sourceCount > amountOfSegments
+        //                 && MediaSource.readyState == 'open') {
+        //                 //Lets end stream when we have reached the end of our stream count
+        //                 that._mediaSource.endOfStream();
+        //                 return;
+        //             }
+        //
+        //             //Lets add the baseUrlObjectArray to the specific sourceBuffer (stream type).
+        //             currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectArray);
+        //
+        //             //Lets switch baseUrl here..
+        //             //We first evaulate if we want to bitrate switch from user settings or from adaptive algorithm
+        //
+        //             //FIX SO THIS ONLY WORKS FOR VIDEO AND NOT AUDIO
+        //             if(!_isBitrateAuto()
+        //                 && typeOfStream !== 'audio'){
+        //                 baseUrl = _returnBaseUrlBasedOnStoredUserSettings();
+        //                 messagesModule.printOutLine('THE BASE URL USER TRY TO SET IS THIS.. ' + baseUrl + ' .. with type ' + typeOfStream);
+        //             } else {
+        //                 baseUrl = _returnBaseUrlBasedOnBitrateTimeSwitch(typeOfStream);
+        //                 messagesModule.printOutLine('THE BASE URL SET BY THE ALGORITHM IS THIS..' + baseUrl + ' .. with type ' + typeOfStream);
+        //             }
+        //
+        //             if(videoStreamShouldAppend()){
+        //                 setTimeout(function(){
+        //                     _appendData(sourceBuffer,
+        //                         currentVideoObject.streamObject.streamBaseUrl +
+        //                         baseUrl +
+        //                         segmentPrefix +
+        //                         sourceCount +
+        //                         segmentEnding,
+        //                         mimeType);
+        //                 }, sourceBufferWaitBeforeNewAppendInMiliseconds);
+        //
+        //                 //Here we are checking the buffers
+        //                 _checkBuffers(streamDurationInSeconds);
+        //             }
+        //         });
+        //
+        //         console.log('source buffer ' + index + ' mode: ' + sourceBuffer.mode );
+        //         _appendData(sourceBuffer, currentVideoObject.streamObject.streamBaseUrl + baseUrl + initializationFile, mimeType);
+        //
+        //         //Lets push this sourceBuffer to the arrays of source buffers so we can use this
+        //         //with our interval method and set media source duration
+        //         arrayOfSourceBuffers.push(sourceBuffer);
+        //     }
+        // });
 
         ////mediaSource.endOfStream();
         //
@@ -921,11 +1128,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         //}, 2000);
     };
 
-   function _generateAdaptiveStreamObject(){
-       //Generate an adaptiveStreamObject that be used to generate the buffers when we want to play a video
-       //This adaptive stream object should be able to categorize how the actual video playlist should be generated
-
-   };
 
     //  ########################
     //  #### BUFFER METHODS ####
@@ -3579,12 +3781,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         try {
             for(var i = 0, arrayOfRepresentationsLength = arrayOfRepresentations.length; i < arrayOfRepresentationsLength; i++){
                 var currentBaseUrlObject = {};
-                currentBaseUrlObject.bandwidth = arrayOfRepresentations[i]._bandwidth;
-                currentBaseUrlObject.mimeType = arrayOfRepresentations[i]._mimeType;
-                currentBaseUrlObject.codecs = arrayOfRepresentations[i]._codecs;
+                currentBaseUrlObject.bandwidth = arrayOfRepresentations[i]._bandwidth ? arrayOfRepresentations[i]._bandwidth : '';
+                currentBaseUrlObject.mimeType = arrayOfRepresentations[i]._mimeType ? arrayOfRepresentations[i]._mimeType : '';
+                currentBaseUrlObject.codecs = arrayOfRepresentations[i]._codecs ? arrayOfRepresentations[i]._codecs : '';
                 currentBaseUrlObject.baseUrl = arrayOfRepresentations[i].BaseURL;
-                currentBaseUrlObject.width = arrayOfRepresentations[i]._width || '';
-                currentBaseUrlObject.height = arrayOfRepresentations[i]._height || '';
+                currentBaseUrlObject.width = arrayOfRepresentations[i]._width ? arrayOfRepresentations[i]._width : '';
+                currentBaseUrlObject.height = arrayOfRepresentations[i]._height ? arrayOfRepresentations[i]._height : '';
                 currentBaseUrlObject.type = returnTypeFromMimeTypeAndCodecString(arrayOfRepresentations[i]._mimeType, arrayOfRepresentations[i]._codecs);
                 currentBaseUrlObject.index = i;
                 arrayOfBaseUrlObjects.push(currentBaseUrlObject);
@@ -3810,7 +4012,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
             } catch (e){
                 var messageObject = {};
                     messageObject.message = 'Could not parse and return type (video or audio) from mimeType, check input';
-                    messageObject.methodName = 'returnTypeFromMimeType';
+                    messageObject.methodName = 'returnTypeFromMimeTypeAndCodecString';
                     messageObject.moduleName = moduleName;
                     messageObject.moduleVersion = moduleVersion;
                     messageObject.isModule = isModuleValue;
@@ -4022,7 +4224,7 @@ var freeVideoPlayer = function(initiationObject){
     var that = {},
         moduleName = 'FREE VIDEO PLAYER',
         isModuleValue = false,
-        moduleVersion = '0.9.7',
+        moduleVersion = '0.9.8',
         videoPlayerNameCss = 'free-video-player',
         base64encodedImage = freeVideoPlayerModulesNamespace.freeVideoPlayerDefaultSplashImage,
         xml2json = new freeVideoPlayerModulesNamespace.X2JS(),

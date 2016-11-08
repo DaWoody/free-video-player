@@ -719,12 +719,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         try {
             for(var i = 0, arrayOfRepresentationsLength = arrayOfRepresentations.length; i < arrayOfRepresentationsLength; i++){
                 var currentBaseUrlObject = {};
-                currentBaseUrlObject.bandwidth = arrayOfRepresentations[i]._bandwidth;
-                currentBaseUrlObject.mimeType = arrayOfRepresentations[i]._mimeType;
-                currentBaseUrlObject.codecs = arrayOfRepresentations[i]._codecs;
+                currentBaseUrlObject.bandwidth = arrayOfRepresentations[i]._bandwidth ? arrayOfRepresentations[i]._bandwidth : '';
+                currentBaseUrlObject.mimeType = arrayOfRepresentations[i]._mimeType ? arrayOfRepresentations[i]._mimeType : '';
+                currentBaseUrlObject.codecs = arrayOfRepresentations[i]._codecs ? arrayOfRepresentations[i]._codecs : '';
                 currentBaseUrlObject.baseUrl = arrayOfRepresentations[i].BaseURL;
-                currentBaseUrlObject.width = arrayOfRepresentations[i]._width || '';
-                currentBaseUrlObject.height = arrayOfRepresentations[i]._height || '';
+                currentBaseUrlObject.width = arrayOfRepresentations[i]._width ? arrayOfRepresentations[i]._width : '';
+                currentBaseUrlObject.height = arrayOfRepresentations[i]._height ? arrayOfRepresentations[i]._height : '';
                 currentBaseUrlObject.type = returnTypeFromMimeTypeAndCodecString(arrayOfRepresentations[i]._mimeType, arrayOfRepresentations[i]._codecs);
                 currentBaseUrlObject.index = i;
                 arrayOfBaseUrlObjects.push(currentBaseUrlObject);
@@ -950,7 +950,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
             } catch (e){
                 var messageObject = {};
                     messageObject.message = 'Could not parse and return type (video or audio) from mimeType, check input';
-                    messageObject.methodName = 'returnTypeFromMimeType';
+                    messageObject.methodName = 'returnTypeFromMimeTypeAndCodecString';
                     messageObject.moduleName = moduleName;
                     messageObject.moduleVersion = moduleVersion;
                     messageObject.isModule = isModuleValue;

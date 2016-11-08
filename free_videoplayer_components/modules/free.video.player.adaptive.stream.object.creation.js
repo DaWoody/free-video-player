@@ -39,8 +39,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
             returnVideoMapObject.set('amountOfSegments', amountOfSegments);
             returnVideoMapObject.set('streamBaseUrl', streamBaseUrl);
 
-            var streamArray = [],
-                videoMapIterator = returnVideoMapObject.keys();
+            var streamArray = [];
 
             periods.forEach(function(periodObject, periodIndex, array){
 
@@ -49,13 +48,18 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
 
                 adaptionSets.forEach(function(currentAdaptionSet, adaptionSetIndex){
 
+                    console.log('REACHED ADPATIONSET..');
+                    console.log('The adaptionSet..');
+                    console.log(currentAdaptionSet);
+
                     var startRepresentationIndex = 0,
                         adaptionSetMimeType = mpdParserModule.returnMimeTypeFromAdaptionSet(currentAdaptionSet),
                         arrayOfRepresentationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet),
                         mimeType = adaptionSetMimeType ? adaptionSetMimeType : mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
                         segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
-                        initializationFile = null,
                         mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
+                        initializationFile =  mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate) ?  mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate) : null,
+                        baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets) ? mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets) : [],
                         startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
                         segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
                         segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
@@ -63,12 +67,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
                         codecs = '',
                         baseUrl = '',
-                        baseUrlObjectArray = [],
+                        baseUrlArray = [],
                         typeOfStream = 'video',
                         sourceBuffer = null,
                         sourceCount = 0,
                         contentComponentArray = [],
                         contentComponentArrayLength = 0,
+                        representationSetArray = [],
+                        representationSetArrayLength = 0,
                         sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
 
                     //Lets set the contentComponent length, this will decide if the stream is a muxxed (video and audio) stream
@@ -79,6 +85,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     codecs = mpdParserModule.returnCodecsFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
                     //Lets find out the baseUrl here
                     baseUrl = mpdParserModule.returnBaseUrlFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
+
+                    //Lets see how many representationSets we do have within the adaptionSet
+                    arrayOfRepresentationSets.forEach(function(representationSet, representationSetIndex){
+
+                        console.log('The representation set..');
+                        console.log(arrayOfRepresentationSets);
+                        console.log(representationSet);
+
+                        //var baseUrlPush = representationSet['BaseURL'] ? representationSet['BaseURL'] : baseUrl;
+                        //baseUrlArray.push(baseUrlPush);
+                    });
 
                     //Generate a stream object for the actual stream
                     var streamObject = {},
@@ -91,6 +108,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         streamObject = {
                             type:'video',
                             mimeType: mimeType,
+                            initializationFile: initializationFile,
+                            baseUrlArray: baseUrlArray,
                             codec: codecs,
                             sourceBufferCodecString: codecString,
                             sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
@@ -104,6 +123,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         streamObject = {
                             type:'videoAndAudio',
                             mimeType: mimeType,
+                            initializationFile: initializationFile,
+                            baseUrlArray: baseUrlArray,
                             codec: codecs,
                             sourceBufferCodecString: codecString,
                             sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
@@ -116,6 +137,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         streamObject = {
                             type:'audio',
                             mimeType: mimeType,
+                            initializationFile: initializationFile,
+                            baseUrlArray: baseUrlArray,
                             codec: codecs,
                             sourceBufferCodecString: codecString,
                             sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
@@ -129,6 +152,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         streamObject = {
                             type:'subtitles',
                             mimeType: mimeType,
+                            initializationFile: initializationFile,
+                            baseUrlArray: baseUrlArray,
                             codec: codecs,
                             sourceBufferCodecString: codecString,
                             sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
@@ -155,11 +180,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                             contentObject.urlString = baseUrl;
                         } else {
                             //Its an audio or video segment, lets build the full url
-                            contentObject.urlString = returnVideoMapObject.get('streamBaseUrl') +
-                                baseUrl +
-                                segmentPrefix +
-                                segmentIndex +
-                                segmentEnding;
+                            contentObject.urlString = '';
+                            contentObject.streamBaseUrl = returnVideoMapObject.get('streamBaseUrl');
+                            contentObject.segmentPrefix = segmentPrefix;
+                            contentObject.segmentIndex = segmentIndex;
+                            contentObject.segmentEnding = segmentEnding;
                         }
                         //lets create the url and push it to the current content array
                         var streamTypeExists = false,
@@ -182,6 +207,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                                     for(var k = 0, subtitlesArrayLength = streamArray[j].content.length; k < subtitlesArrayLength; k++){
                                         subtitleUrlExists = streamArray[j].content[k] === contentObject.urlString ? true : false;
                                     }
+                                    //NOT REALLY WORKING THIS::: CHECK THIS:::
                                 }
                                 //Lets add the url string to the already added stream type
                                 if(!subtitleUrlExists){
@@ -196,8 +222,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                             streamArray.push(streamObject);
                         }
                     }
-                    console.log('Stream Array');
-                    console.log(streamArray);
+                     console.log('Stream Array');
+                     console.log(streamArray);
                 });
 
                 //CREATE MORE LOGIC HERE SO WE CAN KEEP ADDING MORE STUFF TO THE STREAM
@@ -210,6 +236,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
         } else {
             console.log('Could not generate VideoObjectMap from mpdObject since we are missing the mpdParser module, or we do not have a valid streamBaseUrl');
         }
+
+        //return our video object
+        return returnVideoMapObject;
     };
 
     //  #########################
