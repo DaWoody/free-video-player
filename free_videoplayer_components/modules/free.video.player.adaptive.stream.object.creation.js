@@ -105,7 +105,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]) ? parseInt(mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]), 10) : 0,
                         segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
                         segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
-                        mediaDurationInSeconds = returnVideoMapObject.get('mediaDurationInSeconds'),
+                        mediaDurationInSecondsPeriod = mpdParserModule.returnMediaDurationInSecondsFromPeriodObject(periodObject),
                         averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
                         codecs = '',
                         baseUrl = '',
@@ -139,9 +139,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
 
                     //Generate a stream object for the actual stream
                     var streamObject = {},
-                        codecString = mimeType + '; codecs="' + codecs + '"';
+                        codecString = mimeType + '; codecs="' + codecs + '"',
+                        //Calculate the amount of segments for this peticular period
+                        amountOfSegments = Math.round(mediaDurationInSecondsPeriod/returnVideoMapObject.get('averageSegmentDuration'));
 
                     streamObject.type = _returnStreamTypeBasedOnMimeTypeAndContentComponentArrayLength(mimeType, contentComponentArrayLength);
+
 
                     //Lets add the rest of the object values
                     streamObject.amountOfPeriods = returnVideoMapObject.get('amountOfPeriods');
@@ -151,9 +154,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     streamObject.baseUrlObjectArray = baseUrlObjectArray;
                     streamObject.codec = codecs;
                     streamObject.sourceBufferCodecString = codecString;
-                    streamObject.amountOfSegments = returnVideoMapObject.get('amountOfSegments'),
+                    streamObject.amountOfSegments = amountOfSegments,
                     streamObject.averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
-                    streamObject.mediaDurationInSeconds = returnVideoMapObject.get('mediaDurationInSeconds'),
+                    streamObject.mediaDurationInSeconds = mediaDurationInSecondsPeriod,
                     streamObject.sourceBufferWaitBeforeNewAppendInMiliseconds = sourceBufferWaitBeforeNewAppendInMiliseconds;
                     streamObject.content = [];
 
@@ -176,9 +179,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         //the baseUrl field, and thus we will not need to build up a full url before saving
                         //it to our returnVideoObjectMap
 
-                        // console.log('endCount ' + amountOfSegmentsAddedWithStartValue);
-                        // console.log('StartValue ' + startValue);
-                        // console.log('SegmentIndex ' + segmentIndex);
+                        console.log('endCount ' + amountOfSegmentsAddedWithStartValue);
+                        console.log('StartValue ' + startValue);
+                        console.log('SegmentIndex ' + segmentIndex);
 
                         var contentObject = {};
 

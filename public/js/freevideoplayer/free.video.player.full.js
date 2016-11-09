@@ -133,7 +133,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]) ? parseInt(mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]), 10) : 0,
                         segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
                         segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
-                        mediaDurationInSeconds = returnVideoMapObject.get('mediaDurationInSeconds'),
+                        mediaDurationInSecondsPeriod = mpdParserModule.returnMediaDurationInSecondsFromPeriodObject(periodObject),
                         averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
                         codecs = '',
                         baseUrl = '',
@@ -167,9 +167,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
 
                     //Generate a stream object for the actual stream
                     var streamObject = {},
-                        codecString = mimeType + '; codecs="' + codecs + '"';
+                        codecString = mimeType + '; codecs="' + codecs + '"',
+                        //Calculate the amount of segments for this peticular period
+                        amountOfSegments = Math.round(mediaDurationInSecondsPeriod/returnVideoMapObject.get('averageSegmentDuration'));
 
                     streamObject.type = _returnStreamTypeBasedOnMimeTypeAndContentComponentArrayLength(mimeType, contentComponentArrayLength);
+
 
                     //Lets add the rest of the object values
                     streamObject.amountOfPeriods = returnVideoMapObject.get('amountOfPeriods');
@@ -179,9 +182,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     streamObject.baseUrlObjectArray = baseUrlObjectArray;
                     streamObject.codec = codecs;
                     streamObject.sourceBufferCodecString = codecString;
-                    streamObject.amountOfSegments = returnVideoMapObject.get('amountOfSegments'),
+                    streamObject.amountOfSegments = amountOfSegments,
                     streamObject.averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
-                    streamObject.mediaDurationInSeconds = returnVideoMapObject.get('mediaDurationInSeconds'),
+                    streamObject.mediaDurationInSeconds = mediaDurationInSecondsPeriod,
                     streamObject.sourceBufferWaitBeforeNewAppendInMiliseconds = sourceBufferWaitBeforeNewAppendInMiliseconds;
                     streamObject.content = [];
 
@@ -204,9 +207,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         //the baseUrl field, and thus we will not need to build up a full url before saving
                         //it to our returnVideoObjectMap
 
-                        // console.log('endCount ' + amountOfSegmentsAddedWithStartValue);
-                        // console.log('StartValue ' + startValue);
-                        // console.log('SegmentIndex ' + segmentIndex);
+                        console.log('endCount ' + amountOfSegmentsAddedWithStartValue);
+                        console.log('StartValue ' + startValue);
+                        console.log('SegmentIndex ' + segmentIndex);
 
                         var contentObject = {};
 
@@ -3564,6 +3567,56 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return returnArray;
     };
 
+
+
+    /**
+     * @function
+     * @name returnMediaDurationInSecondsFromPeriodObject
+     * @description Returns the media duration in seconds from the Period Object
+     * @public
+     * @param {object} periodObject
+     * @returns {number} - The media duration in seconds
+     */
+    function returnMediaDurationInSecondsFromPeriodObject(periodObject){
+        var mediaDurationInSeconds = 0,
+            mediaDurationFullString = '',
+            mediaDurationTemporaryFullString = '';
+        try {
+
+
+                mediaDurationFullString = periodObject._duration;
+
+
+            if(mediaDurationFullString.split('T').length > 1){
+                mediaDurationTemporaryFullString = mediaDurationFullString.split('T')[1];
+            }
+
+            var hoursString = mediaDurationTemporaryFullString.split('H')[0],
+                minutesString = mediaDurationTemporaryFullString.split('H')[1].split('M')[0],
+                secondsString = mediaDurationTemporaryFullString.split('M')[1].split('S')[0],
+                hours = parseInt(hoursString,10),
+                minutes = parseInt(minutesString, 10),
+                seconds = parseInt(secondsString, 10),
+                hoursInSeconds = hours * 3600,
+                minutesInSeconds = minutes * 60;
+
+            // Lets add our result to the returning mediaDurationInSeconds we will return
+            mediaDurationInSeconds = hoursInSeconds + minutesInSeconds + seconds;
+
+        } catch(e){
+
+            var messageObject = {};
+            messageObject.message = 'Could not get media duration string from the periodObject';
+            messageObject.methodName = 'returnMediaDurationInSecondsFromPeriodObject';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return mediaDurationInSeconds;
+    };
+
+
     //  #############################
     //  #### ADAPTIONSET METHODS ####
     //  #############################
@@ -4201,6 +4254,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.returnArrayOfPeriodsFromMpdObject = returnArrayOfPeriodsFromMpdObject;
     that.returnArrayOfAdaptionSetsFromPeriodObject = returnArrayOfAdaptionSetsFromPeriodObject;
     that.returnArrayOfSubtitlesFromPeriodObjectAndBaseUrl = returnArrayOfSubtitlesFromPeriodObjectAndBaseUrl;
+    that.returnMediaDurationInSecondsFromPeriodObject = returnMediaDurationInSecondsFromPeriodObject;
 
     //AdapationSet methods
     that.returnMimeTypeFromAdaptionSet = returnMimeTypeFromAdaptionSet;

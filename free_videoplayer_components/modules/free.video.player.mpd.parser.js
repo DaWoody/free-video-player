@@ -475,6 +475,56 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return returnArray;
     };
 
+
+
+    /**
+     * @function
+     * @name returnMediaDurationInSecondsFromPeriodObject
+     * @description Returns the media duration in seconds from the Period Object
+     * @public
+     * @param {object} periodObject
+     * @returns {number} - The media duration in seconds
+     */
+    function returnMediaDurationInSecondsFromPeriodObject(periodObject){
+        var mediaDurationInSeconds = 0,
+            mediaDurationFullString = '',
+            mediaDurationTemporaryFullString = '';
+        try {
+
+
+                mediaDurationFullString = periodObject._duration;
+
+
+            if(mediaDurationFullString.split('T').length > 1){
+                mediaDurationTemporaryFullString = mediaDurationFullString.split('T')[1];
+            }
+
+            var hoursString = mediaDurationTemporaryFullString.split('H')[0],
+                minutesString = mediaDurationTemporaryFullString.split('H')[1].split('M')[0],
+                secondsString = mediaDurationTemporaryFullString.split('M')[1].split('S')[0],
+                hours = parseInt(hoursString,10),
+                minutes = parseInt(minutesString, 10),
+                seconds = parseInt(secondsString, 10),
+                hoursInSeconds = hours * 3600,
+                minutesInSeconds = minutes * 60;
+
+            // Lets add our result to the returning mediaDurationInSeconds we will return
+            mediaDurationInSeconds = hoursInSeconds + minutesInSeconds + seconds;
+
+        } catch(e){
+
+            var messageObject = {};
+            messageObject.message = 'Could not get media duration string from the periodObject';
+            messageObject.methodName = 'returnMediaDurationInSecondsFromPeriodObject';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return mediaDurationInSeconds;
+    };
+
+
     //  #############################
     //  #### ADAPTIONSET METHODS ####
     //  #############################
@@ -1112,6 +1162,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.returnArrayOfPeriodsFromMpdObject = returnArrayOfPeriodsFromMpdObject;
     that.returnArrayOfAdaptionSetsFromPeriodObject = returnArrayOfAdaptionSetsFromPeriodObject;
     that.returnArrayOfSubtitlesFromPeriodObjectAndBaseUrl = returnArrayOfSubtitlesFromPeriodObjectAndBaseUrl;
+    that.returnMediaDurationInSecondsFromPeriodObject = returnMediaDurationInSecondsFromPeriodObject;
 
     //AdapationSet methods
     that.returnMimeTypeFromAdaptionSet = returnMimeTypeFromAdaptionSet;
