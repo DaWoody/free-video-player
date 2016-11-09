@@ -128,7 +128,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     //Lets find out the baseUrl here
                     baseUrl = mpdParserModule.returnBaseUrlFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
 
-                    var baseUrlPush = '';
+                    var baseUrlPush = '',
+                        baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets);
 
                     //Lets see how many representationSets we do have within the adaptionSet
                     arrayOfRepresentationSets.forEach(function(representationSet, representationSetIndex){
@@ -147,8 +148,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     streamObject.mimeType = mimeType;
                     streamObject.initializationFile = initializationFile;
                     streamObject.baseUrlArray = baseUrlArray;
+                    streamObject.baseUrlObjectArray = baseUrlObjectArray;
                     streamObject.codec = codecs;
                     streamObject.sourceBufferCodecString = codecString;
+                    streamObject.amountOfSegments = returnVideoMapObject.get('amountOfSegments'),
+                    streamObject.averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
+                    streamObject.mediaDurationInSeconds = returnVideoMapObject.get('mediaDurationInSeconds'),
                     streamObject.sourceBufferWaitBeforeNewAppendInMiliseconds = sourceBufferWaitBeforeNewAppendInMiliseconds;
                     streamObject.content = [];
 

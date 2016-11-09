@@ -366,9 +366,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
      */
     //MAYBE SHOULD SET LOWEST TO START WITH FOR FASTER SEGMENT LOADING AT START..?
     function _setDefaultBitrate(streamObject){
-        if(streamObject.baseUrlObjectArray.length > 0){
+        if(streamObject.baseUrlArray.length > 0){
             //Setting this value so it can be used within the bitrate switch calculations
-            var baseUrlObjectsArrayLength = streamObject.baseUrlObjectArray.length,
+            var baseUrlObjectsArrayLength = streamObject.baseUrlArray.length,
                 baseUrlObjectsArrayHighestIndex = baseUrlObjectsArrayLength - 1;
 
             messagesModule.printOutLine('The stream we have is..' + streamObject.type);
@@ -379,11 +379,13 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         }
     }
 
-    function _modifyAndStartSourceBuffer(sourceBuffer, streamObject){
+    function _modifyAndStartSourceBufferWithStreamObject(sourceBuffer, streamObject){
 
                 var initializationFile = streamObject.initializationFile,
                     amountOfSegments = streamObject.amountOfSegments,
+                    currentSegment = 0,
                     baseUrl = '';
+
 
                 var bitrateSettingObject = {};
                 bitrateSettingObject.baseUrlObjectArray = streamObject.baseUrlObjectArray;
@@ -410,18 +412,14 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     }
 
                     if( sourceBuffer.buffered.length > 0 ) {
-                        messagesModule.printOutLine(mimeType + ' buffer timerange start=' + sourceBuffer.buffered.start(0) + ' / end=' + sourceBuffer.buffered.end(0));
+                        messagesModule.printOutLine(streamObject.mimeType + ' buffer timerange start=' + sourceBuffer.buffered.start(0) + ' / end=' + sourceBuffer.buffered.end(0));
                     }
 
-                    sourceCount++;
+                    messagesModule.printOutLine('The stream duration is.. ' +  streamObject.streamDurationInSeconds);
+                    messagesModule.printOutLine('The average segment length is ' + streamObject.averageSegmentDuration);
+                    currentSegment = currentVideoObject.streamObject.currentVideoSegment || 0;
 
-                    messagesModule.printOutLine('The stream duration is.. ' + streamDurationInSeconds);
-                    messagesModule.printOutLine('The average segment length is ' + averageSegmentDuration);
-                    var amountOfSegments = Math.round(streamDurationInSeconds/averageSegmentDuration);
-
-                    messagesModule.printOutLine('The amount of segments should be around.. ' + amountOfSegments);
-
-                    if( streamObject.amountOfSegments > amountOfSegments
+                    if( currentSegment > streamObject.amountOfSegments
                         && MediaSource.readyState == 'open') {
                         //Lets end stream when we have reached the end of our stream count
                         that._mediaSource.endOfStream();
@@ -429,43 +427,60 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     }
 
                     //Lets add the baseUrlObjectArray to the specific sourceBuffer (stream type).
-                    currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(typeOfStream + '_baseUrlObjectArray', baseUrlObjectArray);
+                    currentVideoObject.streamObject.adaptiveStreamBitrateObjectMap.set(streamObject.type + '_baseUrlObjectArray', streamObject.baseUrlObjectArray);
 
                     //Lets switch baseUrl here..
                     //We first evaulate if we want to bitrate switch from user settings or from adaptive algorithm
 
                     //FIX SO THIS ONLY WORKS FOR VIDEO AND NOT AUDIO
                     if(!_isBitrateAuto()
-                        && typeOfStream !== 'audio'){
+                        && streamObject.type !== 'audio'){
                         baseUrl = _returnBaseUrlBasedOnStoredUserSettings();
-                        messagesModule.printOutLine('THE BASE URL USER TRY TO SET IS THIS.. ' + baseUrl + ' .. with type ' + typeOfStream);
+                        messagesModule.printOutLine('THE BASE URL USER TRY TO SET IS THIS.. ' + baseUrl + ' .. with type ' + streamObject.type);
                     } else {
-                        baseUrl = _returnBaseUrlBasedOnBitrateTimeSwitch(typeOfStream);
-                        messagesModule.printOutLine('THE BASE URL SET BY THE ALGORITHM IS THIS..' + baseUrl + ' .. with type ' + typeOfStream);
+                        baseUrl = _returnBaseUrlBasedOnBitrateTimeSwitch(streamObject.type);
+                        messagesModule.printOutLine('THE BASE URL SET BY THE ALGORITHM IS THIS..' + baseUrl + ' .. with type ' + streamObject.type);
                     }
 
+
                     if(videoStreamShouldAppend()){
+                        if(currentSegment < streamObject.amountOfSegments)
                         setTimeout(function(){
+                            console.log('Came here..')
+                            console.log('This was after the timeout..');
+                            console.log('Trying to get this segment..' + streamObject.content[currentSegment].segmentIndex);
                             _appendData(sourceBuffer,
-                                streamObject.streamBaseUrl +
+                                streamObject.content[currentSegment].streamBaseUrl +
                                 baseUrl +
-                                segmentPrefix +
-                                sourceCount +
-                                segmentEnding,
-                                mimeType);
-                        }, sourceBufferWaitBeforeNewAppendInMiliseconds);
+                                streamObject.content[currentSegment].segmentPrefix +
+                                streamObject.content[currentSegment].segmentIndex  +
+                                streamObject.content[currentSegment].segmentEnding,
+                                streamObject.mimeType);
+
+                            //Lets increment the currentSegment
+                            currentSegment++;
+                            currentVideoObject.streamObject.currentVideoSegment = currentSegment;
+
+                        }, streamObject.sourceBufferWaitBeforeNewAppendInMiliseconds);
 
                         //Here we are checking the buffers
-                        _checkBuffers(streamDurationInSeconds);
+                        //_checkBuffers(streamDurationInSeconds);
                     }
                 });
 
-                console.log('source buffer ' + index + ' mode: ' + sourceBuffer.mode );
-                _appendData(sourceBuffer, currentVideoObject.streamObject.streamBaseUrl + baseUrl + initializationFile, mimeType);
+                console.log('source buffer mode: ' + sourceBuffer.mode );
+                console.log('Base url is..' + baseUrl)
+                if(streamObject.baseUrlArray.length > 0){
+                    _appendData(sourceBuffer,
+                        streamObject.content[currentSegment].streamBaseUrl +
+                        streamObject.baseUrlArray[0] +
+                        streamObject.initializationFile,
+                        streamObject.mimeType);
+                }
 
                 //Lets push this sourceBuffer to the arrays of source buffers so we can use this
                 //with our interval method and set media source duration
-                arrayOfSourceBuffers.push(sourceBuffer);
+                //arrayOfSourceBuffers.push(sourceBuffer);
 
     }
 
@@ -502,23 +517,25 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             videoStreamAdded = false,
             audioStreamAdded = false;
 
-        streamArray.forEach(function(stream, streamIndex, currentStreamArray){
+        streamArray.forEach(function(streamObject, streamIndex, currentStreamArray){
 
             var sourceBuffer = null;
 
-            switch(stream.type){
+            switch(streamObject.type){
                 case 'video':
                     if(!videoStreamAdded){
-                        sourceBuffer = _createAndReturnSourceBuffer(stream);
-                        _setDefaultBitrate(stream);
+                        sourceBuffer = _createAndReturnSourceBuffer(streamObject);
+                        _setDefaultBitrate(streamObject);
+                        _modifyAndStartSourceBufferWithStreamObject(sourceBuffer, streamObject);
                         videoStreamAdded = true;
                     }
                     break;
 
                 case 'videoAndAudio':
                     if(!videoStreamAdded){
-                        sourceBuffer = _createAndReturnSourceBuffer(stream);
-                        _setDefaultBitrate(stream);
+                        sourceBuffer = _createAndReturnSourceBuffer(streamObject);
+                        _setDefaultBitrate(streamObject);
+                        _modifyAndStartSourceBufferWithStreamObject(sourceBuffer, streamObject);
                         videoStreamAdded = true;
                         audioStreamAdded = true;
                     }
@@ -526,8 +543,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
                 case 'audio':
                     if(!audioStreamAdded){
-                        sourceBuffer = _createAndReturnSourceBuffer(stream);
-                        _setDefaultBitrate(stream);
+                        sourceBuffer = _createAndReturnSourceBuffer(streamObject);
+                        _modifyAndStartSourceBufferWithStreamObject(sourceBuffer, streamObject);
+                        _setDefaultBitrate(streamObject);
                         audioStreamAdded = true;
                     }
                     break;
