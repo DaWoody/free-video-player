@@ -382,7 +382,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
     function _modifyAndStartSourceBuffer(sourceBuffer, streamObject){
 
                 var initializationFile = streamObject.initializationFile,
-                    amountOfSegments = streamObject.amountOfSegments;
+                    amountOfSegments = streamObject.amountOfSegments,
+                    baseUrl = '';
 
                 var bitrateSettingObject = {};
                 bitrateSettingObject.baseUrlObjectArray = streamObject.baseUrlObjectArray;
@@ -446,7 +447,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     if(videoStreamShouldAppend()){
                         setTimeout(function(){
                             _appendData(sourceBuffer,
-                                currentVideoObject.streamObject.streamBaseUrl +
+                                streamObject.streamBaseUrl +
                                 baseUrl +
                                 segmentPrefix +
                                 sourceCount +
@@ -486,7 +487,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             streamBaseUrl = _getStreamBaseUrl(),
             arrayOfSourceBuffers = [];
 
-        var videoObjectMap = streamObjectCreationModule.generateAndReturnVideoObjectMapFromMpdObjectAndStreamBaseUrl(currentVideoObject.streamObject.mpdObject, currentVideoObject.streamObject.streamBaseUrl)
+        var videoObjectMap = streamObjectCreationModule.generateAndReturnVideoObjectMapFromMpdObjectAndStreamBaseUrl(currentVideoObject.streamObject.mpdObject, currentVideoObject.streamObject.streamBaseUrl);
 
         console.log('The video Object');
         console.log(videoObjectMap);

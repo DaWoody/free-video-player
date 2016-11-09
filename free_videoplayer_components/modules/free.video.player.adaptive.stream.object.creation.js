@@ -73,7 +73,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                 streamBaseUrl = currentVideoStreamBaseUrl,
                 amountOfSegments = Math.round(mediaDurationInSeconds/periodsAverageSegmentDuration);
 
-            returnVideoMapObject.set('mediaTypeIs', mediaTypeLiveOrStatic);
+            returnVideoMapObject.set('mediaType', mediaTypeLiveOrStatic);
+            returnVideoMapObject.set('mediaFormat', 'dash');
             returnVideoMapObject.set('amountOfPeriods', periods.length);
             returnVideoMapObject.set('maxSegmentDuration', periodsMaxSegmentDuration);
             returnVideoMapObject.set('averageSegmentDuration', periodsAverageSegmentDuration);
