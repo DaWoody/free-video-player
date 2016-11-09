@@ -37,6 +37,48 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
         hlsParserModule = null,
         streamBaseUrl = '';
 
+    /**
+     * @function
+     * @name _returnStreamTypeBasedOnMimeTypeAndContentComponentArrayLength
+     * @description Returns Stream type based on mimeType and ContentComponentArray Length
+     * @param mimeType
+     * @param contentComponentArrayLength
+     * @returns {string}
+     * @private
+     */
+    function _returnStreamTypeBasedOnMimeTypeAndContentComponentArrayLength(mimeType, contentComponentArrayLength){
+        var returnValue = 'video';
+
+        //Lets check what type of stream we are loading.
+        //Video
+        if(mimeType.indexOf('video') > -1
+            && contentComponentArrayLength == 0) {
+               returnValue = 'video';
+        }
+        //Video & Audio
+        if(mimeType.indexOf('video') > -1
+            && contentComponentArrayLength > 0) {
+            returnValue = 'videoAndAudio';
+        }
+        //Audio
+        if(mimeType.indexOf('audio') > -1){
+            returnValue = 'audio';
+        }
+        //Subtitles
+        if(mimeType.indexOf('vtt') > -1){
+            returnValue = 'subtitles';
+        }
+        return returnValue;
+    }
+
+    /**
+     * @function
+     * @name generateAndReturnVideoObjectMapFromMpdObjectAndStreamBaseUrl
+     * @description Generates and returns a video Object Map from mpd and streambase url
+     * @param mpdObject
+     * @param currentVideoStreamBaseUrl
+     * @returns {Map}
+     */
     function generateAndReturnVideoObjectMapFromMpdObjectAndStreamBaseUrl(mpdObject, currentVideoStreamBaseUrl){
 
         if(mpdParserModule){
@@ -57,18 +99,17 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
             returnVideoMapObject.set('amountOfSegments', amountOfSegments);
             returnVideoMapObject.set('streamBaseUrl', streamBaseUrl);
 
-            var streamArray = [];
+            var streamArray = [],
+                subtitlesObject = {};
 
-            periods.forEach(function(periodObject, periodIndex, array){
+            periods.forEach(function(periodObject, periodIndex, periodArray){
 
-                var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromPeriodObject(periodObject),
-                    periodHasSubtitles = false;
+                var periodIndexString = 'periodIndex' + periodIndex;
+                subtitlesObject[periodIndexString] =  [];
+
+                var adaptionSets = mpdParserModule.returnArrayOfAdaptionSetsFromPeriodObject(periodObject);
 
                 adaptionSets.forEach(function(currentAdaptionSet, adaptionSetIndex){
-
-                    console.log('REACHED ADPATIONSET..');
-                    console.log('The adaptionSet..');
-                    console.log(currentAdaptionSet);
 
                     var startRepresentationIndex = 0,
                         adaptionSetMimeType = mpdParserModule.returnMimeTypeFromAdaptionSet(currentAdaptionSet),
@@ -78,7 +119,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
                         initializationFile =  mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate) ?  mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate) : null,
                         baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets) ? mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets) : [],
-                        startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
+                        startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]) ? parseInt(mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]), 10) : 0,
                         segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
                         segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
                         mediaDurationInSeconds = returnVideoMapObject.get('mediaDurationInSeconds'),
@@ -104,101 +145,60 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     //Lets find out the baseUrl here
                     baseUrl = mpdParserModule.returnBaseUrlFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]);
 
+                    var baseUrlPush = '';
+
                     //Lets see how many representationSets we do have within the adaptionSet
                     arrayOfRepresentationSets.forEach(function(representationSet, representationSetIndex){
-
-                        console.log('The representation set..');
-                        console.log(arrayOfRepresentationSets);
-                        console.log(representationSet);
-
-                        //var baseUrlPush = representationSet['BaseURL'] ? representationSet['BaseURL'] : baseUrl;
-                        //baseUrlArray.push(baseUrlPush);
+                        baseUrlPush = representationSet['BaseURL'] ? representationSet['BaseURL'] : baseUrl;
+                        baseUrlArray.push(baseUrlPush);
                     });
 
                     //Generate a stream object for the actual stream
                     var streamObject = {},
                         codecString = mimeType + '; codecs="' + codecs + '"';
 
-                    //Lets check what type of stream we are loading.
-                    //Video
-                    if(mimeType.indexOf('video') > -1
-                        && contentComponentArrayLength == 0) {
-                        streamObject = {
-                            type:'video',
-                            mimeType: mimeType,
-                            initializationFile: initializationFile,
-                            baseUrlArray: baseUrlArray,
-                            codec: codecs,
-                            sourceBufferCodecString: codecString,
-                            sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
-                            content:[]
-                        }
+                    streamObject.type = _returnStreamTypeBasedOnMimeTypeAndContentComponentArrayLength(mimeType, contentComponentArrayLength);
+
+                    //Lets add the rest of the object values
+                    streamObject.amountOfPeriods = returnVideoMapObject.get('amountOfPeriods');
+                    streamObject.mimeType = mimeType;
+                    streamObject.initializationFile = initializationFile;
+                    streamObject.baseUrlArray = baseUrlArray;
+                    streamObject.codec = codecs;
+                    streamObject.sourceBufferCodecString = codecString;
+                    streamObject.sourceBufferWaitBeforeNewAppendInMiliseconds = sourceBufferWaitBeforeNewAppendInMiliseconds;
+                    streamObject.content = [];
+
+                    //Counting on the idea that each adaptionSet containing subtitles,
+                    //only have one representationSet including one subtitle link
+                    if(streamObject.type == 'subtitles'){
+                        //Lets do stuff here if we have subtitles
+                        var subtitleObject = {
+                            subtitleUrl: baseUrlPush
+                        };
+                        subtitlesObject[periodIndexString].push(subtitleObject);
                     }
 
-                    //Video & Audio
-                    if(mimeType.indexOf('video') > -1
-                        && contentComponentArrayLength > 0) {
-                        streamObject = {
-                            type:'videoAndAudio',
-                            mimeType: mimeType,
-                            initializationFile: initializationFile,
-                            baseUrlArray: baseUrlArray,
-                            codec: codecs,
-                            sourceBufferCodecString: codecString,
-                            sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
-                            content:[]
-                        }
-                    }
+                    var amountOfSegmentsAddedWithStartValue = parseInt(amountOfSegments, 10) + startValue;
 
-                    //Audio
-                    if(mimeType.indexOf('audio') > -1){
-                        streamObject = {
-                            type:'audio',
-                            mimeType: mimeType,
-                            initializationFile: initializationFile,
-                            baseUrlArray: baseUrlArray,
-                            codec: codecs,
-                            sourceBufferCodecString: codecString,
-                            sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
-                            content:[]
-                        }
-                    }
 
-                    //Subtitles
-                    if(mimeType.indexOf('vtt') > -1){
-                        periodHasSubtitles = true;
-                        streamObject = {
-                            type:'subtitles',
-                            mimeType: mimeType,
-                            initializationFile: initializationFile,
-                            baseUrlArray: baseUrlArray,
-                            codec: codecs,
-                            sourceBufferCodecString: codecString,
-                            sourceBufferWaitBeforeNewAppendInMiliseconds: sourceBufferWaitBeforeNewAppendInMiliseconds,
-                            content:[]
-                        }
-                    }
-
-                    for(var segmentIndex = 0; segmentIndex < amountOfSegments; segmentIndex++){
-
+                    for(var segmentIndex = startValue; segmentIndex < amountOfSegmentsAddedWithStartValue; segmentIndex++){
                         //Lets create the url string based on the resource is a vtt file or not,
                         //if the current segment is a vtt segment, the full url will be displayed within
                         //the baseUrl field, and thus we will not need to build up a full url before saving
                         //it to our returnVideoObjectMap
-                        var contentObject = {
-                            urlString: '',
-                            periodIndex: periodIndex,
-                            periodHasSubtitles: periodHasSubtitles,
-                            periodIsAd:false, //Fix so we know if the actual period is an add or not
-                            averageSegmentDurationInSeconds: returnVideoMapObject.get('averageSegmentDuration')
-                        };
 
-                        if(streamObject['type'] === 'subtitles'){
-                            //If we have a subtitle segment, we should just save it as the baseUrl
-                            contentObject.urlString = baseUrl;
-                        } else {
+                        // console.log('endCount ' + amountOfSegmentsAddedWithStartValue);
+                        // console.log('StartValue ' + startValue);
+                        // console.log('SegmentIndex ' + segmentIndex);
+
+                        var contentObject = {};
+
+                        if(streamObject['type'] !== 'subtitles'){
                             //Its an audio or video segment, lets build the full url
-                            contentObject.urlString = '';
+                            contentObject.subtitles = [];
+                            contentObject.periodIndex = periodIndex;
+                            contentObject.periodIsAd = false;
                             contentObject.streamBaseUrl = returnVideoMapObject.get('streamBaseUrl');
                             contentObject.segmentPrefix = segmentPrefix;
                             contentObject.segmentIndex = segmentIndex;
@@ -217,40 +217,32 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                             if(streamArray[j]['type'] === streamObject['type']){
                                 //The type has already been added
                                 streamTypeExists = true;
-                                subtitleUrlExists = false;
-                                //lets check to see if the object type is vtt,
-                                // if that is the case we should not add doubles
-                                if(streamArray[j]['type'] === 'subtitles'){
-                                    //Lets check and see if the url is the same as before
-                                    for(var k = 0, subtitlesArrayLength = streamArray[j].content.length; k < subtitlesArrayLength; k++){
-                                        subtitleUrlExists = streamArray[j].content[k] === contentObject.urlString ? true : false;
-                                    }
-                                    //NOT REALLY WORKING THIS::: CHECK THIS:::
-                                }
-                                //Lets add the url string to the already added stream type
-                                if(!subtitleUrlExists){
-                                    streamArray[j].content.push(contentObject);
-                                }
+                                streamArray[j].content.push(contentObject);
                             }
                         }
                         //If we have not already added the content to an exisiting streamtype, we should add a new one
-                        if(!streamTypeExists){
+                        if(!streamTypeExists && streamObject.type !== 'subtitles'){
                             streamObject.content.push(contentObject);
                             //Push the streamObject to the streamArray
                             streamArray.push(streamObject);
                         }
                     }
-                     console.log('Stream Array');
-                     console.log(streamArray);
+                     // console.log('Stream Array');
+                     // console.log(streamArray);
                 });
 
                 //CREATE MORE LOGIC HERE SO WE CAN KEEP ADDING MORE STUFF TO THE STREAM
                 //HAVE MULTIPLE STREAMS AND SUCH :)
             });
 
+                //lets iterate through our streamArray and add the subtitles to the video and videoAndAudio objects
+                streamArray.forEach(function(streamObject, streamArrayIndex){
+                    if(streamObject.type === 'video' || streamObject.type === 'videoAndAudio'){
+                        streamObject.subtitles = subtitlesObject;
+                    }
+                });
+
             returnVideoMapObject.set('streamArray', streamArray);
-            // console.log('Showing array..');
-            // console.log(returnVideoMapObject.get('streamArray'));
         } else {
             console.log('Could not generate VideoObjectMap from mpdObject since we are missing the mpdParser module, or we do not have a valid streamBaseUrl');
         }
