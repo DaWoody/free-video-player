@@ -833,7 +833,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                         }, streamObject.sourceBufferWaitBeforeNewAppendInMiliseconds);
 
                         //Here we are checking the buffers
-                        //_checkBuffers(streamDurationInSeconds);
+                        _checkBuffers(streamObject.mediaDurationInSeconds);
                     }
                 });
 
