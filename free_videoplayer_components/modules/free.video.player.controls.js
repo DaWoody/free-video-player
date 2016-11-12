@@ -1131,6 +1131,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 //_returnSubtitleLabelCapitalized(subtitleLabel);
                 trackElement.setAttribute('label', subtitleLabel);
                 trackElement.setAttribute('data-' + videoPlayerNameCss + '-subtitle-index', index+1);
+                trackElement.setAttribute('data-' + videoPlayerNameCss + '-period-index', currentSubtitleTrack.periodIndex);
                 videoElement.appendChild(trackElement);
             });
     };

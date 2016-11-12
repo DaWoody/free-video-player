@@ -264,42 +264,47 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
      */
     function returnArrayOfSubtitlesFromMpdObjectAndBaseUrl(mpdObject, baseUrl){
         //Should utilize low level methods to parse through and get the
-        //subtitles that we need
+        //subtitles that we need.
 
-        var arrayOfAdaptionSets = returnArrayOfAdaptionSetsFromMpdObject(mpdObject),
+        var periods = returnArrayOfPeriodsFromMpdObject(mpdObject),
+            arrayOfAdaptionSets = null,
             returnArrayOfSubtitles = [],
             firstRepresentation = {},
             mimeType = '',
             subtitleId = 1;
 
         try {
-            arrayOfAdaptionSets.forEach(function(currentAdaptionSet, index, adaptionSetArray){
+            periods.forEach(function(currentPeriod, periodIndex, periodArray){
+                arrayOfAdaptionSets = returnArrayOfAdaptionSetsFromPeriod(currentPeriod);
 
-                var arrayOfRepresentations = returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet);
+                arrayOfAdaptionSets.forEach(function(currentAdaptionSet, adaptionSetIndex, adaptionSetArray){
 
-                firstRepresentation = arrayOfRepresentations[0];
-                mimeType = returnMimeTypeFromRepresentation(firstRepresentation);
+                    var arrayOfRepresentations = returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet);
 
-                if(mimeType.indexOf('vtt') > -1){
-                    var subtitleTrackObject = {};
-                    //Now its confirmed that the adaptionSet actually contains a webvtt file
-                    //Lets build our subtitleTrackObjects
+                    firstRepresentation = arrayOfRepresentations[0];
+                    mimeType = returnMimeTypeFromRepresentation(firstRepresentation);
 
-                    //Lets find out if the subtitle url is dynamic or static
-                    //if dynamic we should add the base url otherwise not
+                    if(mimeType.indexOf('vtt') > -1){
+                        var subtitleTrackObject = {};
+                        //Now its confirmed that the adaptionSet actually contains a webvtt file
+                        //Lets build our subtitleTrackObjects
 
+                        //Lets find out if the subtitle url is dynamic or static
+                        //if dynamic we should add the base url otherwise not
+                        var subtitleUrl = _subtitleBaseUrlIsDynamic(returnBaseUrlFromRepresentation(firstRepresentation)) ? baseUrl + returnBaseUrlFromRepresentation(firstRepresentation) : returnBaseUrlFromRepresentation(firstRepresentation);
 
+                        subtitleTrackObject.subtitleUrl = subtitleUrl;
+                        subtitleTrackObject.subtitleLanguage = returnSubtitleLanguageFromAdaptionSet(currentAdaptionSet);
+                        subtitleTrackObject.subtitleId = subtitleId;
+                        subtitleTrackObject.periodId = periodIndex;
+                        //Lets add a tick to our subtitleId counter
+                        subtitleId++;
+                        returnArrayOfSubtitles.push(subtitleTrackObject);
+                    }
+                });
 
-                    var subtitleUrl = _subtitleBaseUrlIsDynamic(returnBaseUrlFromRepresentation(firstRepresentation)) ? baseUrl + returnBaseUrlFromRepresentation(firstRepresentation) : returnBaseUrlFromRepresentation(firstRepresentation);
-
-                    subtitleTrackObject.subtitleUrl = subtitleUrl;
-                    subtitleTrackObject.subtitleLanguage = returnSubtitleLanguageFromAdaptionSet(currentAdaptionSet);
-                    subtitleTrackObject.subtitleId = subtitleId;
-                    //Lets add a tick to our subtitleId counter
-                    subtitleId++;
-                    returnArrayOfSubtitles.push(subtitleTrackObject);
-                }
             });
+
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not return array of subtitles, check method';
