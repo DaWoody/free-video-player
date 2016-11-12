@@ -294,7 +294,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
             bufferedEndRound = Math.round(bufferedEnd),
             totalBuffered = bufferedEnd - bufferedStart,
             totalDurationAsNumber = parseInt(totalDurationInSeconds, 10),
-            totalBufferedInPercent = Math.round((totalBuffered / totalDurationAsNumber) * 100);
+            totalBufferedInPercent = Math.round((totalBuffered / totalDurationAsNumber) * 100) > 100 ? 100 : Math.round((totalBuffered / totalDurationAsNumber) * 100);
+
 
         that.currentVideoControlsObject.progressBarBuffered.setAttribute('style', 'width:' + totalBufferedInPercent + '%;');
         that.currentVideoControlsObject.progressBarBuffered.setAttribute('aria-valuenow', totalBufferedInPercent);
@@ -1131,6 +1132,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerControls = function(settingsObjec
                 //_returnSubtitleLabelCapitalized(subtitleLabel);
                 trackElement.setAttribute('label', subtitleLabel);
                 trackElement.setAttribute('data-' + videoPlayerNameCss + '-subtitle-index', index+1);
+                trackElement.setAttribute('data-' + videoPlayerNameCss + '-period-index', currentSubtitleTrack.periodIndex);
                 videoElement.appendChild(trackElement);
             });
     };

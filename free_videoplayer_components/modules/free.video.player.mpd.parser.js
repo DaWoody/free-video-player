@@ -22,7 +22,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     var currentVideoObject = {},
         that = {},
         moduleName = 'MPD PARSER',
-        moduleVersion = '0.9.0',
+        moduleVersion = '0.9.8',
         isModuleValue = true,
         defaultObject = {
             debugMode:true
@@ -99,6 +99,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         }
         return segmentDuration;
     };
+
+
+
 
     /**
      * @function
@@ -203,7 +206,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
 
         try {
             mpdObject = mpdObject || currentVideoObject.mpdObject;
-            adaptionSetTemporary = mpdObject.Period.AdaptationSet;
+            adaptionSetTemporary =  mpdObject.Period.AdaptationSet;
+
             if(Object.prototype.toString.call( adaptionSetTemporary) === '[object Array]' ){
                 returnArray = adaptionSetTemporary
             } else {
@@ -223,6 +227,32 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         return returnArray;
     };
 
+    function returnArrayOfPeriodsFromMpdObject(mpdObject){
+        var returnArray = [],
+            periodSetTemporary = [];
+        try {
+            mpdObject = mpdObject || currentVideoObject.mpdObject;
+            periodSetTemporary = mpdObject.Period;
+
+            if(Object.prototype.toString.call(periodSetTemporary ) === '[object Array]' ){
+                returnArray = periodSetTemporary
+            } else {
+                returnArray.push(periodSetTemporary);
+            }
+
+        } catch(e){
+            var messageObject = {};
+            messageObject.message = 'Could not parse mdpObject.Period';
+            messageObject.methodName = 'returnPeriodsFromMpdObject';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return returnArray;
+    };
+
+
     /**
      * @function
      * @name returnArrayOfSubtitlesFromMpdObjectAndBaseUrl
@@ -234,42 +264,47 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
      */
     function returnArrayOfSubtitlesFromMpdObjectAndBaseUrl(mpdObject, baseUrl){
         //Should utilize low level methods to parse through and get the
-        //subtitles that we need
+        //subtitles that we need.
 
-        var arrayOfAdaptionSets = returnArrayOfAdaptionSetsFromMpdObject(mpdObject),
+        var periods = returnArrayOfPeriodsFromMpdObject(mpdObject),
+            arrayOfAdaptionSets = null,
             returnArrayOfSubtitles = [],
             firstRepresentation = {},
             mimeType = '',
             subtitleId = 1;
 
         try {
-            arrayOfAdaptionSets.forEach(function(currentAdaptionSet, index, adaptionSetArray){
+            periods.forEach(function(currentPeriod, periodIndex, periodArray){
+                arrayOfAdaptionSets = returnArrayOfAdaptionSetsFromPeriod(currentPeriod);
 
-                var arrayOfRepresentations = returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet);
+                arrayOfAdaptionSets.forEach(function(currentAdaptionSet, adaptionSetIndex, adaptionSetArray){
 
-                firstRepresentation = arrayOfRepresentations[0];
-                mimeType = returnMimeTypeFromRepresentation(firstRepresentation);
+                    var arrayOfRepresentations = returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet);
 
-                if(mimeType.indexOf('vtt') > -1){
-                    var subtitleTrackObject = {};
-                    //Now its confirmed that the adaptionSet actually contains a webvtt file
-                    //Lets build our subtitleTrackObjects
+                    firstRepresentation = arrayOfRepresentations[0];
+                    mimeType = returnMimeTypeFromRepresentation(firstRepresentation);
 
-                    //Lets find out if the subtitle url is dynamic or static
-                    //if dynamic we should add the base url otherwise not
+                    if(mimeType.indexOf('vtt') > -1){
+                        var subtitleTrackObject = {};
+                        //Now its confirmed that the adaptionSet actually contains a webvtt file
+                        //Lets build our subtitleTrackObjects
 
+                        //Lets find out if the subtitle url is dynamic or static
+                        //if dynamic we should add the base url otherwise not
+                        var subtitleUrl = _subtitleBaseUrlIsDynamic(returnBaseUrlFromRepresentation(firstRepresentation)) ? baseUrl + returnBaseUrlFromRepresentation(firstRepresentation) : returnBaseUrlFromRepresentation(firstRepresentation);
 
+                        subtitleTrackObject.subtitleUrl = subtitleUrl;
+                        subtitleTrackObject.subtitleLanguage = returnSubtitleLanguageFromAdaptionSet(currentAdaptionSet);
+                        subtitleTrackObject.subtitleId = subtitleId;
+                        subtitleTrackObject.periodId = periodIndex;
+                        //Lets add a tick to our subtitleId counter
+                        subtitleId++;
+                        returnArrayOfSubtitles.push(subtitleTrackObject);
+                    }
+                });
 
-                    var subtitleUrl = _subtitleBaseUrlIsDynamic(returnBaseUrlFromRepresentation(firstRepresentation)) ? baseUrl + returnBaseUrlFromRepresentation(firstRepresentation) : returnBaseUrlFromRepresentation(firstRepresentation);
-
-                    subtitleTrackObject.subtitleUrl = subtitleUrl;
-                    subtitleTrackObject.subtitleLanguage = returnSubtitleLanguageFromAdaptionSet(currentAdaptionSet);
-                    subtitleTrackObject.subtitleId = subtitleId;
-                    //Lets add a tick to our subtitleId counter
-                    subtitleId++;
-                    returnArrayOfSubtitles.push(subtitleTrackObject);
-                }
             });
+
         } catch(e){
             var messageObject = {};
                 messageObject.message = 'Could not return array of subtitles, check method';
@@ -314,6 +349,186 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
             }
         return returnBoolean;
     };
+
+    //  #############################
+    //  #### PERIOD METHODS ####
+    //  #############################
+    /**
+     * @function
+     * @name returnArrayOfSubtitlesFromPeriodAndBaseUrl
+     * @description Returns an array of subtitles from the period and the baseurl
+     * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
+     * @param {string} baseUrl - The baseUrl for the media, needed to create correct subtitle paths
+     * @returns {Array} - An array of subtitle objects packed into an array.
+     */
+    function returnArrayOfSubtitlesFromPeriodObjectAndBaseUrl(period, baseUrl){
+        //Should utilize low level methods to parse through and get the
+        //subtitles that we need
+
+        var arrayOfAdaptionSets = returnArrayOfAdaptionSetsFromPeriodObject(period),
+            returnArrayOfSubtitles = [],
+            firstRepresentation = {},
+            mimeType = '',
+            subtitleId = 1;
+
+        try {
+            arrayOfAdaptionSets.forEach(function(currentAdaptionSet, index, adaptionSetArray){
+
+                var arrayOfRepresentations = returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet);
+
+                firstRepresentation = arrayOfRepresentations[0];
+                mimeType = returnMimeTypeFromRepresentation(firstRepresentation);
+
+                if(mimeType.indexOf('vtt') > -1){
+                    var subtitleTrackObject = {};
+                    //Now its confirmed that the adaptionSet actually contains a webvtt file
+                    //Lets build our subtitleTrackObjects
+
+                    //Lets find out if the subtitle url is dynamic or static
+                    //if dynamic we should add the base url otherwise not
+
+
+
+                    var subtitleUrl = _subtitleBaseUrlIsDynamic(returnBaseUrlFromRepresentation(firstRepresentation)) ? baseUrl + returnBaseUrlFromRepresentation(firstRepresentation) : returnBaseUrlFromRepresentation(firstRepresentation);
+
+                    subtitleTrackObject.subtitleUrl = subtitleUrl;
+                    subtitleTrackObject.subtitleLanguage = returnSubtitleLanguageFromAdaptionSet(currentAdaptionSet);
+                    subtitleTrackObject.subtitleId = subtitleId;
+                    //Lets add a tick to our subtitleId counter
+                    subtitleId++;
+                    returnArrayOfSubtitles.push(subtitleTrackObject);
+                }
+            });
+        } catch(e){
+            var messageObject = {};
+            messageObject.message = 'Could not return array of subtitles, check method';
+            messageObject.methodName = 'returnArrayOfSubtitlesFromMpdObjectAndBaseUrl';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return returnArrayOfSubtitles;
+    };
+
+    /**
+     * @function
+     * @name returnArrayOfAdaptionSetsFromPeriodObject
+     * @description Returns an array of adaptionSets from the period object
+     * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
+     * @returns {Array} - And array of adaptionsets from the MPD object
+     */
+    function returnArrayOfAdaptionSetsFromPeriodObject(periodObject){
+        var returnArray = [],
+            adaptionSetTemporary = [];
+
+        try {
+            adaptionSetTemporary =  periodObject.AdaptationSet;
+
+            if(Object.prototype.toString.call( adaptionSetTemporary) === '[object Array]' ){
+                returnArray = adaptionSetTemporary
+            } else {
+                returnArray.push(adaptionSetTemporary);
+            }
+
+        } catch(e){
+            var messageObject = {};
+            messageObject.message = 'Could not parse periodObject.AdapationSet';
+            messageObject.methodName = 'returnArrayOfAdaptionSetsFromPeriodObject';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+
+        }
+        return returnArray;
+    };
+
+    /**
+     * @function
+     * @name returnArrayOfAdaptionSetsFromPeriod
+     * @description Returns an array of adaptionSets from the MPD object
+     * @public
+     * @param {object} mpdObject - Optional, this can be sent in or the stored mpdObject can be used.
+     * @returns {Array} - And array of adaptionsets from the MPD object
+     */
+    function returnArrayOfAdaptionSetsFromPeriod(period){
+        var returnArray = [],
+            adaptionSetTemporary = [];
+
+        try {
+            adaptionSetTemporary =  period.AdaptationSet;
+
+            if(Object.prototype.toString.call( adaptionSetTemporary) === '[object Array]' ){
+                returnArray = adaptionSetTemporary
+            } else {
+                returnArray.push(adaptionSetTemporary);
+            }
+
+        } catch(e){
+            var messageObject = {};
+            messageObject.message = 'Could not parse period.AdapationSet';
+            messageObject.methodName = 'returnArrayOfAdaptionSetsFromPeriod';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+
+        }
+        return returnArray;
+    };
+
+
+
+    /**
+     * @function
+     * @name returnMediaDurationInSecondsFromPeriodObject
+     * @description Returns the media duration in seconds from the Period Object
+     * @public
+     * @param {object} periodObject
+     * @returns {number} - The media duration in seconds
+     */
+    function returnMediaDurationInSecondsFromPeriodObject(periodObject){
+        var mediaDurationInSeconds = 0,
+            mediaDurationFullString = '',
+            mediaDurationTemporaryFullString = '';
+        try {
+
+
+                mediaDurationFullString = periodObject._duration;
+
+
+            if(mediaDurationFullString.split('T').length > 1){
+                mediaDurationTemporaryFullString = mediaDurationFullString.split('T')[1];
+            }
+
+            var hoursString = mediaDurationTemporaryFullString.split('H')[0],
+                minutesString = mediaDurationTemporaryFullString.split('H')[1].split('M')[0],
+                secondsString = mediaDurationTemporaryFullString.split('M')[1].split('S')[0],
+                hours = parseInt(hoursString,10),
+                minutes = parseInt(minutesString, 10),
+                seconds = parseInt(secondsString, 10),
+                hoursInSeconds = hours * 3600,
+                minutesInSeconds = minutes * 60;
+
+            // Lets add our result to the returning mediaDurationInSeconds we will return
+            mediaDurationInSeconds = hoursInSeconds + minutesInSeconds + seconds;
+
+        } catch(e){
+
+            var messageObject = {};
+            messageObject.message = 'Could not get media duration string from the periodObject';
+            messageObject.methodName = 'returnMediaDurationInSecondsFromPeriodObject';
+            messageObject.moduleName = moduleName;
+            messageObject.moduleVersion = moduleVersion;
+            messageObject.isModule = isModuleValue;
+            messagesModule.printOutErrorMessageToConsole(messageObject, e);
+        }
+        return mediaDurationInSeconds;
+    };
+
 
     //  #############################
     //  #### ADAPTIONSET METHODS ####
@@ -559,12 +774,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
         try {
             for(var i = 0, arrayOfRepresentationsLength = arrayOfRepresentations.length; i < arrayOfRepresentationsLength; i++){
                 var currentBaseUrlObject = {};
-                currentBaseUrlObject.bandwidth = arrayOfRepresentations[i]._bandwidth;
-                currentBaseUrlObject.mimeType = arrayOfRepresentations[i]._mimeType;
-                currentBaseUrlObject.codecs = arrayOfRepresentations[i]._codecs;
+                currentBaseUrlObject.bandwidth = arrayOfRepresentations[i]._bandwidth ? arrayOfRepresentations[i]._bandwidth : '';
+                currentBaseUrlObject.mimeType = arrayOfRepresentations[i]._mimeType ? arrayOfRepresentations[i]._mimeType : '';
+                currentBaseUrlObject.codecs = arrayOfRepresentations[i]._codecs ? arrayOfRepresentations[i]._codecs : '';
                 currentBaseUrlObject.baseUrl = arrayOfRepresentations[i].BaseURL;
-                currentBaseUrlObject.width = arrayOfRepresentations[i]._width || '';
-                currentBaseUrlObject.height = arrayOfRepresentations[i]._height || '';
+                currentBaseUrlObject.width = arrayOfRepresentations[i]._width ? arrayOfRepresentations[i]._width : '';
+                currentBaseUrlObject.height = arrayOfRepresentations[i]._height ? arrayOfRepresentations[i]._height : '';
                 currentBaseUrlObject.type = returnTypeFromMimeTypeAndCodecString(arrayOfRepresentations[i]._mimeType, arrayOfRepresentations[i]._codecs);
                 currentBaseUrlObject.index = i;
                 arrayOfBaseUrlObjects.push(currentBaseUrlObject);
@@ -790,7 +1005,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
             } catch (e){
                 var messageObject = {};
                     messageObject.message = 'Could not parse and return type (video or audio) from mimeType, check input';
-                    messageObject.methodName = 'returnTypeFromMimeType';
+                    messageObject.methodName = 'returnTypeFromMimeTypeAndCodecString';
                     messageObject.moduleName = moduleName;
                     messageObject.moduleVersion = moduleVersion;
                     messageObject.isModule = isModuleValue;
@@ -947,6 +1162,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser = function(settingsObje
     that.returnTypeFromMimeTypeAndCodecString = returnTypeFromMimeTypeAndCodecString;
     that.returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate = returnReorderedArrayOfBaseUrlObjectsIntoHighestBitrate;
     that.returnBaseUrlFromMpdUrl = returnBaseUrlFromMpdUrl;
+
+    //Period methods
+    that.returnArrayOfPeriodsFromMpdObject = returnArrayOfPeriodsFromMpdObject;
+    that.returnArrayOfAdaptionSetsFromPeriodObject = returnArrayOfAdaptionSetsFromPeriodObject;
+    that.returnArrayOfSubtitlesFromPeriodObjectAndBaseUrl = returnArrayOfSubtitlesFromPeriodObjectAndBaseUrl;
+    that.returnMediaDurationInSecondsFromPeriodObject = returnMediaDurationInSecondsFromPeriodObject;
 
     //AdapationSet methods
     that.returnMimeTypeFromAdaptionSet = returnMimeTypeFromAdaptionSet;

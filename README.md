@@ -11,6 +11,10 @@
 ##Version information
 ***
 
+* Version 0.9.8 - ALPHA
+    * Now the player supports multiple ```periods```  for dashed content. This can be used for playing ads for instance. Only tested with non-muxxed assets. Also the current implementation
+    loads the subtitles files (if there are any in the asset) for the whole aggregated period time ( all periods stitched together to for a continous stream). This might be subject to change.
+
 * Version 0.9.7 - ALPHA
     * Added ```API``` call ```unload``` which unloads an asset and aborts buffering of streams and such, also updated and fixed splash image and background of player when unloading or when try calling the ```load``` method with a non valid url value.
 
