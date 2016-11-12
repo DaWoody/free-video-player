@@ -84,7 +84,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
     /**
      * @function
      * @name generateAndReturnVideoObjectMapFromMpdObjectAndStreamBaseUrl
-     * @description Generates and returns a video Object Map from mpd and streambase url
+     * @description Generates and returns a videoObjectMap from mpd and streamBaseUrl
      * @param mpdObject
      * @param currentVideoStreamBaseUrl
      * @returns {Map}
@@ -122,15 +122,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
 
                 adaptionSets.forEach(function(currentAdaptionSet, adaptionSetIndex){
 
+                    console.log('This is an adaptionSet');
+
+                    console.log(currentAdaptionSet);
+
                     var startRepresentationIndex = 0,
                         adaptionSetMimeType = mpdParserModule.returnMimeTypeFromAdaptionSet(currentAdaptionSet),
                         arrayOfRepresentationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet),
                         mimeType = adaptionSetMimeType ? adaptionSetMimeType : mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
-                        segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
+                        segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet) ? mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet) : null,
                         mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
                         initializationFile =  mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate) ?  mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate) : null,
                         baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets) ? mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets) : [],
-                        startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]) ? parseInt(mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]), 10) : 0,
+                        //startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]) ? parseInt(mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]), 10) : 0,
+                        startValue = segmentTemplate ? parseInt(segmentTemplate['_startNumber'], 10) : 1,
                         segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
                         segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
                         mediaDurationInSecondsPeriod = mpdParserModule.returnMediaDurationInSecondsFromPeriodObject(periodObject),
@@ -146,6 +151,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         representationSetArray = [],
                         representationSetArrayLength = 0,
                         sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
+
+
+                    console.log('SegmentTemplate object');
+                    console.log(segmentTemplate);
 
                     //Lets set the contentComponent length, this will decide if the stream is a muxxed (video and audio) stream
                     contentComponentArray = mpdParserModule.returnArrayOfContentComponentsFromAdaptionSet(currentAdaptionSet);
@@ -169,10 +178,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     var streamObject = {},
                         codecString = mimeType + '; codecs="' + codecs + '"',
                         //Calculate the amount of segments for this peticular period
-                        amountOfSegments = Math.round(mediaDurationInSecondsPeriod/returnVideoMapObject.get('averageSegmentDuration'));
+                        amountOfSegmentsPeriod = Math.round(mediaDurationInSecondsPeriod/returnVideoMapObject.get('averageSegmentDuration'));
 
                     streamObject.type = _returnStreamTypeBasedOnMimeTypeAndContentComponentArrayLength(mimeType, contentComponentArrayLength);
-
 
                     //Lets add the rest of the object values
                     streamObject.amountOfPeriods = returnVideoMapObject.get('amountOfPeriods');
@@ -182,7 +190,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     streamObject.baseUrlObjectArray = baseUrlObjectArray;
                     streamObject.codec = codecs;
                     streamObject.sourceBufferCodecString = codecString;
-                    streamObject.amountOfSegments = amountOfSegments,
+                    streamObject.amountOfSegments = returnVideoMapObject.get('amountOfSegments'),
                     streamObject.averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
                     streamObject.mediaDurationInSeconds = mediaDurationInSecondsPeriod,
                     streamObject.sourceBufferWaitBeforeNewAppendInMiliseconds = sourceBufferWaitBeforeNewAppendInMiliseconds;
@@ -200,6 +208,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
 
                     var amountOfSegmentsAddedWithStartValue = parseInt(amountOfSegments, 10) + startValue;
 
+                    console.log('Start value is this..' + startValue);
+                    console.log('amountOfSegmentsAddedWithStartValue ' + amountOfSegmentsAddedWithStartValue);
 
                     for(var segmentIndex = startValue; segmentIndex < amountOfSegmentsAddedWithStartValue; segmentIndex++){
                         //Lets create the url string based on the resource is a vtt file or not,
@@ -249,23 +259,21 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                      // console.log('Stream Array');
                      // console.log(streamArray);
                 });
-
                 //CREATE MORE LOGIC HERE SO WE CAN KEEP ADDING MORE STUFF TO THE STREAM
                 //HAVE MULTIPLE STREAMS AND SUCH :)
             });
 
-                //lets iterate through our streamArray and add the subtitles to the video and videoAndAudio objects
-                streamArray.forEach(function(streamObject, streamArrayIndex){
-                    if(streamObject.type === 'video' || streamObject.type === 'videoAndAudio'){
-                        streamObject.subtitles = subtitlesObject;
-                    }
-                });
+            //lets iterate through our streamArray and add the subtitles to the video and videoAndAudio objects
+            streamArray.forEach(function(streamObject, streamArrayIndex){
+                if(streamObject.type === 'video' || streamObject.type === 'videoAndAudio'){
+                    streamObject.subtitles = subtitlesObject;
+                }
+            });
 
             returnVideoMapObject.set('streamArray', streamArray);
         } else {
             console.log('Could not generate VideoObjectMap from mpdObject since we are missing the mpdParser module, or we do not have a valid streamBaseUrl');
         }
-
         //return our video object
         return returnVideoMapObject;
     };
@@ -401,13 +409,11 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
         currentVideoObject.streamObject = _returnClearCurrentVideoStreamObject();
 
-
     //Import dependencies and modules
     var mpdParserModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMpdParser(),
         messagesModule = freeVideoPlayerModulesNamespace.freeVideoPlayerMessages(settingsObject, moduleVersion),
         videoControlsModule = videoControlsModule || null,
         hlsParserModule = 'Add HLS PARSER HERE...';
-
 
     //Create methods here
     //Some methods we will be using for the player here. We will write them like the way we do. Just the way it should be.
@@ -440,7 +446,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             messagesModule.printOutMessageToConsole(messageObject);
         }
     };
-
 
     /**
      * @function
@@ -714,7 +719,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
       return currentVideoObject.streamObject.streamBaseUrl;
     };
 
-
     /**
      * @function
      * @name _createAndReturnSourceBuffer
@@ -729,7 +733,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         messagesModule.printOutLine('Adding a ' + streamObject.type + ' stream!');
         return sourceBuffer;
     }
-
 
     /**
      * @function
@@ -760,6 +763,12 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     currentSegment = 0,
                     baseUrl = '';
 
+                //Lets set the sourceBuffer mode to sequence since we will override the timestamps
+                //and make the buffer play how we want it
+                //This will override the mode segments, which in turn utilizes the timestamps of the segments
+                //See this for more info: https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/mode
+                sourceBuffer.mode = 'sequence';
+
 
                 var bitrateSettingObject = {};
                 bitrateSettingObject.baseUrlObjectArray = streamObject.baseUrlObjectArray;
@@ -781,19 +790,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
 
                 //When we are done updating
                 sourceBuffer.addEventListener('updateend', function() {
-                    if(that._videoElement.error) {
+                    if (that._videoElement.error) {
                         messagesModule.printOutObject(that._videoElement.error);
                     }
 
-                    if( sourceBuffer.buffered.length > 0 ) {
+                    if (sourceBuffer.buffered.length > 0) {
                         messagesModule.printOutLine(streamObject.mimeType + ' buffer timerange start=' + sourceBuffer.buffered.start(0) + ' / end=' + sourceBuffer.buffered.end(0));
                     }
 
-                    messagesModule.printOutLine('The stream duration is.. ' +  streamObject.streamDurationInSeconds);
+                    messagesModule.printOutLine('The stream duration is.. ' + streamObject.streamDurationInSeconds);
                     messagesModule.printOutLine('The average segment length is ' + streamObject.averageSegmentDuration);
-                    currentSegment = currentVideoObject.streamObject.currentVideoSegment || 0;
+                    console.log('The amount of segments for ' + streamObject.type + '.. is ' + streamObject.amountOfSegments);
+                    currentSegment = currentVideoObject.streamObject.currentSegmentObject[streamObject.type] || 0;
 
-                    if( currentSegment > streamObject.amountOfSegments
+                    if (currentSegment > streamObject.amountOfSegments
                         && MediaSource.readyState == 'open') {
                         //Lets end stream when we have reached the end of our stream count
                         that._mediaSource.endOfStream();
@@ -807,8 +817,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     //We first evaulate if we want to bitrate switch from user settings or from adaptive algorithm
 
                     //FIX SO THIS ONLY WORKS FOR VIDEO AND NOT AUDIO
-                    if(!_isBitrateAuto()
-                        && streamObject.type !== 'audio'){
+                    if (!_isBitrateAuto()
+                        && streamObject.type !== 'audio') {
                         baseUrl = _returnBaseUrlBasedOnStoredUserSettings();
                         messagesModule.printOutLine('THE BASE URL USER TRY TO SET IS THIS.. ' + baseUrl + ' .. with type ' + streamObject.type);
                     } else {
@@ -816,13 +826,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                         messagesModule.printOutLine('THE BASE URL SET BY THE ALGORITHM IS THIS..' + baseUrl + ' .. with type ' + streamObject.type);
                     }
 
-
                     if(videoStreamShouldAppend()){
                         if(currentSegment < streamObject.amountOfSegments)
                         setTimeout(function(){
-                            console.log('Came here..')
-                            console.log('This was after the timeout..');
-                            console.log('Trying to get this segment..' + streamObject.content[currentSegment].segmentIndex);
                             _appendData(sourceBuffer,
                                 streamObject.content[currentSegment].streamBaseUrl +
                                 baseUrl +
@@ -830,10 +836,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                                 streamObject.content[currentSegment].segmentIndex  +
                                 streamObject.content[currentSegment].segmentEnding,
                                 streamObject.mimeType);
-
                             //Lets increment the currentSegment
                             currentSegment++;
-                            currentVideoObject.streamObject.currentVideoSegment = currentSegment;
+                            currentVideoObject.streamObject.currentSegmentObject[streamObject.type] = currentSegment;
 
                         }, streamObject.sourceBufferWaitBeforeNewAppendInMiliseconds);
 
@@ -842,8 +847,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                     }
                 });
 
-                console.log('source buffer mode: ' + sourceBuffer.mode );
-                console.log('Base url is..' + baseUrl)
                 if(streamObject.baseUrlArray.length > 0){
                     _appendData(sourceBuffer,
                         streamObject.content[currentSegment].streamBaseUrl +
@@ -857,7 +860,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
                 //arrayOfSourceBuffers.push(sourceBuffer);
 
     }
-
 
     /**
      * @name _videoReady
@@ -1158,7 +1160,6 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
         //}, 2000);
     };
 
-
     //  ########################
     //  #### BUFFER METHODS ####
     //  ########################
@@ -1359,6 +1360,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStream = function(setting
             //used for the adaptive bitrate algo, should probably be refactored later
             currentVideoBaseUrl:'auto',
             streamBaseUrl:'',
+            currentSegmentObject:{},
             streamShouldAppend:false
         };
         return returnObject;

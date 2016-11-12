@@ -1,7 +1,6 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     del = require('del');
-
 //  ***************************
 //  Free Video Player - Modules
 //  ***************************
@@ -9,7 +8,6 @@ var gulp = require('gulp'),
 //  **********
 //  Build code
 //  **********
-
 gulp.task('build_free_video_player_modules', function(cb) {
     // place code for your default task here
     return gulp.src([

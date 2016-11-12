@@ -56,7 +56,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
     /**
      * @function
      * @name generateAndReturnVideoObjectMapFromMpdObjectAndStreamBaseUrl
-     * @description Generates and returns a video Object Map from mpd and streambase url
+     * @description Generates and returns a videoObjectMap from mpd and streamBaseUrl
      * @param mpdObject
      * @param currentVideoStreamBaseUrl
      * @returns {Map}
@@ -94,15 +94,20 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
 
                 adaptionSets.forEach(function(currentAdaptionSet, adaptionSetIndex){
 
+                    console.log('This is an adaptionSet');
+
+                    console.log(currentAdaptionSet);
+
                     var startRepresentationIndex = 0,
                         adaptionSetMimeType = mpdParserModule.returnMimeTypeFromAdaptionSet(currentAdaptionSet),
                         arrayOfRepresentationSets = mpdParserModule.returnArrayOfRepresentationSetsFromAdapationSet(currentAdaptionSet),
                         mimeType = adaptionSetMimeType ? adaptionSetMimeType : mpdParserModule.returnMimeTypeFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]),
-                        segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet),
+                        segmentTemplate = mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet) ? mpdParserModule.returnSegmentTemplateFromAdapationSet(currentAdaptionSet) : null,
                         mediaObject =  mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) ? mpdParserModule.returnMediaStructureAsObjectFromSegmentTemplate(segmentTemplate) : null,
                         initializationFile =  mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate) ?  mpdParserModule.returnInitializationFromSegmentTemplate(segmentTemplate) : null,
                         baseUrlObjectArray = mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets) ? mpdParserModule.returnArrayOfBaseUrlObjectsFromArrayOfRepresentations(arrayOfRepresentationSets) : [],
-                        startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]) ? parseInt(mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]), 10) : 0,
+                        //startValue = mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]) ? parseInt(mpdParserModule.returnStartNumberFromRepresentation(arrayOfRepresentationSets[startRepresentationIndex]), 10) : 0,
+                        startValue = segmentTemplate ? parseInt(segmentTemplate['_startNumber'], 10) : 1,
                         segmentPrefix = mediaObject ? mediaObject.segmentPrefix : '',
                         segmentEnding = mediaObject ? mediaObject.segmentEnding : '',
                         mediaDurationInSecondsPeriod = mpdParserModule.returnMediaDurationInSecondsFromPeriodObject(periodObject),
@@ -118,6 +123,10 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                         representationSetArray = [],
                         representationSetArrayLength = 0,
                         sourceBufferWaitBeforeNewAppendInMiliseconds = 1000;
+
+
+                    console.log('SegmentTemplate object');
+                    console.log(segmentTemplate);
 
                     //Lets set the contentComponent length, this will decide if the stream is a muxxed (video and audio) stream
                     contentComponentArray = mpdParserModule.returnArrayOfContentComponentsFromAdaptionSet(currentAdaptionSet);
@@ -141,10 +150,9 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     var streamObject = {},
                         codecString = mimeType + '; codecs="' + codecs + '"',
                         //Calculate the amount of segments for this peticular period
-                        amountOfSegments = Math.round(mediaDurationInSecondsPeriod/returnVideoMapObject.get('averageSegmentDuration'));
+                        amountOfSegmentsPeriod = Math.round(mediaDurationInSecondsPeriod/returnVideoMapObject.get('averageSegmentDuration'));
 
                     streamObject.type = _returnStreamTypeBasedOnMimeTypeAndContentComponentArrayLength(mimeType, contentComponentArrayLength);
-
 
                     //Lets add the rest of the object values
                     streamObject.amountOfPeriods = returnVideoMapObject.get('amountOfPeriods');
@@ -154,7 +162,7 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                     streamObject.baseUrlObjectArray = baseUrlObjectArray;
                     streamObject.codec = codecs;
                     streamObject.sourceBufferCodecString = codecString;
-                    streamObject.amountOfSegments = amountOfSegments,
+                    streamObject.amountOfSegments = returnVideoMapObject.get('amountOfSegments'),
                     streamObject.averageSegmentDuration = returnVideoMapObject.get('averageSegmentDuration'),
                     streamObject.mediaDurationInSeconds = mediaDurationInSecondsPeriod,
                     streamObject.sourceBufferWaitBeforeNewAppendInMiliseconds = sourceBufferWaitBeforeNewAppendInMiliseconds;
@@ -172,6 +180,8 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
 
                     var amountOfSegmentsAddedWithStartValue = parseInt(amountOfSegments, 10) + startValue;
 
+                    console.log('Start value is this..' + startValue);
+                    console.log('amountOfSegmentsAddedWithStartValue ' + amountOfSegmentsAddedWithStartValue);
 
                     for(var segmentIndex = startValue; segmentIndex < amountOfSegmentsAddedWithStartValue; segmentIndex++){
                         //Lets create the url string based on the resource is a vtt file or not,
@@ -221,23 +231,21 @@ freeVideoPlayerModulesNamespace.freeVideoPlayerAdaptiveStreamObjectCreation = fu
                      // console.log('Stream Array');
                      // console.log(streamArray);
                 });
-
                 //CREATE MORE LOGIC HERE SO WE CAN KEEP ADDING MORE STUFF TO THE STREAM
                 //HAVE MULTIPLE STREAMS AND SUCH :)
             });
 
-                //lets iterate through our streamArray and add the subtitles to the video and videoAndAudio objects
-                streamArray.forEach(function(streamObject, streamArrayIndex){
-                    if(streamObject.type === 'video' || streamObject.type === 'videoAndAudio'){
-                        streamObject.subtitles = subtitlesObject;
-                    }
-                });
+            //lets iterate through our streamArray and add the subtitles to the video and videoAndAudio objects
+            streamArray.forEach(function(streamObject, streamArrayIndex){
+                if(streamObject.type === 'video' || streamObject.type === 'videoAndAudio'){
+                    streamObject.subtitles = subtitlesObject;
+                }
+            });
 
             returnVideoMapObject.set('streamArray', streamArray);
         } else {
             console.log('Could not generate VideoObjectMap from mpdObject since we are missing the mpdParser module, or we do not have a valid streamBaseUrl');
         }
-
         //return our video object
         return returnVideoMapObject;
     };
