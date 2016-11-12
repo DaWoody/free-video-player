@@ -1,0 +1,36 @@
+{
+  "name": "free-video-player",
+  "version": "0.9.8",
+  "description": "An open source html5 video streaming player for web-applications run in web-browsers",
+  "main": "./free.video.player.full.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AwesomeNinjaKittens/free-video-player.git"
+  },
+  "keywords": [
+    "free",
+    "video",
+    "player",
+    "free",
+    "video",
+    "player",
+    "GPLv3",
+    "open",
+    "source",
+    "open",
+    "source",
+    "javascript",
+    "video",
+    "streaming",
+    "dash"
+  ],
+  "author": "Johan DaWoody Wedfelt",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/AwesomeNinjaKittens/free-video-player/issues"
+  },
+  "homepage": "https://github.com/AwesomeNinjaKittens/free-video-player#readme"
+}
